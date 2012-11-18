@@ -8,12 +8,12 @@
 // Name space:
 using namespace std;
 
-Time::Time ( int minute,
+Time::Time ( minute_t minute,
 			 int hour,
              int day,
              int month,
              int year ) {
-    this -> setDate ( hour, minute, day, month, year );
+    this -> setDate ( minute, hour, day, month, year );
 }
 
 // Comparisons:
@@ -38,7 +38,7 @@ void Time::setWeek ( const int &week ) {
     this -> timestamp = mktime ( timestruct );
 }
 
-void Time::setDate ( int minute, int hour, int day, int month, int year ) {
+void Time::setDate ( minute_t minute, int hour, int day, int month, int year ) {
     time_t actualtimestamp;
     time ( &actualtimestamp );
     
@@ -48,8 +48,8 @@ void Time::setDate ( int minute, int hour, int day, int month, int year ) {
     month	= ( month	== -1 ? actualtimestruct -> tm_mon  + 1    : month );
     day		= ( day		== -1 ? actualtimestruct -> tm_mday        : day   );
     hour	= ( hour	== -1 ? actualtimestruct -> tm_hour        : hour  );
-    minute  = ( minute  == minutes.notDefined ? actualtimestruct -> tm_min : minute );
-
+    minute  = ( minute  == notDefined ? oclock : minute );
+	
     struct tm timestruct;
     memset ( &timestruct, 0, sizeof ( struct tm ) );
     timestruct.tm_year = year  - 1900;

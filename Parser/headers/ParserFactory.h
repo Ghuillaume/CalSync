@@ -9,13 +9,14 @@
 #define	PARSERFACTORY_H
 
 #include "../../main/headers/common.h"
+#include "Parser.h"
 
 class ParserFactory {
 public:
 	ParserFactory();
 	virtual ~ParserFactory();
 	
-	virtual Parser createParser() = 0;
+	virtual Parser* createParser() = 0;
 };
 
 #endif	/* PARSERFACTORY_H */

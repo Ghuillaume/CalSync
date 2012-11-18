@@ -13,6 +13,7 @@ ParserFactory::ParserFactory() {
 ParserFactory::~ParserFactory() {
 }
 
-Parser ParserFactory::createParser() {
+Parser* ParserFactory::createParser() {
 	//TODO
+	return (Parser*)NULL;
 }

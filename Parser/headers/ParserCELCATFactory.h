@@ -9,14 +9,14 @@
 #define	PARSERCELCATFACTORY_H
 
 #include "ParserFactory.h"
-
+#include "Parser.h"
 
 class ParserCELCATFactory : public ParserFactory{
 public:
 	ParserCELCATFactory();
 	virtual ~ParserCELCATFactory();
 	
-	Parser createParser();
+	Parser* createParser();
 };
 
 #endif	/* PARSERCELCATFACTORY_H */

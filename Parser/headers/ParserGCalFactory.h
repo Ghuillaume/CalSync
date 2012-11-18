@@ -15,7 +15,7 @@ public:
 	ParserGCalFactory();
 	virtual ~ParserGCalFactory();
 	
-	Parser createParser();
+	Parser* createParser();
 };
 
 #endif	/* PARSERGCALFACTORY_H */

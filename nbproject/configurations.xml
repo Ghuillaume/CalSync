@@ -22,31 +22,6 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
-      <logicalFolder name="libs" displayName="libs" projectFiles="true">
-        <logicalFolder name="ccard_r10" displayName="ccard_r10" projectFiles="true">
-          <logicalFolder name="samples" displayName="samples" projectFiles="true">
-            <logicalFolder name="cpptest" displayName="cpptest" projectFiles="true">
-              <itemPath>libs/ccard_r10/samples/cpptest/test.cpp</itemPath>
-              <itemPath>libs/ccard_r10/samples/cpptest/test.dsp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="ctest" displayName="ctest" projectFiles="true">
-              <itemPath>libs/ccard_r10/samples/ctest/test.c</itemPath>
-              <itemPath>libs/ccard_r10/samples/ctest/test.dsp</itemPath>
-            </logicalFolder>
-            <logicalFolder name="data" displayName="data" projectFiles="true">
-              <itemPath>libs/ccard_r10/samples/data/imc.vcf</itemPath>
-              <itemPath>libs/ccard_r10/samples/data/test1.vcf</itemPath>
-              <itemPath>libs/ccard_r10/samples/data/test2.vcf</itemPath>
-              <itemPath>libs/ccard_r10/samples/data/vcal1.vcs</itemPath>
-            </logicalFolder>
-          </logicalFolder>
-          <itemPath>libs/ccard_r10/cardparser.c</itemPath>
-          <itemPath>libs/ccard_r10/cardparser.h</itemPath>
-          <itemPath>libs/ccard_r10/doxygen.config</itemPath>
-          <itemPath>libs/ccard_r10/license.txt</itemPath>
-          <itemPath>libs/ccard_r10/readme.txt</itemPath>
-        </logicalFolder>
-      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"

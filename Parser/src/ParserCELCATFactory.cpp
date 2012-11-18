@@ -13,6 +13,7 @@ ParserCELCATFactory::ParserCELCATFactory() {
 ParserCELCATFactory::~ParserCELCATFactory() {
 }
 
-Parser ParserCELCATFactory::createParser() {
+Parser* ParserCELCATFactory::createParser() {
 	//TODO
+	return (Parser*)NULL;
 }

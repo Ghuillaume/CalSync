@@ -13,7 +13,7 @@ public:
 	Model();
 	virtual ~Model();
 	
-	Slot* createSlot( date, );
+	//Slot* createSlot( date, );
 };
 
 #endif	/* MODEL_H */

@@ -13,6 +13,7 @@ ParserGCalFactory::ParserGCalFactory() {
 ParserGCalFactory::~ParserGCalFactory() {
 }
 
-Parser ParserGCalFactory::createParser() {
+Parser* ParserGCalFactory::createParser() {
 	//TODO
+	return (Parser*)NULL;
 }
