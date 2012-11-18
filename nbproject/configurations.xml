@@ -5,10 +5,18 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="headers" displayName="headers" projectFiles="true">
-        <itemPath>ICalcParser/headers/ICalParser.h</itemPath>
+        <itemPath>main/headers/common.h</itemPath>
       </logicalFolder>
       <logicalFolder name="headers" displayName="headers" projectFiles="true">
-        <itemPath>main/headers/common.h</itemPath>
+        <itemPath>Calendar.core/headers/Model.h</itemPath>
+        <itemPath>Calendar.core/headers/Time.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="headers" displayName="headers" projectFiles="true">
+        <itemPath>Parser/headers/Parser.h</itemPath>
+        <itemPath>Parser/headers/ParserCELCAT.h</itemPath>
+        <itemPath>Parser/headers/ParserCELCATFactory.h</itemPath>
+        <itemPath>Parser/headers/ParserFactory.h</itemPath>
+        <itemPath>Parser/headers/ParserGCalFactory.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -44,10 +52,18 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>ICalcParser/src/ICalParser.cpp</itemPath>
+        <itemPath>main/src/main.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>main/src/main.cpp</itemPath>
+        <itemPath>Calendar.core/src/Model.cpp</itemPath>
+        <itemPath>Calendar.core/src/Time.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="src" displayName="src" projectFiles="true">
+        <itemPath>Parser/src/Parser.cpp</itemPath>
+        <itemPath>Parser/src/ParserCELCAT.cpp</itemPath>
+        <itemPath>Parser/src/ParserCELCATFactory.cpp</itemPath>
+        <itemPath>Parser/src/ParserFactory.cpp</itemPath>
+        <itemPath>Parser/src/ParserGCalFactory.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -70,6 +86,10 @@
     <Elem>main/src</Elem>
     <Elem>ICalcParser/headers</Elem>
     <Elem>main/headers</Elem>
+    <Elem>Calendar.core/src</Elem>
+    <Elem>Calendar.core/headers</Elem>
+    <Elem>Parser/headers</Elem>
+    <Elem>Parser/src</Elem>
   </sourceRootList>
   <projectmakefile>CalSync-Makefile.mk</projectmakefile>
   <confs>

@@ -17,6 +17,10 @@
                 <sourceRootElem>main/src</sourceRootElem>
                 <sourceRootElem>ICalcParser/headers</sourceRootElem>
                 <sourceRootElem>main/headers</sourceRootElem>
+                <sourceRootElem>Calendar.core/src</sourceRootElem>
+                <sourceRootElem>Calendar.core/headers</sourceRootElem>
+                <sourceRootElem>Parser/headers</sourceRootElem>
+                <sourceRootElem>Parser/src</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

@@ -13,4 +13,3 @@
 using namespace std;
 
 #endif	/* COMMON_H */
-
