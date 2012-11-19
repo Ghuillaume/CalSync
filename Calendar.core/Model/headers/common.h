@@ -9,7 +9,10 @@
 #define	COMMON_H
 
 #include <string>
+#include <list>
 
 using namespace std;
+
+typedef ListOfSlot list<Slot*>;
 
 #endif	/* COMMON_H */
