@@ -26,7 +26,7 @@ DateDialog::DateDialog ( QWidget* parent ): QDialog ( parent )
 void DateDialog::setWeek()
 {
 	QDate d = this->calendarWidget->selectedDate();
-	this->parent->getTime()->setDate((minute_t)8, d.day(), d.month(), d.year());
+    this->parent->getTime()->setDate(0, 8, d.day(), d.month(), d.year());
 	this->parent->getTime()->setWeek(this->parent->getTime()->getWeek());
 	this->parent->setWeek();
 	this->accept();

@@ -12,14 +12,6 @@
 // Name space:
 using namespace std;
 
-// Enumeration for minutes
-enum minute_t
-{
-	notDefined = -1,
-	oclock = 0,
-	half = 30
-};
-
 // Class declaration:
 class Time
 {
@@ -28,7 +20,7 @@ class Time
     
     public:
        ~Time ();
-        Time ( minute_t minute = (minute_t)notDefined, 
+        Time ( int minute      = -1,
 			   int hour		   = -1,
                int day         = -1,
                int month	   = -1,
@@ -43,11 +35,11 @@ class Time
         bool  operator>=  ( const Time &time ) const;
         
         void setWeek  ( const int &week );
-        void setDate  ( minute_t minute = (minute_t)notDefined, int hour = -1,
+        void setDate  ( int minute = -1, int hour = -1,
                         int day = -1, int month = -1, int week = -1 );
         void nextDay  ();
         
-        int                     getMinute	() const;
+        int         getMinute	() const;
         int			getHour		() const;
         int			getDay		() const;
         int			getWeek		() const;

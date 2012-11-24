@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 #include "../Model/common.h"
 #include "../Model/Time.hpp"

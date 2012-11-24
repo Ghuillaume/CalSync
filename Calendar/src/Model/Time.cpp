@@ -8,7 +8,7 @@
 // Name space:
 using namespace std;
 
-Time::Time ( minute_t minute,
+Time::Time ( int minute,
 			 int hour,
              int day,
              int month,
@@ -42,7 +42,7 @@ void Time::setWeek ( const int &week ) {
     this -> timestamp = mktime ( timestruct );
 }
 
-void Time::setDate ( minute_t minute, int hour, int day, int month, int year ) {
+void Time::setDate ( int minute, int hour, int day, int month, int year ) {
     time_t actualtimestamp;
     time ( &actualtimestamp );
     
@@ -52,7 +52,7 @@ void Time::setDate ( minute_t minute, int hour, int day, int month, int year ) {
     month	= ( month	== -1 ? actualtimestruct -> tm_mon  + 1    : month );
     day		= ( day		== -1 ? actualtimestruct -> tm_mday        : day   );
     hour	= ( hour	== -1 ? actualtimestruct -> tm_hour        : hour +1 );
-    minute  = ( minute  == notDefined ? oclock : minute );
+    minute  = ( minute  == -1 ? actualtimestruct -> tm_min      : minute );
 	
     struct tm timestruct;
     memset ( &timestruct, 0, sizeof ( struct tm ) );

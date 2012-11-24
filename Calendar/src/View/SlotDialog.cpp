@@ -22,7 +22,7 @@ SlotDialog::SlotDialog(QWidget* parent, int row, int column):
     
     Time parentTime = *(this->parent->getTime());
     time.setDate (
-        (minute_t)-1,
+        parentTime.getMinute  () + column,
         parentTime.getHour  () + column,
         parentTime.getDay   () + row,
         parentTime.getMonth (),

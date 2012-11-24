@@ -1,6 +1,6 @@
 #include "../../headers/View/View.hpp"
 
-View::View(Model *model) : QMainWindow(), time((minute_t)8)
+View::View(Model *model) : QMainWindow(), time(8)
 {
     this -> model = model;
 
@@ -154,7 +154,7 @@ View::~View()
 	
 	delete menubar;
 	
-	delete datePrevious;
+    delete datePrevious;
 	delete dateNext;
 	delete controlLayout;
 	delete controlFrame;
@@ -171,9 +171,11 @@ View::~View()
 void View::display()
 {
     // Firstly:
-    for (int i = 0 ; i < 6 ; i++)
-	    for(int j = 0 ; j < 11 ; j++)
-	        this -> setSlot("", i, j);
+    for (int i = 0 ; i < 6 ; i++) {
+        for(int j = 0 ; j < 11 ; j++) {
+            this -> setSlot("", j, i);
+        }
+    }
 
     // Secondly:
     /*Time nextWeek = this -> time;
@@ -199,7 +201,7 @@ void View::display()
 void View::previousWeek()
 {
 	this->time.setWeek(this->time.getWeek() - 1);
-	this->setWeek();
+    this->setWeek();
 	this -> display ();
 }
 

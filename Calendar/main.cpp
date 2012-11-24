@@ -32,10 +32,10 @@ int main(int argc, char *argv[]) {
     
     
     string label = "Test ";
-    model->createSlot(new Time(oclock, 8, 20, 11, 2012), new Time(oclock, 9, 20, 11, 2012), label + "1");
-    model->createSlot(new Time(oclock, 2, 23, 11, 2012), new Time(oclock, 9, 24, 11, 2012), label + "2");
-    model->createSlot(new Time(oclock, 10, 20, 11, 2012), new Time(oclock, 9, 20, 11, 2012), label + "3");
-    model->createSlot(new Time(oclock, 10, 20, 11, 2012), new Time(oclock, 9, 20, 11, 2012), label + "4");
+    model->createSlot(new Time(0, 8, 20, 11, 2012), new Time(20, 9, 20, 11, 2012), label + "1");
+    model->createSlot(new Time(0, 2, 23, 11, 2012), new Time(40, 9, 24, 11, 2012), label + "2");
+    model->createSlot(new Time(0, 10, 20, 11, 2012), new Time(30, 9, 20, 11, 2012), label + "3");
+    model->createSlot(new Time(0, 10, 20, 11, 2012), new Time(2, 9, 20, 11, 2012), label + "4");
     
     ListOfSlot l = model->getSlotList();
     for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
@@ -43,24 +43,22 @@ int main(int argc, char *argv[]) {
     }
     
     
-    
-    
-    
-    
-    
     /**
      * FIN ZONE DE TESTS
      * 
      */
     
-    
+    cout << "test" << endl;
+
     View *view = new View(model);
     
     Controler *controler = new Controler(model, view);
     
     view->show();
 
-    return 0;
-    //return app.exec();
+    cout << "test 2" << endl;
+
+    //return 0;
+    return app.exec();
 }
 
