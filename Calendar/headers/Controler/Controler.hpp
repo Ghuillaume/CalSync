@@ -16,7 +16,7 @@ class Controler : public QWidget {
 
     public slots:
         void selectWeek();
-	    void createSlot(int row, int column);
+        void createSlot();
 
     private:
         Model *model;

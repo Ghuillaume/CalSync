@@ -7,10 +7,11 @@
 
 #include "../../headers/Model/Slot.hpp"
 
-Slot::Slot(Time *dateDebut, Time *dateFin, string intitule) {
+Slot::Slot(Time *dateDebut, Time *dateFin, string intitule, string description) {
     this->dateDebut = dateDebut;
     this->dateFin = dateFin;
     this->intitule = intitule;
+    this->description = description;
     
     // TODO : vérifier cohérence date début et date fin
 }
@@ -21,12 +22,14 @@ Slot::~Slot() {
 bool  Slot::operator== ( const Slot &slot ) const {
 	return(	this->dateDebut == slot.dateDebut &&
 			this->dateFin == slot.dateFin &&
-			this->intitule == slot.intitule);
+            this->intitule == slot.intitule &&
+            this->description == slot.description);
 }
 bool  Slot::operator!= ( const Slot &slot ) const {
 	return(	this->dateDebut != slot.dateDebut ||
 			this->dateFin != slot.dateFin ||
-			this->intitule != slot.intitule);
+            this->intitule != slot.intitule ||
+            this->description != slot.description);
 }
 
 
@@ -40,7 +43,11 @@ Time* Slot::getDateFin() {
 }
 
 string Slot::getIntitule() {
-	return this->intitule;
+    return this->intitule;
+}
+
+string Slot::getDescription() {
+    return this->description;
 }
 
 void Slot::setDateDebut(Time *t) {
@@ -51,7 +58,11 @@ void Slot::setDateFin(Time *t) {
 }
 
 void Slot::setIntitule(string intitule) {
-	this->intitule = intitule;
+    this->intitule = intitule;
+}
+
+void Slot::setDescription(string description) {
+    this->description = description;
 }
 
 string Slot::toString() {

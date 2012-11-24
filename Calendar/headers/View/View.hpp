@@ -36,9 +36,21 @@ class View: public QMainWindow
 
         void updateFilter ();
 
+        // Menubar:
+        QMenuBar *menubar;
+        QMenu *fileMenu;
+            QAction *newItem;
+            QAction *saveItem;
+            QAction *saveAsItem;
+            QAction *quitItem;
+            QAction *openItem;
+        QMenu *editMenu;
+            QAction *newSlot;
+            QAction *editSlot;
+            QAction *deleteSlot;
+        
         // Main frame:
         QWidget *mainFrame;
-
         
         // Table:
         //QTableWidget *tableWidget;
@@ -51,15 +63,6 @@ class View: public QMainWindow
         QListWidget *slotListWidget;
 
 
-        // Menubar:
-        QMenuBar *menubar;
-
-        QMenu *fileMenu;
-        QAction *newItem;
-        QAction *saveItem;
-        QAction *saveAsItem;
-        QAction *quitItem;
-        QAction *openItem;
     
     private:
         Time time;

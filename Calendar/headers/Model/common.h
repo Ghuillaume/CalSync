@@ -16,6 +16,7 @@ using namespace std;
 #include <stdlib.h>
 #include <cstring>
 #include <set>
+#include <iostream>
 
 #include "Slot.hpp"
 

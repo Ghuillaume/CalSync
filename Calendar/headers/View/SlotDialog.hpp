@@ -5,7 +5,6 @@
 #include <QtGui>
 
 #include <stdexcept>
-#include <sstream>
 #include <string>
 
 #include "../Model/Slot.hpp"
@@ -20,14 +19,22 @@ class SlotDialog: public QDialog
         Time time;
 
         QWidget *frame;
-        QVBoxLayout *layout;
-        
-        QLabel      *label;
+
+        QLabel      *dateStartLabel;
+        QLabel      *dateEndLabel;
+        QLabel      *titleLabel;
+        QLabel      *descriptionLabel;
     
     public:
+        QWidget *formLayoutWidget;
+        QFormLayout *formLayout;
+        QDateTimeEdit *dateStartEdit;
+        QDateTimeEdit *dateEndEdit;
+        QLineEdit *titleEdit;
+        QLineEdit *descriptionEdit;
         QDialogButtonBox *buttonBox;
         
-        SlotDialog(QWidget *parent, int row, int column);
+        SlotDialog(QWidget *parent);
        ~SlotDialog();
     
     public slots:

@@ -14,26 +14,29 @@
 class Slot {
 
 	public:
-            Slot(Time *dateDebut, Time *dateFin, string intitule);
-            virtual ~Slot();
-		
-            bool  operator== ( const Slot &slot ) const;
-            bool  operator!= ( const Slot &slot ) const;
+        Slot(Time *dateDebut, Time *dateFin, string intitule, string description);
+        virtual ~Slot();
 
-            Time* getDateDebut();
-            Time* getDateFin();
-            string getIntitule();
-            void setDateDebut(Time *t);
-            void setDateFin(Time *t);
-            void setIntitule(string intitule);
-            
-            string toString();
+        bool  operator== ( const Slot &slot ) const;
+        bool  operator!= ( const Slot &slot ) const;
+
+        Time* getDateDebut();
+        Time* getDateFin();
+        string getIntitule();
+        string getDescription();
+        void setDateDebut(Time *t);
+        void setDateFin(Time *t);
+        void setIntitule(string intitule);
+        void setDescription(string description);
+
+        string toString();
 		
 		
 	private:
 		Time *dateDebut;
 		Time *dateFin;
 		string intitule;
+        string description;
 		
 	
 };

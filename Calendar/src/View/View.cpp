@@ -7,7 +7,66 @@ View::View(Model *model) : QMainWindow(), time(8)
 	// Main window:
     this->setWindowTitle("Emploi du temps");
     this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, 650));
+    
+    
+        // Menubar:
+    menubar = new QMenuBar(this);
+    this->setMenuBar(menubar);
+    menubar->setObjectName("menubar");
+    menubar->setGeometry(QRect(0, 0, 800, 25));
 
+    fileMenu = new QMenu(menubar);
+    fileMenu->setObjectName("fileMenu");
+    menubar->addAction(fileMenu->menuAction());
+    fileMenu->setTitle("File");
+    
+        newItem = new QAction(this);
+        newItem->setObjectName("newItem");
+        fileMenu->addAction(newItem);
+        newItem->setText("New...");
+
+        openItem = new QAction(this);
+        openItem->setObjectName("openItem");
+        fileMenu->addAction(openItem);
+        openItem->setText("Open...");
+
+        saveItem = new QAction(this);
+        saveItem->setObjectName("saveItem");
+        fileMenu->addAction(saveItem);
+        saveItem->setText("Save");
+
+        saveAsItem = new QAction(this);
+        saveAsItem->setObjectName("saveAsItem");
+        fileMenu->addAction(saveAsItem);
+        saveAsItem->setText("Save as...");
+
+        quitItem = new QAction(this);
+        quitItem->setObjectName("quitItem");
+        fileMenu->addAction(quitItem);
+        quitItem->setText("Quit");
+
+    editMenu = new QMenu(menubar);
+    editMenu->setObjectName("editMenu");
+    menubar->addAction(editMenu->menuAction());
+    editMenu->setTitle("Edit");
+
+        newSlot = new QAction(this);
+        newSlot->setObjectName("newSlot");
+        editMenu->addAction(newSlot);
+        newSlot->setText("Create an event");
+
+        editSlot = new QAction(this);
+        editSlot->setObjectName("newSlot");
+        editMenu->addAction(editSlot);
+        editSlot->setText("Edit an event");
+
+        deleteSlot = new QAction(this);
+        deleteSlot->setObjectName("deleteSlot");
+        editMenu->addAction(deleteSlot);
+        deleteSlot->setText("Delete an event");
+
+    
+    
 	// Main frame:
     mainFrame = new QWidget(this);
     this->setCentralWidget(mainFrame);
@@ -86,44 +145,9 @@ View::View(Model *model) : QMainWindow(), time(8)
         
         
 
-    // Menubar:
-    menubar = new QMenuBar(this);
-    this->setMenuBar(menubar);
-    menubar->setObjectName("menubar");
-    menubar->setGeometry(QRect(0, 0, 800, 25));
-
-    fileMenu = new QMenu(menubar);
-    fileMenu->setObjectName("fileMenu");
-    menubar->addAction(fileMenu->menuAction());
-    fileMenu->setTitle("Fichier");
-    
-    newItem = new QAction(this);
-    newItem->setObjectName("newItem");
-    fileMenu->addAction(newItem);
-    newItem->setText("Nouveau...");
-    
-    openItem = new QAction(this);
-    openItem->setObjectName("openItem");
-    fileMenu->addAction(openItem);
-    openItem->setText("Ouvrir...");
-    
-    saveItem = new QAction(this);
-    saveItem->setObjectName("saveItem");
-    fileMenu->addAction(saveItem);
-    saveItem->setText("Enregistrer");
-    
-    saveAsItem = new QAction(this);
-    saveAsItem->setObjectName("saveAsItem");
-    fileMenu->addAction(saveAsItem);
-    saveAsItem->setText("Enregistrer sous...");
-    
-    quitItem = new QAction(this);
-    quitItem->setObjectName("quitItem");
-    fileMenu->addAction(quitItem);
-    quitItem->setText("Quitter");
 	
     this->time.setWeek(this->time.getWeek());
-	this->setWeek();
+    this->setWeek();
         
     this->display();
 }

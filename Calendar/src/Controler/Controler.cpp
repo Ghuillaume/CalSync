@@ -7,10 +7,11 @@ Controler::Controler(Model *model, View *view)
     this -> view = view;
     
     // Connexion signaux/slots de la vue
+    QObject::connect(view -> newSlot, SIGNAL(activated()), this, SLOT(createSlot()));
 	QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
 
 	QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
-        QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
+    QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
 	
 	//QObject::connect(view -> tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(createSlot(int,int)));
 }
@@ -29,12 +30,11 @@ void Controler::selectWeek()
 	view -> display ();
 }
 
-void Controler::createSlot(int row, int column)
+void Controler::createSlot()
 {
-    SlotDialog *dialog = new SlotDialog(view, row, column);
+    SlotDialog *dialog = new SlotDialog(view);
     QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(createSlot()));
     QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
-	dialog -> exec();
-	delete dialog;
-	view -> display ();
+    dialog -> exec();
+    view -> display ();
 }

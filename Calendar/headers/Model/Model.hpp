@@ -32,7 +32,7 @@ class Model {
             void nextWeek();
             void previousWeek();
 
-            void createSlot(Time *dateDeb, Time *dateFin, string intitule);
+            void createSlot(Time *dateDeb, Time *dateFin, string intitule, string description);
             bool exists(Slot *slot);
 
 	private:

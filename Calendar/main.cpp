@@ -32,11 +32,11 @@ int main(int argc, char *argv[]) {
     
     
     string label = "Test ";
-    model->createSlot(new Time(0, 8, 20, 12, 2012), new Time(20, 9, 20, 12, 2012), label + "1");
-    model->createSlot(new Time(0, 2, 23, 11, 2012), new Time(40, 9, 24, 11, 2012), label + "2");
-    model->createSlot(new Time(0, 10, 20, 10, 2012), new Time(30, 9, 20, 10, 2012), label + "3");
-    model->createSlot(new Time(0, 10, 20, 11, 2012), new Time(2, 9, 20, 11, 2012), label + "4");
-    model->createSlot(new Time(0, 8, 25, 12, 2012), new Time(20, 9, 25, 12, 2012), label + "5");
+    model->createSlot(new Time(0, 8, 20, 12, 2012), new Time(20, 9, 20, 12, 2012), label + "1", label + "1");
+    model->createSlot(new Time(0, 2, 23, 11, 2012), new Time(40, 9, 24, 11, 2012), label + "2", label + "2");
+    model->createSlot(new Time(0, 10, 20, 10, 2012), new Time(30, 9, 20, 10, 2012), label + "3", label + "3");
+    model->createSlot(new Time(0, 10, 20, 11, 2012), new Time(2, 9, 20, 11, 2012), label + "4", label + "4");
+    model->createSlot(new Time(0, 8, 25, 12, 2012), new Time(20, 9, 25, 12, 2012), label + "5", label + "5");
     
     ListOfSlot l = model->getSlotList();
     for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
