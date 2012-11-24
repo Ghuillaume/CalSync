@@ -47,16 +47,12 @@ int main(int argc, char *argv[]) {
      * FIN ZONE DE TESTS
      * 
      */
-    
-    cout << "test" << endl;
 
     View *view = new View(model);
     
     Controler *controler = new Controler(model, view);
     
     view->show();
-
-    cout << "test 2" << endl;
 
     //return 0;
     return app.exec();

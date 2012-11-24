@@ -66,10 +66,10 @@ View::View(Model *model) : QMainWindow(), time(8)
     controlLayout->addWidget(dateNext);
     dateNext->setText(QString::fromUtf8("Semaine suivante >>>"));
     
-    dateNext = new QPushButton(controlFrame);
-    dateNext->setObjectName("dateNext");
-    controlLayout->addWidget(dateNext);
-    dateNext->setText(QString::fromUtf8("Importer depuis"));
+    import = new QPushButton(controlFrame);
+    import->setObjectName("import");
+    controlLayout->addWidget(import);
+    import->setText(QString::fromUtf8("Importer depuis"));
 
     // Menubar:
     menubar = new QMenuBar(this);
@@ -202,12 +202,12 @@ void View::previousWeek()
 {
 	this->time.setWeek(this->time.getWeek() - 1);
     this->setWeek();
-	this -> display ();
+    this->display();
 }
 
 void View::nextWeek()
 {
 	this->time.setWeek(this->time.getWeek() + 1);
-	this->setWeek();
-	this -> display ();
+    this->setWeek();
+    this->display();
 }
