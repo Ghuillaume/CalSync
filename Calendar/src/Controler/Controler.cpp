@@ -7,8 +7,10 @@ Controler::Controler(Model *model, View *view)
     this -> view = view;
     
     // Connexion signaux/slots de la vue
-    QObject::connect(view -> newSlot, SIGNAL(activated()), this, SLOT(createSlot()));
-	QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
+    QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
+    QObject::connect(view -> editSlotItem, SIGNAL(activated()), view, SLOT(editSlot()));
+    QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), view, SLOT(deleteSlot()));
+    QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
 
 	QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
     QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));

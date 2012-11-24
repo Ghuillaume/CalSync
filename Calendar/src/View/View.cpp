@@ -50,20 +50,20 @@ View::View(Model *model) : QMainWindow(), time(8)
     menubar->addAction(editMenu->menuAction());
     editMenu->setTitle("Edit");
 
-        newSlot = new QAction(this);
-        newSlot->setObjectName("newSlot");
-        editMenu->addAction(newSlot);
-        newSlot->setText("Create an event");
+        newSlotItem = new QAction(this);
+        newSlotItem->setObjectName("newSlotItem");
+        editMenu->addAction(newSlotItem);
+        newSlotItem->setText("Create an event");
 
-        editSlot = new QAction(this);
-        editSlot->setObjectName("newSlot");
-        editMenu->addAction(editSlot);
-        editSlot->setText("Edit an event");
+        editSlotItem = new QAction(this);
+        editSlotItem->setObjectName("newSlotItem");
+        editMenu->addAction(editSlotItem);
+        editSlotItem->setText("Edit an event");
 
-        deleteSlot = new QAction(this);
-        deleteSlot->setObjectName("deleteSlot");
-        editMenu->addAction(deleteSlot);
-        deleteSlot->setText("Delete an event");
+        deleteSlotItem = new QAction(this);
+        deleteSlotItem->setObjectName("deleteSlotItem");
+        editMenu->addAction(deleteSlotItem);
+        deleteSlotItem->setText("Delete an event");
 
     
     
@@ -222,20 +222,24 @@ void View::display()
     
     // Display slot of the current week
     ListOfSlot l = this->model->getSlotList();
+    // Création d'un pointeur pour pouvoir enregistrer l'itérateur dans View. Si pas de pointeur, iterateur détruit à la fin de la fonction
     ListOfSlot::iterator it;
     
     // Recherche du premier créneau correspondant à la semaine qu'on affiche
     for(it = l.begin() ; it != l.end() ; it++) {
         if((*it)->getDateDebut()->getWeek() == this->model->getCurrentDate()->getWeek()
-                && (*it)->getDateDebut()->getYear() == this->model->getCurrentDate()->getYear())
+                && (*it)->getDateDebut()->getYear() == this->model->getCurrentDate()->getYear()) {
+            this->firstEventOfCurrentWeek = it;
             break;
+        }
     }
     
     // A partir du premier créneau, afficher tous les créneaux jusqu'à ce que la semaine ne corresponde plus
-    for(it ; it != l.end() ; it++) {
+    for( ; it != l.end() ; it++) {
         if((*it)->getDateDebut()->getWeek() != this->model->getCurrentDate()->getWeek()
                 || (*it)->getDateDebut()->getYear() != this->model->getCurrentDate()->getYear())
             break;
+        cout << it.operator ->() << endl;
         
         this->slotListWidget->addItem( QString((*it)->toString().c_str()) );
     }
@@ -253,4 +257,31 @@ void View::nextWeek()
 {
     this->model->nextWeek();
     this->display();
+}
+
+void View::editSlot() {
+    if(slotListWidget->currentRow() == -1)
+        QMessageBox::information(this, "Error", "You must select an event in the list before edit it.");
+    else {
+
+    }
+}
+
+void View::deleteSlot() {
+    if(slotListWidget->currentRow() == -1)
+        QMessageBox::information(this, "Error", "You must select an event in the list before delete it.");
+    else {
+
+        ListOfSlot::iterator slotToDel = this->firstEventOfCurrentWeek;
+        cout << "After : " << endl << (*slotToDel)->toString() << " : " << slotToDel.operator ->() << endl;
+
+
+        for(int i = 0 ; i < this->slotListWidget->currentRow() ; i++)
+           slotToDel++;
+
+        cout << (*slotToDel)->toString() << slotToDel.operator ->() << endl;
+
+        //this->model->getSlotList().erase(slotToDel);
+    }
+
 }

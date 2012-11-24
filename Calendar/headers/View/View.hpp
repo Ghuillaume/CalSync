@@ -45,9 +45,9 @@ class View: public QMainWindow
             QAction *quitItem;
             QAction *openItem;
         QMenu *editMenu;
-            QAction *newSlot;
-            QAction *editSlot;
-            QAction *deleteSlot;
+        QAction *newSlotItem;
+            QAction *editSlotItem;
+            QAction *deleteSlotItem;
         
         // Main frame:
         QWidget *mainFrame;
@@ -67,12 +67,15 @@ class View: public QMainWindow
     private:
         Time time;
         Model *model;
+        ListOfSlot::iterator firstEventOfCurrentWeek;
 	
 
     public slots:
         void display ();
         void previousWeek();
         void nextWeek();
+        void deleteSlot();
+        void editSlot();
 };
 
 #endif
