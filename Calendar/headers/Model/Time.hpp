@@ -21,7 +21,7 @@ class Time
     public:
        ~Time ();
         Time ( int minute      = -1,
-			   int hour		   = -1,
+               int hour		   = -1,
                int day         = -1,
                int month	   = -1,
                int year		   = -1 );
@@ -38,15 +38,16 @@ class Time
         void setDate  ( int minute = -1, int hour = -1,
                         int day = -1, int month = -1, int week = -1 );
         void nextDay  ();
+        void previousDay  ();
         
-        int         getMinute	() const;
-        int			getHour		() const;
-        int			getDay		() const;
-        int			getWeek		() const;
-        int			getWeekDay	() const;
-        int			getMonth	() const;
-        int			getYear		() const;
-        string		getDate		() const;
+        int         getMinute           () const;
+        int         getHour		() const;
+        int         getDay		() const;
+        int         getWeek		() const;
+        int         getWeekDay          () const;
+        int         getMonth            () const;
+        int         getYear		() const;
+        string      getDate		() const;
 };
 
 #endif

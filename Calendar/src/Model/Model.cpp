@@ -8,12 +8,9 @@
 #include "../../headers/Model/Model.hpp"
 
 
-bool compareDate(Slot first, Slot second) {
-	return (first.getDateDebut() < second.getDateFin());
-}
-
 Model::Model() {
-
+    Time *currentTime = new Time();
+    this->currentDate = new Time(0, 8, currentTime->getDay()-currentTime->getWeekDay(), currentTime->getMonth(), currentTime->getYear());    
 }
 
 Model::~Model() {
@@ -23,9 +20,22 @@ ListOfSlot Model::getSlotList() {
     return this->slotlist;
 }
 
+Time* Model::getCurrentDate() {
+    return this->currentDate;
+}
+
+void Model::nextWeek() {
+    for (unsigned int i = 0 ; i < 7 ; i++)
+        this->currentDate->nextDay();
+}
+void Model::previousWeek() {
+    for (unsigned int i = 0 ; i < 7 ; i++)
+        this->currentDate->previousDay();
+}
+
 void Model::createSlot(Time *dateDeb, Time *dateFin, string intitule) {
 	Slot *newSlot = new Slot(dateDeb, dateFin, intitule);
-	this->slotlist.push_back(newSlot);
+	this->slotlist.insert(newSlot);
         
         // TODO
 	// On regarde si le slot existe déjà

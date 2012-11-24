@@ -59,6 +59,6 @@ string Slot::toString() {
     hdeb << this->dateDebut->getHour() << "h" << this->dateDebut->getMinute();
     hfin << this->dateFin->getHour() << "h" << this->dateFin->getMinute();
     
-    return this->dateDebut->getDate() + " " + hdeb.str() + " to " +
-            this->dateFin->getDate() + " " + hfin.str() + " -> " + this->intitule;
+    return this->dateDebut->getDate() + " " + hdeb.str() + " : " + this->intitule
+            + " (end " + this->dateFin->getDate() + " " + hfin.str() + ")";
 }

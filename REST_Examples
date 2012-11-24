@@ -1,0 +1,26 @@
+https://developers.google.com/apis-explorer/#p/calendar/v3/
+
+
+Create an event :
+
+		POST https://www.googleapis.com/calendar/v3/calendars/k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com/events?sendNotifications=true&key={YOUR_API_KEY}
+
+		Content-Type:  application/json
+		Authorization:  Bearer ya29.AHES6ZTAL6v5yOXzd7g6ryZ1JGDOMbGb-8ZtK8SYshIwiTqHAQ
+		X-JavaScript-User-Agent:  Google APIs Explorer
+
+		{
+		"end": {
+		"dateTime": "2012-11-25T18:28:00+02:00",
+		"timeZone": "Europe/Paris"
+		},
+		"start": {
+		"dateTime": "2012-11-25T18:12:20+02:00",
+		"timeZone": "Europe/Paris"
+		},
+		"description": "description",
+		"summary": "titre",
+		"location": "lieu"
+		}
+
+

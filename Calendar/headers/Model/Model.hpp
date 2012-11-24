@@ -14,19 +14,30 @@ using namespace std;
 #include "Slot.hpp"
 #include "Time.hpp"
 
+struct classcomp {
+  bool operator() (Slot* first, Slot* second) const
+  {return ( *(first->getDateDebut()) < *(second->getDateDebut()) );}
+};
+
+
+typedef set<Slot*, classcomp> ListOfSlot;
 
 class Model {
 	public:
-      		Model();
-		virtual ~Model();
-                
-                ListOfSlot getSlotList();
-	
-		void createSlot(Time *dateDeb, Time *dateFin, string intitule);
-		bool exists(Slot *slot);
-		
+            Model();
+            virtual ~Model();
+
+            ListOfSlot getSlotList();
+            Time* getCurrentDate();
+            void nextWeek();
+            void previousWeek();
+
+            void createSlot(Time *dateDeb, Time *dateFin, string intitule);
+            bool exists(Slot *slot);
+
 	private:
-		ListOfSlot slotlist;
+            Time* currentDate;
+            ListOfSlot slotlist;
 };
 
 #endif	/* MODEL_H */

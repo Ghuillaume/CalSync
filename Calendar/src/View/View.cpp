@@ -14,7 +14,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     mainFrame->setObjectName("mainFrame");
 
 	// Table:
-    tableWidget = new QTableWidget(mainFrame);
+    /*tableWidget = new QTableWidget(mainFrame);
     tableWidget->setObjectName("tableWidget");
     tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
     tableWidget->setGeometry(QRect(TABLE_MARGIN, TOP_MARGIN, TABLE_WIDTH, 600));
@@ -28,7 +28,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     
     tableWidget->setRowCount(24);
     tableWidget->verticalHeader()->setDefaultSectionSize(60);
-    for ( int i = 0; i < 24; ++i )
+    for ( int i = 6; i < 21; ++i )
     {
     	std::stringstream stream;
         stream << ( i > 1 ? "" : "0" ) << i  << "h00"; 
@@ -38,7 +38,7 @@ View::View(Model *model) : QMainWindow(), time(8)
         rowHead->setText(stream.str().c_str());
     }
     
-    for (int i = 0 ; i < 24 ; i++)
+    for (int i = 6 ; i < 21 ; i++)
     {
 	    for(int j = 0 ; j < 7 ; j++)
 	    {
@@ -46,30 +46,45 @@ View::View(Model *model) : QMainWindow(), time(8)
 	        tableWidget->setCellWidget(i, j, q);
 	    }
 	}
+    */
     
-	// Control frame:
-    controlFrame = new QFrame(mainFrame);
-    controlFrame->setObjectName("controlFrame");
-    controlFrame->setMinimumSize(QSize(0, 40));
-    controlFrame->setGeometry(QRect(LEFT_MARGIN, TOP_MARGIN, TABLE_MARGIN - LEFT_MARGIN - 20, 600));
     
-    controlLayout = new QVBoxLayout(controlFrame);
+    
+    mainLayoutWidget = new QWidget(mainFrame);
+    mainLayoutWidget->setObjectName(QString::fromUtf8("mainLayoutWidget"));
+    mainLayoutWidget->setGeometry(QRect(TABLE_MARGIN, TOP_MARGIN, TABLE_WIDTH, 600));
+    mainLayout = new QVBoxLayout(mainLayoutWidget);
+    mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    
+    controlLayout = new QHBoxLayout();
     controlLayout->setObjectName("dateLayout");
     
-    datePrevious = new QPushButton(controlFrame);
+    datePrevious = new QPushButton(mainLayoutWidget);
     datePrevious->setObjectName("datePrevious");
     controlLayout->addWidget(datePrevious);
     datePrevious->setText(QString::fromUtf8("<<< Semaine précédente"));
     
-    dateNext = new QPushButton(controlFrame);
+    currentWeek = new QLabel(mainLayoutWidget);
+    currentWeek->setObjectName(QString::fromUtf8("currentWeek"));
+    currentWeek->setAlignment(Qt::AlignCenter);
+    controlLayout->addWidget(currentWeek);
+    
+    dateNext = new QPushButton(mainLayoutWidget);
     dateNext->setObjectName("dateNext");
     controlLayout->addWidget(dateNext);
     dateNext->setText(QString::fromUtf8("Semaine suivante >>>"));
     
-    import = new QPushButton(controlFrame);
-    import->setObjectName("import");
-    controlLayout->addWidget(import);
-    import->setText(QString::fromUtf8("Importer depuis"));
+    
+    mainLayout->addLayout(controlLayout);
+    
+    
+    slotListWidget = new QListWidget(mainLayoutWidget);
+    slotListWidget->setObjectName(QString::fromUtf8("slotListWidget"));
+
+    mainLayout->addWidget(slotListWidget);
+        
+        
 
     // Menubar:
     menubar = new QMenuBar(this);
@@ -109,6 +124,8 @@ View::View(Model *model) : QMainWindow(), time(8)
 	
     this->time.setWeek(this->time.getWeek());
 	this->setWeek();
+        
+    this->display();
 }
 
 Time* View::getTime()
@@ -123,7 +140,7 @@ Model* View::getModel()
 
 void View::setWeek()
 {
-    string dayName[7] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
+    /*string dayName[7] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
     Time tmp = time;
     for (int i = 0; i < 7; i++)
     {
@@ -132,13 +149,13 @@ void View::setWeek()
             tableWidget->horizontalHeaderItem(i)->setText(stream.str().c_str());
 
             tmp.nextDay();
-    }
+    }*/
 }
 
 void View::setSlot(const string &s, int row, int column)
 {
-    QLabel *w = (QLabel*) tableWidget -> cellWidget(row, column);
-    w -> setText(QString::fromUtf8(s.c_str()));
+    //QLabel *w = (QLabel*) tableWidget -> cellWidget(row, column);
+    //w -> setText(QString::fromUtf8(s.c_str()));
 }
 
 
@@ -154,60 +171,62 @@ View::~View()
 	
 	delete menubar;
 	
-    delete datePrevious;
+        delete datePrevious;
 	delete dateNext;
 	delete controlLayout;
-	delete controlFrame;
 	
 	// Destruction de tous les QLabels créés dynamiquement
-    for (int i = 0 ; i < 24 ; i++)
+   /* for (int i = 0 ; i < 24 ; i++)
 	    for(int j = 0 ; j < 7 ; j++)
 	        delete tableWidget->cellWidget(i, j);
-	delete tableWidget;
+	delete tableWidget;*/
         
 	delete mainFrame;
 }
 
 void View::display()
 {
-    // Firstly:
-    for (int i = 0 ; i < 6 ; i++) {
-        for(int j = 0 ; j < 11 ; j++) {
-            this -> setSlot("", j, i);
-        }
+    
+    // Display current week 
+    Time* curDate = this->model->getCurrentDate();
+    string str = "Week " + convertInt(curDate->getWeek());
+    currentWeek->setText(QApplication::translate("MainWindow", const_cast<char *>(str.c_str()), 0, QApplication::UnicodeUTF8));
+    
+    // Clear slot list
+    this->slotListWidget->clear();
+    
+    
+    // Display slot of the current week
+    ListOfSlot l = this->model->getSlotList();
+    ListOfSlot::iterator it;
+    
+    // Recherche du premier créneau correspondant à la semaine qu'on affiche
+    for(it = l.begin() ; it != l.end() ; it++) {
+        if((*it)->getDateDebut()->getWeek() == this->model->getCurrentDate()->getWeek()
+                && (*it)->getDateDebut()->getYear() == this->model->getCurrentDate()->getYear())
+            break;
     }
-
-    // Secondly:
-    /*Time nextWeek = this -> time;
-    nextWeek.setWeek ( nextWeek.getWeek () + 1 );
-
-    Slot *slots_ = this -> model -> getSlots();
-    Slot::iterator iterator = slots_ -> begin();
-    for ( ; iterator != slots_ -> end(); iterator++ )
-    {
-        if ( (*iterator) -> getTime () >= this -> time
-            && (*iterator) -> getTime () < nextWeek )
-        {
-            int row = (*iterator) -> getTime ().getWeekDay ();
-            int column = (*iterator) -> getTime ().getHour () - 8;
-            
-            stringstream stream;
-            stream << (*iterator) -> getIntitule();
-            setSlot(stream.str(), row, column);
-        }
-    }*/
+    
+    // A partir du premier créneau, afficher tous les créneaux jusqu'à ce que la semaine ne corresponde plus
+    for(it ; it != l.end() ; it++) {
+        if((*it)->getDateDebut()->getWeek() != this->model->getCurrentDate()->getWeek()
+                || (*it)->getDateDebut()->getYear() != this->model->getCurrentDate()->getYear())
+            break;
+        
+        this->slotListWidget->addItem( QString((*it)->toString().c_str()) );
+    }
+    
+    
 }
 
 void View::previousWeek()
 {
-	this->time.setWeek(this->time.getWeek() - 1);
-    this->setWeek();
+    this->model->previousWeek();
     this->display();
 }
 
 void View::nextWeek()
 {
-	this->time.setWeek(this->time.getWeek() + 1);
-    this->setWeek();
+    this->model->nextWeek();
     this->display();
 }

@@ -10,9 +10,9 @@ Controler::Controler(Model *model, View *view)
 	QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
 
 	QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
-    QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
+        QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
 	
-	QObject::connect(view -> tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(createSlot(int,int)));
+	//QObject::connect(view -> tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(createSlot(int,int)));
 }
 
 Controler::~Controler() { }

@@ -9,7 +9,7 @@
 using namespace std;
 
 Time::Time ( int minute,
-			 int hour,
+             int hour,
              int day,
              int month,
              int year ) {
@@ -70,6 +70,14 @@ void Time::nextDay () {
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     timestruct -> tm_mday++;
     this -> timestamp = mktime ( timestruct );
+}
+
+void Time::previousDay ()
+{
+    struct tm *timestruct = localtime ( &(this -> timestamp) );
+    timestruct -> tm_mday--;
+    this -> timestamp = mktime ( timestruct );
+    //cout << "\t\t\tPrevious day : " << this->getDate() << endl;
 }
 
 // Getters:

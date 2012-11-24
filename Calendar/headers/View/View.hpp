@@ -41,15 +41,15 @@ class View: public QMainWindow
 
         
         // Table:
-        QTableWidget *tableWidget;
-
-        // Date frame:
-        QFrame *controlFrame;
-        QVBoxLayout *controlLayout;
+        //QTableWidget *tableWidget;
+        QWidget *mainLayoutWidget;
+        QVBoxLayout *mainLayout;
+        QHBoxLayout *controlLayout;
         QPushButton *datePrevious;
+        QLabel *currentWeek;
         QPushButton *dateNext;
-        QPushButton *import;
-        QPushButton *publish;
+        QListWidget *slotListWidget;
+
 
         // Menubar:
         QMenuBar *menubar;

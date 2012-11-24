@@ -15,7 +15,7 @@ using namespace std;
 #include <cstdlib>
 #include <stdlib.h>
 #include <cstring>
-#include <list>
+#include <set>
 
 #include "Slot.hpp"
 
@@ -23,7 +23,8 @@ class Slot;
 class Time;
 class Model;
 
-typedef list<Slot*> ListOfSlot;
+std::string convertInt(int number);
+
 
 
 
