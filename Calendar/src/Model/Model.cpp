@@ -41,18 +41,23 @@ void Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string des
         
         // TODO
 	// On regarde si le slot existe déjà
-        /*
+
 	if(this->exists(newSlot))
 		delete newSlot;
-	else {
-		this->slotlist.push_back(newSlot);
-		this->slotlist.sort(compareDate);
-	}*/
+    else
+        this->slotlist.insert(newSlot);
 
 }
 
+void Model::deleteSlot(ListOfSlot::iterator it) {
+    cout << "erasing slot : " << (*it)->toString() << endl;
+    this->slotlist.erase(it);
+}
+
+void Model::deleteSlot(Slot* slot) {
+    this->slotlist.erase(slot);
+}
+
 bool Model::exists(Slot* slot) {
-    
-    // TODO
     return false;
 }

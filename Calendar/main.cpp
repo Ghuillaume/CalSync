@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
     model->createSlot(new Time(0, 10, 20, 10, 2012), new Time(30, 9, 20, 10, 2012), label + "3", label + "3");
     model->createSlot(new Time(0, 10, 20, 11, 2012), new Time(2, 9, 20, 11, 2012), label + "4", label + "4");
     model->createSlot(new Time(0, 8, 25, 12, 2012), new Time(20, 9, 25, 12, 2012), label + "5", label + "5");
+    model->createSlot(new Time(0, 7, 20, 11, 2012), new Time(2, 10, 20, 11, 2012), label + "6", label + "6");
     
     ListOfSlot l = model->getSlotList();
     for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {

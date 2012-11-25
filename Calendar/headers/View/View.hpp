@@ -30,6 +30,7 @@ class View: public QMainWindow
 	
         Time *getTime();
         Model *getModel();
+        int getFirstEventPosition();
 
         void setWeek();
         void setSlot(const string &s, int row, int column);
@@ -67,15 +68,13 @@ class View: public QMainWindow
     private:
         Time time;
         Model *model;
-        ListOfSlot::iterator firstEventOfCurrentWeek;
+        int firstEventPosition;
 	
 
     public slots:
         void display ();
         void previousWeek();
         void nextWeek();
-        void deleteSlot();
-        void editSlot();
 };
 
 #endif

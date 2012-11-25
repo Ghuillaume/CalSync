@@ -65,6 +65,15 @@ void Slot::setDescription(string description) {
     this->description = description;
 }
 
+void Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string description) {
+    this->dateDebut = dateDebut;
+    this->dateFin = dateFin;
+    this->intitule = intitule;
+    this->description = description;
+
+    // TODO : vérifier cohérence date début et date fin
+}
+
 string Slot::toString() {
     ostringstream hdeb, hfin;
     hdeb << this->dateDebut->getHour() << "h" << this->dateDebut->getMinute();

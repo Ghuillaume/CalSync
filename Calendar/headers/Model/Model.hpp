@@ -33,6 +33,8 @@ class Model {
             void previousWeek();
 
             void createSlot(Time *dateDeb, Time *dateFin, string intitule, string description);
+            void deleteSlot(ListOfSlot::iterator it);
+            void deleteSlot(Slot *slot);
             bool exists(Slot *slot);
 
 	private:

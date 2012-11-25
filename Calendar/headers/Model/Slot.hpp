@@ -28,6 +28,7 @@ class Slot {
         void setDateFin(Time *t);
         void setIntitule(string intitule);
         void setDescription(string description);
+        void editSlot(Time *dateDebut, Time *dateFin, string intitule, string description);
 
         string toString();
 		

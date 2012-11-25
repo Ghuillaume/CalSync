@@ -90,6 +90,15 @@ SlotDialog::SlotDialog(QWidget* parent):
 
 }
 
+void SlotDialog::setArgs(Time* dateStart, Time* dateEnd, string intitule, string description) {
+    dateStartEdit->setDate(QDate(dateStart->getYear(), dateStart->getMonth(), dateStart->getDay()));
+    dateStartEdit->setTime(QTime(dateStart->getHour(), 0, 0));
+    dateEndEdit->setDate(QDate(dateEnd->getYear(), dateEnd->getMonth(), dateEnd->getDay()));
+    dateEndEdit->setTime(QTime(dateEnd->getHour(), 0, 0));
+    this->titleEdit->setText(QString(intitule.c_str()));
+    this->descriptionEdit->setText(QString(description.c_str()));
+}
+
 void SlotDialog::createSlot()
 {
     QDate startDate = this->dateStartEdit->date();

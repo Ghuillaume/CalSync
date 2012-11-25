@@ -8,8 +8,8 @@ Controler::Controler(Model *model, View *view)
     
     // Connexion signaux/slots de la vue
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
-    QObject::connect(view -> editSlotItem, SIGNAL(activated()), view, SLOT(editSlot()));
-    QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), view, SLOT(deleteSlot()));
+    QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
+    QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
 
 	QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
@@ -40,3 +40,69 @@ void Controler::createSlot()
     dialog -> exec();
     view -> display ();
 }
+
+void Controler::editSlot() {
+    if(this->view->slotListWidget->currentRow() == -1)
+        QMessageBox::information(this, "Error", "You must select an event in the list before edit it.");
+    else {
+
+        // Récupération de l'élement à modifier
+        ListOfSlot l = this->model->getSlotList();
+        ListOfSlot::iterator slotToEditIterator;
+        int cpt = 0;
+        for(slotToEditIterator = l.begin() ;
+            slotToEditIterator != l.end() && cpt < (this->view->getFirstEventPosition() + this->view->slotListWidget->currentRow()) ;
+            slotToEditIterator++)
+        {
+            cpt++;
+        }
+
+        SlotDialog *dialog = new SlotDialog(view);
+        QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+        QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
+        dialog->setArgs((*slotToEditIterator)->getDateDebut(), (*slotToEditIterator)->getDateFin(), (*slotToEditIterator)->getIntitule(), (*slotToEditIterator)->getDescription());
+        dialog -> exec();
+        if(dialog->result() == QDialog::Accepted) {
+            view -> display ();
+            QDate startDate = dialog->dateStartEdit->date();
+            QTime startTime = dialog->dateStartEdit->time();
+            QDate endDate = dialog->dateEndEdit->date();
+            QTime endTime = dialog->dateEndEdit->time();
+
+            (*slotToEditIterator)->editSlot(
+                        new Time(startTime.minute(), startTime.hour(), startDate.day(), startDate.month(), startDate.year()),
+                        new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year()),
+                        dialog->titleEdit->text().toStdString(),
+                        dialog->descriptionEdit->text().toStdString());
+            this->view->display();
+        }
+    }
+}
+
+
+void Controler::deleteSlot() {
+    if(this->view->slotListWidget->currentRow() == -1)
+        QMessageBox::information(this, "Error", "You must select an event in the list before delete it.");
+    else {
+
+        // Récupération de l'élément à supprimer
+        ListOfSlot l = this->model->getSlotList();
+        ListOfSlot::iterator slotToDelIterator;
+        int cpt = 0;
+        for(slotToDelIterator = l.begin() ;
+            slotToDelIterator != l.end() && cpt < (this->view->getFirstEventPosition() + this->view->slotListWidget->currentRow()) ;
+            slotToDelIterator++)
+        {
+            cpt++;
+        }
+
+        QString warning = "Are you sure you want to delete the event \"" + QString((*slotToDelIterator)->getIntitule().c_str()) + "\" ?";
+        if(QMessageBox::warning(this, "Warning", warning, QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+            this->model->deleteSlot(slotToDelIterator);
+            this->view->display();
+        }
+
+    }
+
+}
+
