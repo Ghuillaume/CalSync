@@ -1,5 +1,7 @@
 #include "../../headers/Controler/Controler.hpp"
-// Public :
+
+#include <QtXml>
+#include <QDomDocument>
 
 Controler::Controler(Model *model, View *view)
 {
@@ -7,10 +9,12 @@ Controler::Controler(Model *model, View *view)
     this -> view = view;
     
     // Connexion signaux/slots de la vue
+    QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModel()));
+    QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
+    
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
     QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
     QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
-    QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
 
 	QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
     QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
@@ -43,7 +47,7 @@ void Controler::createSlot()
 
 void Controler::editSlot() {
     if(this->view->slotListWidget->currentRow() == -1)
-        QMessageBox::information(this, "Error", "You must select an event in the list before edit it.");
+        QMessageBox::warning(this, "Error", "You must select an event in the list before edit it.");
     else {
 
         // Récupération de l'élement à modifier
@@ -82,7 +86,7 @@ void Controler::editSlot() {
 
 void Controler::deleteSlot() {
     if(this->view->slotListWidget->currentRow() == -1)
-        QMessageBox::information(this, "Error", "You must select an event in the list before delete it.");
+        QMessageBox::warning(this, "Error", "You must select an event in the list before delete it.");
     else {
 
         // Récupération de l'élément à supprimer
@@ -106,3 +110,33 @@ void Controler::deleteSlot() {
 
 }
 
+void Controler::saveModel() {
+    QMessageBox::warning(this, "TODO", "TODO");
+
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
+
+    // Création de l'arbre DOM
+    QDomDocument dom("dom");
+    QFile xml_doc(fileName);
+    QDomElement rootNode = dom.createElement("Calendar");
+    dom.appendChild(menuNode);
+    QDomElement passwd = dom.createElement("password");
+    passwd.
+    /*
+    QDomElement elementNode = dom.createElement("element");
+    QDomElement nomNode = dom.createElement("nom");
+    nomNode.appendChild(dom.createTextNode("Classeur1.xls"));
+    QDomElement pathNode = dom.createElement("path");
+    pathNode.appendChild(dom.createTextNode("C:\\users\\clem\\Documents\\classeur1.xls"));
+    elementNode.appendChild(nomNode);
+    elementNode.appendChild(pathNode);
+    menuNode.appendChild(elementNode);*/
+
+    // Écriture de l'arbre DOM dans fichier XML
+    xml_doc.open(QIODevice::WriteOnly);
+    QTextStream ts(&xml_doc);
+    ts << dom.toString();
+    xml_doc.close();
+    
+}
