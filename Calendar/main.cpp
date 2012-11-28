@@ -16,7 +16,9 @@ using namespace std;
 #include "headers/Model/Model.hpp"
 #include "headers/Controler/Controler.hpp"
 #include "headers/Controler/Config.hpp"
+#include "headers/Controler/md5.hpp"
 #include "headers/View/View.hpp"
+
 
 int main(int argc, char *argv[]) {
 

@@ -281,7 +281,7 @@ void Controler::checkIfSaved() {
 void Controler::changePassword() {
     if(this->config->getPassword().compare("0")) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
-        if(passwdChecking.toStdString() != this->config->getPassword()) {
+        if(md5(passwdChecking.toStdString()) != this->config->getPassword()) {
             QMessageBox::warning(this, "Warning", "Wrong password");
             return;
         }
@@ -290,7 +290,7 @@ void Controler::changePassword() {
     // TODO vérification du passwd ?
     QString passwd = QInputDialog::getText(this, "Password", "Type new password");
 
-    this->config->setPassword(passwd.toStdString());
+    this->config->setPassword(md5(passwd.toStdString()));
 }
 
 

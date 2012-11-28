@@ -4,6 +4,7 @@
 #include <QtGui>
 
 #include "Config.hpp"
+#include "md5.hpp"
 #include "../Model/Model.hpp"
 #include "../View/View.hpp"
 #include "../View/DateDialog.hpp"
