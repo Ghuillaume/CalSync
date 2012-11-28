@@ -32,6 +32,7 @@ void ParserGCal::getEventList() {
 }
 
 void ParserGCal::parseEvents(QByteArray in) {
+    qDebug() << in;
 
     qCritical() << "Parsing events TODO";
 }
@@ -76,7 +77,6 @@ void ParserGCal::requestFinished(int id, bool error)   {
         qDebug() << "Error";
     }   else    {
         QByteArray in = query->readAll();
-        qDebug() << in;
         this->parseEvents(in);
     }
 }

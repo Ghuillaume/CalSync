@@ -38,6 +38,7 @@ void ParserCELCAT::getEventList() {
 
 
 void ParserCELCAT::parseEvents(QByteArray in) {
+    qDebug() << in;
 
     qCritical() << "Parsing events TODO" << endl;
 }
@@ -80,7 +81,6 @@ void ParserCELCAT::requestFinished(int id, bool error)   {
         qDebug() << "Error";
     }   else    {
         QByteArray in = query->readAll();
-        qDebug() << in;
         this->parseEvents(in);
     }
 }
