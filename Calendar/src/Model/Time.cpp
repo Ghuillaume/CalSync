@@ -141,7 +141,11 @@ string Time::getDate () const {
     int year  = this -> getYear  ();
     
     stringstream s;
-    s << hour << ":" <<minute << ":"
+    s << hour 
+      << "h"
+      << ( ( minute < 10 ) ? "0":"" )
+      << minute 
+      << " : "
       << ( ( day < 10 ) ? "0":"" )
       << day
       << "/"
