@@ -15,8 +15,12 @@ class Controler : public QWidget {
     public:
         Controler(Model* modele, View* view, Config* config);
         ~Controler();
+        void setMainFrameConnections();
 
     public slots:
+        void newEmptyModel();
+        void newModelFromLocal();
+        void newModelFromGoogle();
         void selectWeek();
         void createSlot();
         void editSlot();

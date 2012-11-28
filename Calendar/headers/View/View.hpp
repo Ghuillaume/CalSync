@@ -28,6 +28,8 @@ class View: public QMainWindow
         View(Model *model);
        ~View();
 	
+       void setMainFrame();
+       
         Time *getTime();
         Model *getModel();
         int getFirstEventPosition();
@@ -51,6 +53,13 @@ class View: public QMainWindow
             QAction *deleteSlotItem;
             QAction* changePwdItem;
             QAction* changeKeyItem;
+            
+        // Choose buttons
+        QWidget* horizontalLayoutWidgetNewModel;
+        QHBoxLayout* horizontalLayoutNewModel;
+        QPushButton* newEmptyModel;
+        QPushButton* newModelFromLocal;
+        QPushButton* newModelFromGoogle;
         
         // Main frame:
         QWidget *mainFrame;

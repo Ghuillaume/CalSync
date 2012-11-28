@@ -7,13 +7,14 @@ View::View(Model *model) : QMainWindow(), time(8)
 	// Main window:
     this->setWindowTitle("Emploi du temps");
     this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, 650));
+    this->
     
     
         // Menubar:
     menubar = new QMenuBar(this);
     this->setMenuBar(menubar);
     menubar->setObjectName("menubar");
-    menubar->setGeometry(QRect(0, 0, 800, 25));
+    menubar->setGeometry(QRect(0, 0, TABLE_MARGIN + TABLE_WIDTH + 20, 25));
 
     fileMenu = new QMenu(menubar);
     fileMenu->setObjectName("fileMenu");
@@ -76,50 +77,41 @@ View::View(Model *model) : QMainWindow(), time(8)
         changeKeyItem->setObjectName("changeKeyItem");
         editMenu->addAction(changeKeyItem);
         changeKeyItem->setText("Change my API Key");
-
+        
+    horizontalLayoutWidgetNewModel = new QWidget(this);
+    horizontalLayoutWidgetNewModel->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
+    horizontalLayoutWidgetNewModel->setGeometry(QRect(50, 190, TABLE_MARGIN + TABLE_WIDTH + 20 - 100, 200));
+    horizontalLayoutNewModel = new QHBoxLayout(horizontalLayoutWidgetNewModel);
+    horizontalLayoutNewModel->setObjectName(QString::fromUtf8("horizontalLayout"));
+    horizontalLayoutNewModel->setContentsMargins(0, 0, 0, 0);
     
+    newEmptyModel = new QPushButton(horizontalLayoutWidgetNewModel);
+    newEmptyModel->setObjectName(QString::fromUtf8("newEmptyModel"));
+    newEmptyModel->setMinimumSize(QSize(0, 80));
+    newEmptyModel->setText("New Empty Calendar");
+    horizontalLayoutNewModel->addWidget(newEmptyModel);
+    
+    newModelFromLocal = new QPushButton(horizontalLayoutWidgetNewModel);
+    newModelFromLocal->setObjectName(QString::fromUtf8("newModelFromLocal"));
+    newModelFromLocal->setMinimumSize(QSize(0, 80));
+    newModelFromLocal->setText("New Calendar From Local File");
+    horizontalLayoutNewModel->addWidget(newModelFromLocal);
+    
+    newModelFromGoogle = new QPushButton(horizontalLayoutWidgetNewModel);
+    newModelFromGoogle->setObjectName(QString::fromUtf8("newModelFromGoogle"));
+    newModelFromGoogle->setMinimumSize(QSize(0, 80));
+    newModelFromGoogle->setText("New Calendar From Google");
+    horizontalLayoutNewModel->addWidget(newModelFromGoogle);
+    
+
+}
+
+void View::setMainFrame() {
     
 	// Main frame:
     mainFrame = new QWidget(this);
     this->setCentralWidget(mainFrame);
     mainFrame->setObjectName("mainFrame");
-
-	// Table:
-    /*tableWidget = new QTableWidget(mainFrame);
-    tableWidget->setObjectName("tableWidget");
-    tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
-    tableWidget->setGeometry(QRect(TABLE_MARGIN, TOP_MARGIN, TABLE_WIDTH, 600));
-    
-    tableWidget->setColumnCount(7);
-    for ( int i = 0; i < 7; ++i )
-    {
-        QTableWidgetItem *columnHead = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(i, columnHead);
-    }
-    
-    tableWidget->setRowCount(24);
-    tableWidget->verticalHeader()->setDefaultSectionSize(60);
-    for ( int i = 6; i < 21; ++i )
-    {
-    	std::stringstream stream;
-        stream << ( i > 1 ? "" : "0" ) << i  << "h00"; 
-    	
-        QTableWidgetItem *rowHead = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(i, rowHead);
-        rowHead->setText(stream.str().c_str());
-    }
-    
-    for (int i = 6 ; i < 21 ; i++)
-    {
-	    for(int j = 0 ; j < 7 ; j++)
-	    {
-	        QLabel* q = new QLabel(tableWidget);
-	        tableWidget->setCellWidget(i, j, q);
-	    }
-	}
-    */
-    
-    
     
     mainLayoutWidget = new QWidget(mainFrame);
     mainLayoutWidget->setObjectName(QString::fromUtf8("mainLayoutWidget"));
@@ -155,11 +147,9 @@ View::View(Model *model) : QMainWindow(), time(8)
 
     mainLayout->addWidget(slotListWidget);
         
-        
-
 	
-    this->time.setWeek(this->time.getWeek());
-    this->setWeek();
+    //this->time.setWeek(this->time.getWeek());
+    //this->setWeek();
         
     this->display();
 }
