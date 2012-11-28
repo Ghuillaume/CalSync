@@ -32,6 +32,8 @@ class Time
         bool  operator== ( const Time &time ) const;
         bool  operator!= ( const Time &time ) const;
         bool  operator<  ( const Time &time ) const;
+        bool  operator>  ( const Time &time ) const;
+        bool  operator<=  ( const Time &time ) const;
         bool  operator>=  ( const Time &time ) const;
         
         void setWeek  ( const int &week );

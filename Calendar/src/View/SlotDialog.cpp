@@ -99,6 +99,7 @@ void SlotDialog::setArgs(Time* dateStart, Time* dateEnd, string intitule, string
     this->descriptionEdit->setText(QString(description.c_str()));
 }
 
+<<<<<<< HEAD
 void SlotDialog::createSlot()
 {
     QDate startDate = this->dateStartEdit->date();
@@ -123,6 +124,8 @@ void SlotDialog::createSlot()
     this -> accept();
 }
 
+=======
+>>>>>>> 1ccc28edef6f37e551d07cf80dfd8e381a286dab
 SlotDialog::~SlotDialog()
 {
     delete parent;

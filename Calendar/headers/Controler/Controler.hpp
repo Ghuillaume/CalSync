@@ -3,6 +3,7 @@
 
 #include <QtGui>
 
+#include "Config.hpp"
 #include "../Model/Model.hpp"
 #include "../View/View.hpp"
 #include "../View/DateDialog.hpp"
@@ -11,7 +12,7 @@
 class Controler : public QWidget {
     Q_OBJECT
     public:
-        Controler(Model *modele, View *view);
+        Controler(Model* modele, View* view, Config* config);
         ~Controler();
 
     public slots:
@@ -20,10 +21,18 @@ class Controler : public QWidget {
         void editSlot();
         void deleteSlot();
         void saveModel();
+<<<<<<< HEAD
+=======
+        void loadModel();
+        void checkIfSaved();
+        void changePassword();
+        void changeAPIKey();
+>>>>>>> 1ccc28edef6f37e551d07cf80dfd8e381a286dab
 
     private:
-        Model *model;
-        View *view;
+        Model* model;
+        View* view;
+        Config* config;
 };
 
 

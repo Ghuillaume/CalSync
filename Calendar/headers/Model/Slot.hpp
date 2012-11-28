@@ -24,11 +24,12 @@ class Slot {
         Time* getDateFin();
         string getIntitule();
         string getDescription();
+        bool areSlotsOverlapping(Slot *slot);
         void setDateDebut(Time *t);
         void setDateFin(Time *t);
         void setIntitule(string intitule);
         void setDescription(string description);
-        void editSlot(Time *dateDebut, Time *dateFin, string intitule, string description);
+        int editSlot(Time *dateDebut, Time *dateFin, string intitule, string description);
 
         string toString();
 		

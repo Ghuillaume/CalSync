@@ -24,6 +24,8 @@ Time::~Time() {
 bool Time::operator== ( const Time &time ) const { return this -> timestamp == time . timestamp; }
 bool Time::operator!= ( const Time &time ) const { return this -> timestamp != time . timestamp; }
 bool Time::operator<  ( const Time &time ) const { return this -> timestamp <  time . timestamp; }
+bool Time::operator>  ( const Time &time ) const { return this -> timestamp >  time . timestamp; }
+bool Time::operator<= ( const Time &time ) const { return this -> timestamp <= time . timestamp; }
 bool Time::operator>= ( const Time &time ) const { return this -> timestamp >= time . timestamp; }
 
 Time& Time::operator= ( const Time &time ) {
@@ -132,12 +134,15 @@ int Time::getYear () const {
 }
 
 string Time::getDate () const {
+    int minute   = this -> getMinute   ();
+    int hour   = this -> getHour   ();
     int day   = this -> getDay   ();
     int month = this -> getMonth ();
     int year  = this -> getYear  ();
     
     stringstream s;
-    s << ( ( day < 10 ) ? "0":"" )
+    s << hour << ":" <<minute << ":"
+      << ( ( day < 10 ) ? "0":"" )
       << day
       << "/"
       << ( ( month < 10 ) ? "0":"" )

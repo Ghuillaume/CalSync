@@ -38,9 +38,6 @@ class SlotDialog: public QDialog
        ~SlotDialog();
 
         void setArgs(Time* dateStart, Time* dateEnd, string intitule, string description);
-    
-    public slots:
-        void createSlot();
 };
 
 #endif

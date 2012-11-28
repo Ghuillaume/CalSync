@@ -3,7 +3,7 @@ build
 nbproject
 
 Makefile
-*.pro*
 *.o
+*.pro.*
 moc_*
 *~
