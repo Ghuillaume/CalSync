@@ -21,7 +21,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 
     QApplication app(argc, argv);
-    
+
     Config *config = new Config();
     Model *model = new Model();
 
@@ -31,9 +31,9 @@ int main(int argc, char *argv[]) {
     // Le mot de passe sera alors demandé pour sauvegarder ET pour exporter
 
     View *view = new View(model);
-    
+
     Controler *controler = new Controler(model, view, config);
-    
+
     view->show();
 
     //return 0;

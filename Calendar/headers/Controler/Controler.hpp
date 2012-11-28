@@ -21,13 +21,10 @@ class Controler : public QWidget {
         void editSlot();
         void deleteSlot();
         void saveModel();
-<<<<<<< HEAD
-=======
         void loadModel();
         void checkIfSaved();
         void changePassword();
         void changeAPIKey();
->>>>>>> 1ccc28edef6f37e551d07cf80dfd8e381a286dab
 
     private:
         Model* model;

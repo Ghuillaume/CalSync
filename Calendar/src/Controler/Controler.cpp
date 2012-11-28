@@ -11,23 +11,16 @@ Controler::Controler(Model* model, View* view, Config* config)
     
     // Connexion signaux/slots de la vue
     QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModel()));
-<<<<<<< HEAD
-    QObject::connect(view -> quitItem, SIGNAL(activated()), view, SLOT(close()));
-=======
     QObject::connect(view -> openItem, SIGNAL(activated()), this, SLOT(loadModel()));
     QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(checkIfSaved()));
->>>>>>> 1ccc28edef6f37e551d07cf80dfd8e381a286dab
     
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
     QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
     QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
-<<<<<<< HEAD
-=======
     QObject::connect(view -> changePwdItem, SIGNAL(activated()), this, SLOT(changePassword()));
     QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
->>>>>>> 1ccc28edef6f37e551d07cf80dfd8e381a286dab
 
-	QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
+    QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
     QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
 	
 	//QObject::connect(view -> tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(createSlot(int,int)));
@@ -275,6 +268,7 @@ void Controler::checkIfSaved() {
         }
         else {
             this->view->close();
+            return;
         }
     }
 
@@ -299,13 +293,7 @@ void Controler::changePassword() {
     this->config->setPassword(passwd.toStdString());
 }
 
-<<<<<<< HEAD
-void Controler::saveModel() {
-    QMessageBox::warning(this, "TODO", "TODO");
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Open File"), "/home", tr("Images (*.xml)"));
-    
-}
-=======
+
 void Controler::changeAPIKey() {
     QInputDialog askingKey(this);
     askingKey.setLabelText("API Key");
@@ -314,4 +302,3 @@ void Controler::changeAPIKey() {
 
     this->config->setAPIKEY(askingKey.textValue().toStdString());
 }
->>>>>>> 1ccc28edef6f37e551d07cf80dfd8e381a286dab
