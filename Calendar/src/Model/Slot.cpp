@@ -12,8 +12,6 @@ Slot::Slot(Time *dateDebut, Time *dateFin, string intitule, string description) 
     this->dateFin = dateFin;
     this->intitule = intitule;
     this->description = description;
-    
-    // TODO : vérifier cohérence date début et date fin
 }
 
 Slot::~Slot() {

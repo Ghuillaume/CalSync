@@ -105,10 +105,18 @@ void SlotDialog::createSlot()
     QTime startTime = this->dateStartEdit->time();
     QDate endDate = this->dateEndEdit->date();
     QTime endTime = this->dateEndEdit->time();
-
+    
+    Time *startDateTime = new Time(startTime.minute(), startTime.hour(), startDate.day(), startDate.month(), startDate.year());
+    Time *endDateTime = new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year());
+    
+    if(startDateTime > endDateTime) {
+        QMessageBox::critical(this, "Error", "You can't create an event which end before starting !");
+        return;
+    }
+    
     this->parent->getModel()->createSlot(
-                new Time(startTime.minute(), startTime.hour(), startDate.day(), startDate.month(), startDate.year()),
-                new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year()),
+                startDateTime,
+                endDateTime,
                 this->titleEdit->text().toStdString(),
                 this->descriptionEdit->text().toStdString());
 

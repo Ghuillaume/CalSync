@@ -35,15 +35,16 @@ void Model::previousWeek() {
 
 void Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {
     Slot *newSlot = new Slot(dateDeb, dateFin, intitule, description);
-	this->slotlist.insert(newSlot);
+    this->slotlist.insert(newSlot);
+    
+    if(dateDeb > dateFin)
 
     cout << "inserting slot : " << newSlot->toString() << endl;
-        
-        // TODO
-	// On regarde si le slot existe déjà
+    
 
-	if(this->exists(newSlot))
-		delete newSlot;
+    // Si le slot existe déjà
+    if(this->exists(newSlot))
+        delete newSlot;
     else
         this->slotlist.insert(newSlot);
 

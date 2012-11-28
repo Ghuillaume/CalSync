@@ -19,6 +19,7 @@ class Controler : public QWidget {
         void createSlot();
         void editSlot();
         void deleteSlot();
+        void saveModel();
 
     private:
         Model *model;
