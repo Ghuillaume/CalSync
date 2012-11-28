@@ -9,6 +9,7 @@
 #include "../View/View.hpp"
 #include "../View/DateDialog.hpp"
 #include "../View/SlotDialog.hpp"
+#include "../Parser/ParserGCal.hpp"
 
 class Controler : public QWidget {
     Q_OBJECT

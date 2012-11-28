@@ -1,15 +1,11 @@
-/* 
- * File:   ParserCELCAT.cpp
- * Author: e094326d
- * 
- * Created on 18 novembre 2012, 13:24
- */
 
-#include "../../headers/Parser/ParserCELCAT.hpp"
+#include "../../headers/Parser/ParserGCal.hpp"
 
-ParserCELCAT::ParserCELCAT(string url, bool ssl, Model* model, QObject* parent) : QObject(parent) {
+ParserGCal::ParserGCal(string url, bool ssl, string id, string apikey, Model *model, QObject* parent) : QObject(parent) {
     this->url = url;
     this->ssl = ssl;
+    this->id = id;
+    this->apiKey = apikey;
     this->model = model;
 
     query = new QHttp(this);
@@ -18,23 +14,31 @@ ParserCELCAT::ParserCELCAT(string url, bool ssl, Model* model, QObject* parent) 
     connect(query, SIGNAL(requestFinished(int,bool)), this, SLOT(requestFinished(int,bool)));
 }
 
-ParserCELCAT::~ParserCELCAT() {
+ParserGCal::~ParserGCal() {
+
+}
+
+void ParserGCal::getEventList() {
+    qCritical() << "Getting events";
+
+    QString queryString = "/calendar/v3/calendars/" +
+            QString(this->id.c_str()) +
+            "/events?key=" + QString(this->apiKey.c_str());
+    qDebug() << "Query string = " << queryString;
+    query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
+    query->get(queryString);
+
+    // TODO : timeout !!!!
+}
+
+void ParserGCal::parseEvents(QByteArray in) {
+
+    qCritical() << "Parsing events TODO";
 }
 
 
 
-void ParserCELCAT::getEventList() {
-
-    qCritical() << "Getting events TODO" << endl;
-}
-
-
-void ParserCELCAT::parseEvents(QByteArray in) {
-
-    qCritical() << "Parsing events TODO" << endl;
-}
-
-void ParserCELCAT::stateChanged(int state)   {
+void ParserGCal::stateChanged(int state)   {
     switch(state)   {
     case 0:
         qDebug() << "Unconnected";
@@ -60,13 +64,13 @@ void ParserCELCAT::stateChanged(int state)   {
     }
 }
 
-void ParserCELCAT::responseHeaderReceived(const QHttpResponseHeader &resp)   {
+void ParserGCal::responseHeaderReceived(const QHttpResponseHeader &resp)   {
     qDebug() << "Size : " << resp.contentLength();
     qDebug() << "Type : " << resp.contentType();
     qDebug() << "Status Code : " << resp.statusCode();
 }
 
-void ParserCELCAT::requestFinished(int id, bool error)   {
+void ParserGCal::requestFinished(int id, bool error)   {
     qDebug() << "Request Id : " << id;
     if(error)   {
         qDebug() << "Error";
