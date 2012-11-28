@@ -4,6 +4,7 @@
 #include <QtGui>
 
 #include "Config.hpp"
+#include "md5.hpp"
 #include "../Model/Model.hpp"
 #include "../View/View.hpp"
 #include "../View/DateDialog.hpp"
@@ -14,8 +15,12 @@ class Controler : public QWidget {
     public:
         Controler(Model* modele, View* view, Config* config);
         ~Controler();
+        void setMainFrameConnections();
 
     public slots:
+        void newEmptyModel();
+        void newModelFromLocal();
+        void newModelFromGoogle();
         void selectWeek();
         void createSlot();
         void editSlot();

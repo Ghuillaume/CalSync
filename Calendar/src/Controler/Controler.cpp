@@ -9,6 +9,16 @@ Controler::Controler(Model* model, View* view, Config* config)
     this -> view = view;
     this -> config = config;
     
+    QObject::connect(view -> newEmptyModel, SIGNAL(clicked()), this, SLOT(newEmptyModel()));
+    QObject::connect(view -> newModelFromLocal, SIGNAL(clicked()), this, SLOT(newModelFromLocal()));
+    QObject::connect(view -> newModelFromGoogle, SIGNAL(clicked()), this, SLOT(newModelFromGoogle()));
+    
+}
+
+Controler::~Controler() { }
+
+void Controler::setMainFrameConnections() {
+    
     // Connexion signaux/slots de la vue
     QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModel()));
     QObject::connect(view -> openItem, SIGNAL(activated()), this, SLOT(loadModel()));
@@ -19,16 +29,33 @@ Controler::Controler(Model* model, View* view, Config* config)
     QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> changePwdItem, SIGNAL(activated()), this, SLOT(changePassword()));
     QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
-
+    
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
     QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
-	
-	//QObject::connect(view -> tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(createSlot(int,int)));
 }
 
-Controler::~Controler() { }
-
 // Public slots :
+
+void Controler::newEmptyModel() {
+    this->view->setMainFrame();
+    this->setMainFrameConnections();
+    delete this->view->horizontalLayoutWidgetNewModel;
+    
+    if(QMessageBox::question(this, "Password", "Do you want to protect your calendar with a password ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+        this->changePassword();
+}
+
+void Controler::newModelFromLocal() {
+    this->view->setMainFrame();
+    this->loadModel();
+    this->setMainFrameConnections();
+    delete this->view->horizontalLayoutWidgetNewModel;
+}
+
+void Controler::newModelFromGoogle() {
+    QMessageBox::critical(this, "LOL", "TODO");
+    //delete this->view->horizontalLayoutWidgetNewModel;
+}
 
 void Controler::selectWeek()
 {
@@ -281,7 +308,7 @@ void Controler::checkIfSaved() {
 void Controler::changePassword() {
     if(this->config->getPassword().compare("0")) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
-        if(passwdChecking.toStdString() != this->config->getPassword()) {
+        if(md5(passwdChecking.toStdString()) != this->config->getPassword()) {
             QMessageBox::warning(this, "Warning", "Wrong password");
             return;
         }
@@ -290,7 +317,7 @@ void Controler::changePassword() {
     // TODO vérification du passwd ?
     QString passwd = QInputDialog::getText(this, "Password", "Type new password");
 
-    this->config->setPassword(passwd.toStdString());
+    this->config->setPassword(md5(passwd.toStdString()));
 }
 
 
