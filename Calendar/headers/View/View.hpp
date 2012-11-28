@@ -49,6 +49,8 @@ class View: public QMainWindow
         QAction *newSlotItem;
             QAction *editSlotItem;
             QAction *deleteSlotItem;
+            QAction* changePwdItem;
+            QAction* changeKeyItem;
         
         // Main frame:
         QWidget *mainFrame;

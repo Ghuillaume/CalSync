@@ -17,6 +17,7 @@ using namespace std;
 #include <cstring>
 #include <set>
 #include <iostream>
+#include <QDebug>
 
 #include "Slot.hpp"
 

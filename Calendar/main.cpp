@@ -15,46 +15,24 @@ using namespace std;
 #include "headers/Model/Time.hpp"
 #include "headers/Model/Model.hpp"
 #include "headers/Controler/Controler.hpp"
+#include "headers/Controler/Config.hpp"
 #include "headers/View/View.hpp"
 
 int main(int argc, char *argv[]) {
 
     QApplication app(argc, argv);
     
+    Config *config = new Config();
     Model *model = new Model();
-    
-    /**
-     * ZONE DE TESTS
-     * 
-     */
-    
-    
-    
-    
-    string label = "Test ";
-    model->createSlot(new Time(0, 8, 20, 12, 2012), new Time(20, 9, 20, 12, 2012), label + "1", label + "1");
-    model->createSlot(new Time(0, 2, 23, 11, 2012), new Time(40, 9, 24, 11, 2012), label + "2", label + "2");
-    model->createSlot(new Time(0, 10, 20, 10, 2012), new Time(30, 9, 20, 10, 2012), label + "3", label + "3");
-    model->createSlot(new Time(0, 10, 20, 11, 2012), new Time(2, 9, 20, 11, 2012), label + "4", label + "4");
-    model->createSlot(new Time(0, 8, 25, 12, 2012), new Time(20, 9, 25, 12, 2012), label + "5", label + "5");
-    model->createSlot(new Time(0, 7, 20, 11, 2012), new Time(2, 10, 20, 11, 2012), label + "6", label + "6");
-    
-    ListOfSlot l = model->getSlotList();
-    for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
-        cout << (*it)->toString() << endl;
-    }
-    cout << endl << endl;
-    
-    
-    
-    /**
-     * FIN ZONE DE TESTS
-     * 
-     */
+
+    // TODO !!!!
+    // Demander à l'utilisateur s'il veut ouvrir une sauvegarde locale ou démarrer un nouvel EDT
+    // Si nouvel EDT, demander l'APIKEY et demander s'il veut protéger par un mot de passe
+    // Le mot de passe sera alors demandé pour sauvegarder ET pour exporter
 
     View *view = new View(model);
     
-    Controler *controler = new Controler(model, view);
+    Controler *controler = new Controler(model, view, config);
     
     view->show();
 

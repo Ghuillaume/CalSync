@@ -65,6 +65,18 @@ View::View(Model *model) : QMainWindow(), time(8)
         editMenu->addAction(deleteSlotItem);
         deleteSlotItem->setText("Delete an event");
 
+        editMenu->addSeparator();
+
+        changePwdItem = new QAction(this);
+        changePwdItem->setObjectName("changePwdItem");
+        editMenu->addAction(changePwdItem);
+        changePwdItem->setText("Change password");
+
+        changeKeyItem = new QAction(this);
+        changeKeyItem->setObjectName("changeKeyItem");
+        editMenu->addAction(changeKeyItem);
+        changeKeyItem->setText("Change my API Key");
+
     
     
 	// Main frame:

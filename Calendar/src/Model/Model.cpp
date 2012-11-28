@@ -33,7 +33,7 @@ void Model::previousWeek() {
         this->currentDate->previousDay();
 }
 
-void Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {
+int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {
     Slot *newSlot = new Slot(dateDeb, dateFin, intitule, description);
     this->slotlist.insert(newSlot);
     
