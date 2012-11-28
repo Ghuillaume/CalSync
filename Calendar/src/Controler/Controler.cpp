@@ -100,9 +100,15 @@ void Controler::createSlot()
             case 1:
                 // slot already inserted
                 qWarning() << "Trying to insert a slot which is already in the list";
+                break;
             case 2:
                 // slot overlaps another slot, ask user if he wants to erase existing slot or keep it
-                // TODO
+                QString message = "Event blabla overlap event bloublou and will erase it";
+                if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
+                    qDebug() << "erase" << endl;
+                }
+                else
+                    qDebug() << "discard" << endl;
                 break;
         }
 
