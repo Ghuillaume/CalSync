@@ -76,10 +76,7 @@ int Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string descr
 }
 
 string Slot::toString() {
-    ostringstream hdeb, hfin;
-    hdeb << this->dateDebut->getHour() << "h" << this->dateDebut->getMinute();
-    hfin << this->dateFin->getHour() << "h" << this->dateFin->getMinute();
     
-    return this->dateDebut->getDate() + " " + hdeb.str() + " : " + this->intitule
-            + " (end " + this->dateFin->getDate() + " " + hfin.str() + ")";
+    return this->dateDebut->getDate() + " " + this->intitule
+            + " (end " + this->dateFin->getDate() + ")";
 }
