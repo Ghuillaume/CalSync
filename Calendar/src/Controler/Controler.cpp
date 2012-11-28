@@ -60,6 +60,7 @@ void Controler::newModelFromGoogle() {
     string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
 
     // create Google Parser and parse
+    // Todo : ask for password
     Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, apiKey, this->model, this);
     p->getEventList();
 

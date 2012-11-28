@@ -7,9 +7,10 @@
 
 #include "../../headers/Parser/ParserCELCAT.hpp"
 
-ParserCELCAT::ParserCELCAT(string url, bool ssl, Model* model, QObject* parent) : QObject(parent) {
+ParserCELCAT::ParserCELCAT(string url, bool ssl, string groupId, Model* model, QObject* parent) : QObject(parent) {
     this->url = url;
     this->ssl = ssl;
+    this->groupId = groupId;
     this->model = model;
 
     query = new QHttp(this);
@@ -23,9 +24,16 @@ ParserCELCAT::~ParserCELCAT() {
 
 
 
+// NOT WORKING !!!!!
 void ParserCELCAT::getEventList() {
+    qCritical() << "Getting events from CELCAT";
 
-    qCritical() << "Getting events TODO" << endl;
+    QString queryString = QString(this->groupId.c_str()) + ".ics";
+    qDebug() << "Query string = " << queryString;
+    query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
+    query->get(queryString);
+
+    // TODO : timeout !!!!
 }
 
 

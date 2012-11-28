@@ -10,6 +10,7 @@
 #include "../View/DateDialog.hpp"
 #include "../View/SlotDialog.hpp"
 #include "../Parser/ParserGCal.hpp"
+#include "../Parser/ParserCELCAT.hpp"
 
 class Controler : public QWidget {
     Q_OBJECT

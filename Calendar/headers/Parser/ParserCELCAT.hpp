@@ -22,7 +22,7 @@ class ParserCELCAT : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserCELCAT(string url, bool ssl, Model* model, QObject* parent);
+        ParserCELCAT(string url, bool ssl, string groupId, Model* model, QObject* parent);
         virtual ~ParserCELCAT();
 
         virtual void getEventList();
@@ -35,6 +35,8 @@ class ParserCELCAT : public QObject, public Parser {
 
     private:
         virtual void parseEvents(QByteArray in);
+
+        string groupId;
 
         QHttp* query;
 };

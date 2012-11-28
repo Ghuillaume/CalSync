@@ -19,7 +19,7 @@ ParserGCal::~ParserGCal() {
 }
 
 void ParserGCal::getEventList() {
-    qCritical() << "Getting events";
+    qDebug() << "Getting events from Google Calendar";
 
     QString queryString = "/calendar/v3/calendars/" +
             QString(this->id.c_str()) +
@@ -28,7 +28,7 @@ void ParserGCal::getEventList() {
     query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
     query->get(queryString);
 
-    // TODO : timeout !!!!
+    // TODO : timeout, sinon quand google répond pas ben ça fait que dalle, pas de message d'erreur etc !!!!
 }
 
 void ParserGCal::parseEvents(QByteArray in) {
