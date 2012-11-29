@@ -5,6 +5,7 @@ Config::Config()
     this->password = "0";
     this->saved = true;
     this->API_KEY = "0";
+    this->savefileName = "0";
 }
 
 Config::~Config() {
@@ -42,4 +43,12 @@ string Config::getAPIKEY() {
 
 void Config::setAPIKEY(string key) {
     this->API_KEY = key;
+}
+
+QString Config::getFileName() {
+    return this->savefileName;
+}
+
+void Config::setFileName(QString& filename) {
+    this->savefileName = filename;
 }

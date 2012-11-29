@@ -16,12 +16,16 @@ class Config {
         void setGCalId(string id);
         string getAPIKEY();
         void setAPIKEY(string key);
+        QString getFileName();
+        void setFileName(QString& filename);
 
     private:
         bool saved;
         string password;
         string gCalId;
         string API_KEY;
+        
+        QString savefileName;
 
 };
 

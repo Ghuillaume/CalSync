@@ -12,7 +12,8 @@ Controler::Controler(Model* model, View* view, Config* config)
     
     // Menubar
     QObject::connect(view -> newItem, SIGNAL(activated()), this, SLOT(setStartView()));
-    QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModel()));
+    QObject::connect(view -> saveItem, SIGNAL(activated()), this, SLOT(saveModel()));
+    QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModelAs()));
     QObject::connect(view -> openItem, SIGNAL(activated()), this, SLOT(loadModel()));
     QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(close()));
     
@@ -58,6 +59,7 @@ void Controler::setStartView() {
     }
     
     if(ok) {
+        this->model->cleanList();
         this->view->menubar->setVisible(false);
         this->view->mainFrame->setVisible(false);
         this->view->horizontalLayoutWidgetNewModel->setVisible(true);
@@ -268,9 +270,27 @@ void Controler::deleteSlot() {
 }
 
 void Controler::saveModel() {
+    QString fileName = this->config->getFileName();
+    qDebug() << fileName;
+    if(fileName != "0") {
+        qDebug() << "parse with file name";
+        this->parseModel(fileName);
+    }
+    else {
+        qDebug() << "Going to ask filename";
+        this->saveModelAs();
+    }
+}
+
+void Controler::saveModelAs() {
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/home", tr("XML Document (*.xml)"));
+    this->parseModel(fileName);
+    this->config->setFileName(fileName);
+}
 
+void Controler::parseModel(QString fileName) {
+    
     // Création de l'arbre DOM
     QDomDocument dom("dom");
     QFile xml_doc(fileName);

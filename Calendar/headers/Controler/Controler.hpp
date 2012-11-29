@@ -20,6 +20,7 @@ class Controler : public QWidget {
         Controler(Model* modele, View* view, Config* config);
         ~Controler();
         int checkIfSaved();
+        void parseModel(QString fileName);
         static ListOfString explode(const std::string& str, const char& delimiter);
 
     public slots:
@@ -32,6 +33,7 @@ class Controler : public QWidget {
         void editSlot();
         void deleteSlot();
         void saveModel();
+        void saveModelAs();
         void loadModel();
         void close();
         void changePassword();
