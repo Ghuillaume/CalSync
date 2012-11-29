@@ -1,4 +1,6 @@
 
+#include <qt4/QtNetwork/qhttp.h>
+
 #include "../../headers/Parser/ParserGCal.hpp"
 
 ParserGCal::ParserGCal(string url, bool ssl, string id, string apikey, Model *model, QObject* parent) : QObject(parent) {
@@ -12,6 +14,7 @@ ParserGCal::ParserGCal(string url, bool ssl, string id, string apikey, Model *mo
     connect(query, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
     connect(query, SIGNAL(responseHeaderReceived(QHttpResponseHeader)), this, SLOT(responseHeaderReceived(QHttpResponseHeader)));
     connect(query, SIGNAL(requestFinished(int,bool)), this, SLOT(requestFinished(int,bool)));
+    
 }
 
 ParserGCal::~ParserGCal() {
