@@ -40,7 +40,6 @@ int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string desc
 
     cout << "inserting slot : " << newSlot->toString() << endl;
     
-    
     this->slotlist.insert(newSlot);
     
     return 1;
@@ -55,8 +54,13 @@ void Model::deleteSlot(ListOfSlot::iterator it) {
 void Model::deleteSlot(Slot* slot) {
     cout << "erasing slot : " << slot->toString() << endl;
     this->slotlist.erase(slot);
+    //TODO : delete les *slots
 }
 
-bool Model::exists(Slot* slot) {
-    return false;
+void Model::cleanList() {
+    for(ListOfSlot::iterator it = this->slotlist.begin();  it != this->slotlist.end(); it++) {
+        delete *it;
+    }
+    this->slotlist.clear();
 }
+

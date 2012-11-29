@@ -35,7 +35,7 @@ class Model {
             int createSlot(Time *dateDeb, Time *dateFin, string intitule, string description);
             void deleteSlot(ListOfSlot::iterator it);
             void deleteSlot(Slot *slot);
-            bool exists(Slot *slot);
+            void cleanList();
 
 	private:
             Time* currentDate;
