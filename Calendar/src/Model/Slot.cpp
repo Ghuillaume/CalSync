@@ -64,10 +64,13 @@ void Slot::setDescription(string description) {
 }
 
 bool Slot::areSlotsOverlapping(Slot *newSlot) {
+    /*
     return ( ( ((*this->dateDebut) <= (*newSlot->dateDebut)) && ((*newSlot->dateDebut) < (*this->dateFin)) )
              || ( ((*this->dateDebut) < (*newSlot->dateFin)) && ((*newSlot->dateFin) <= (*this->dateFin)) )
             );
+    */
     // slot commence avant ou égal a dateFin ET slot fini après ou égal à dateDebut
+    return ( (*(newSlot->dateDebut) < *(this->dateFin)) && (*(newSlot->dateFin) > *(this->dateDebut)));
 }
 
 
