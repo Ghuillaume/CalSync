@@ -1,16 +1,11 @@
-/* 
- * File:   ParserCELCAT.cpp
- * Author: e094326d
- * 
- * Created on 18 novembre 2012, 13:24
- */
 
-#include "../../headers/Parser/ParserCELCAT.hpp"
+#include "../../headers/Parser/ParserGCal.hpp"
 
-ParserCELCAT::ParserCELCAT(string url, bool ssl, string groupId, Model* model, QObject* parent) : QObject(parent) {
+ParserGCal::ParserGCal(string url, bool ssl, string id, string apikey, Model *model, QObject* parent) : QObject(parent) {
     this->url = url;
     this->ssl = ssl;
-    this->groupId = groupId;
+    this->id = id;
+    this->apiKey = apikey;
     this->model = model;
 
     query = new QHttp(this);
@@ -19,31 +14,32 @@ ParserCELCAT::ParserCELCAT(string url, bool ssl, string groupId, Model* model, Q
     connect(query, SIGNAL(requestFinished(int,bool)), this, SLOT(requestFinished(int,bool)));
 }
 
-ParserCELCAT::~ParserCELCAT() {
+ParserGCal::~ParserGCal() {
+
 }
 
+void ParserGCal::getEventList() {
+    qDebug() << "Getting events from Google Calendar";
 
-
-// NOT WORKING !!!!!
-void ParserCELCAT::getEventList() {
-    qCritical() << "Getting events from CELCAT";
-
-    QString queryString = QString(this->groupId.c_str()) + ".ics";
+    QString queryString = "/calendar/v3/calendars/" +
+            QString(this->id.c_str()) +
+            "/events?key=" + QString(this->apiKey.c_str());
     qDebug() << "Query string = " << queryString;
     query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
     query->get(queryString);
 
-    // TODO : timeout !!!!
+    // TODO : timeout, sinon quand google répond pas ben ça fait que dalle, pas de message d'erreur etc !!!!
 }
 
-
-void ParserCELCAT::parseEvents(QByteArray in) {
+void ParserGCal::parseEvents(QByteArray in) {
     qDebug() << in;
 
-    qCritical() << "Parsing events TODO" << endl;
+    qCritical() << "Parsing events TODO";
 }
 
-void ParserCELCAT::stateChanged(int state)   {
+
+
+void ParserGCal::stateChanged(int state)   {
     switch(state)   {
     case 0:
         qDebug() << "Unconnected";
@@ -69,13 +65,13 @@ void ParserCELCAT::stateChanged(int state)   {
     }
 }
 
-void ParserCELCAT::responseHeaderReceived(const QHttpResponseHeader &resp)   {
+void ParserGCal::responseHeaderReceived(const QHttpResponseHeader &resp)   {
     qDebug() << "Size : " << resp.contentLength();
     qDebug() << "Type : " << resp.contentType();
     qDebug() << "Status Code : " << resp.statusCode();
 }
 
-void ParserCELCAT::requestFinished(int id, bool error)   {
+void ParserGCal::requestFinished(int id, bool error)   {
     qDebug() << "Request Id : " << id;
     if(error)   {
         qDebug() << "Error";

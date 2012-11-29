@@ -27,6 +27,15 @@ void Config::setPassword(string pwd) {
     this->password = pwd;
 }
 
+string Config::getGCalId() {
+    return this->gCalId;
+}
+
+void Config::setGCalId(string key) {
+    this->gCalId = key;
+}
+
+
 string Config::getAPIKEY() {
     return this->API_KEY;
 }

@@ -53,8 +53,19 @@ void Controler::newModelFromLocal() {
 }
 
 void Controler::newModelFromGoogle() {
-    QMessageBox::critical(this, "LOL", "TODO");
-    //delete this->view->horizontalLayoutWidgetNewModel;
+    this->view->setMainFrame();
+
+    // Todo : verif if it's needed to change API key. Idem for GCal id
+    string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
+    string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
+
+    // create Google Parser and parse
+    // Todo : ask for password
+    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, apiKey, this->model, this);
+    p->getEventList();
+
+    this->setMainFrameConnections();
+    delete this->view->horizontalLayoutWidgetNewModel;
 }
 
 void Controler::selectWeek()
@@ -101,6 +112,7 @@ void Controler::createSlot()
                 // slot already inserted
                 qWarning() << "Trying to insert a slot which is already in the list";
                 break;
+
             case 1:
                 // slot overlaps another slot, ask user if he wants to erase existing slot or keep it
                 QString message = "Event blabla overlap event bloublou and will erase it";
@@ -244,6 +256,14 @@ void Controler::saveModel() {
 }
 
 void Controler::loadModel() {
+
+    // TODO : fonctionne pas bordel de merde !
+    // FUCK LA TASSE DE CAFÉ
+    // Y A PLUS DE CAFÉ JSUIS DANS LA MAYRDE !!!!
+
+
+
+    // LOL
 
     bool load = true;
 
