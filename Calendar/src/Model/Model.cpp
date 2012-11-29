@@ -5,6 +5,8 @@
  * Created on 18 novembre 2012, 11:44
  */
 
+#include <qt4/QtCore/qglobal.h>
+
 #include "../../headers/Model/Model.hpp"
 
 
@@ -35,18 +37,27 @@ void Model::previousWeek() {
 
 int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {
     Slot *newSlot = new Slot(dateDeb, dateFin, intitule, description);
-    this->slotlist.insert(newSlot);
-    
-    if(dateDeb > dateFin)
 
     cout << "inserting slot : " << newSlot->toString() << endl;
     
+    int code = 0;
+    bool overlap = false;
+    for(ListOfSlot::iterator it = this->slotlist.begin();  it != this->slotlist.end(); it++) {
+        qDebug() << (*it)->toString().c_str();
+        overlap |= (*it)->areSlotsOverlapping(newSlot);
+    }
 
-    // Si le slot existe déjà
-    if(this->exists(newSlot))
+    if (overlap) {
         delete newSlot;
-    else
+        code = 1;
+    } else if (this->exists(newSlot)) {
+        delete newSlot;
+        code = 2;
+    } else {
         this->slotlist.insert(newSlot);
+    }
+    
+    return code;
 
 }
 

@@ -1,7 +1,7 @@
 #include "../../headers/Controler/Controler.hpp"
 
-#include <QtXml>
-#include <QDomDocument>
+#include <qt4/QtXml/QtXml>
+#include <qt4/QtXml/QDomDocument>
 
 Controler::Controler(Model* model, View* view, Config* config)
 {
@@ -97,12 +97,18 @@ void Controler::createSlot()
                 //ok
                 this->config->setSaved(false);
                 break;
-            case 1:
+            case 2:
                 // slot already inserted
                 qWarning() << "Trying to insert a slot which is already in the list";
-            case 2:
+                break;
+            case 1:
                 // slot overlaps another slot, ask user if he wants to erase existing slot or keep it
-                // TODO
+                QString message = "Event blabla overlap event bloublou and will erase it";
+                if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
+                    qDebug() << "erase" << endl;
+                }
+                else
+                    qDebug() << "discard" << endl;
                 break;
         }
 
@@ -177,7 +183,7 @@ void Controler::deleteSlot() {
 
         QString warning = "Are you sure you want to delete the event \"" + QString((*slotToDelIterator)->getIntitule().c_str()) + "\" ?";
         if(QMessageBox::warning(this, "Warning", warning, QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
-            this->model->deleteSlot(slotToDelIterator);
+            this->model->deleteSlot(*slotToDelIterator);
             this->view->display();
         }
 

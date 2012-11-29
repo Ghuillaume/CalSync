@@ -63,6 +63,14 @@ void Slot::setDescription(string description) {
     this->description = description;
 }
 
+bool Slot::areSlotsOverlapping(Slot *newSlot) {
+    return ( ( ((*this->dateDebut) <= (*newSlot->dateDebut)) && ((*newSlot->dateDebut) < (*this->dateFin)) )
+             || ( ((*this->dateDebut) < (*newSlot->dateFin)) && ((*newSlot->dateFin) <= (*this->dateFin)) )
+            );
+    // slot commence avant ou égal a dateFin ET slot fini après ou égal à dateDebut
+}
+
+
 int Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string description) {
     this->dateDebut = dateDebut;
     this->dateFin = dateFin;
@@ -76,10 +84,7 @@ int Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string descr
 }
 
 string Slot::toString() {
-    ostringstream hdeb, hfin;
-    hdeb << this->dateDebut->getHour() << "h" << this->dateDebut->getMinute();
-    hfin << this->dateFin->getHour() << "h" << this->dateFin->getMinute();
     
-    return this->dateDebut->getDate() + " " + hdeb.str() + " : " + this->intitule
-            + " (end " + this->dateFin->getDate() + " " + hfin.str() + ")";
+    return this->dateDebut->getDate() + " " + this->intitule
+            + " (end " + this->dateFin->getDate() + ")";
 }

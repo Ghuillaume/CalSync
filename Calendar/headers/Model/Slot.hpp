@@ -24,7 +24,7 @@ class Slot {
         Time* getDateFin();
         string getIntitule();
         string getDescription();
-        bool areSlotsOverlapping(Slot *slot);
+        bool areSlotsOverlapping(Slot *newSlot);
         void setDateDebut(Time *t);
         void setDateFin(Time *t);
         void setIntitule(string intitule);
