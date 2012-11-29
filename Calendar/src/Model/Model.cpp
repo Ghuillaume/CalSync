@@ -50,9 +50,6 @@ int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string desc
     if (overlap) {
         delete newSlot;
         code = 1;
-    } else if (this->exists(newSlot)) {
-        delete newSlot;
-        code = 2;
     } else {
         this->slotlist.insert(newSlot);
     }
@@ -63,13 +60,18 @@ int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string desc
 
 void Model::deleteSlot(ListOfSlot::iterator it) {
     cout << "erasing slot : " << (*it)->toString() << endl;
-    this->slotlist.erase(it);
+    this->slotlist.erase(*it);
 }
 
 void Model::deleteSlot(Slot* slot) {
     this->slotlist.erase(slot);
+    //TODO : delete les *slots
 }
 
-bool Model::exists(Slot* slot) {
-    return false;
+void Model::cleanList() {
+    for(ListOfSlot::iterator it = this->slotlist.begin();  it != this->slotlist.end(); it++) {
+        delete *it;
+    }
+    this->slotlist.clear();
 }
+

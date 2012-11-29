@@ -12,12 +12,16 @@
 #include "../Parser/ParserGCal.hpp"
 #include "../Parser/ParserCELCAT.hpp"
 
+typedef std::vector<std::string> ListOfString;
+
 class Controler : public QWidget {
     Q_OBJECT
     public:
         Controler(Model* modele, View* view, Config* config);
         ~Controler();
         void setMainFrameConnections();
+        
+        static ListOfString explode(const std::string& str, const char& delimiter);
 
     public slots:
         void newEmptyModel();

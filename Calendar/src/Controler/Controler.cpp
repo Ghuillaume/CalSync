@@ -273,6 +273,7 @@ void Controler::loadModel() {
     }
 
     if(load) {
+        this->model->cleanList();
         QXmlStreamReader reader;
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
 
@@ -293,16 +294,85 @@ void Controler::loadModel() {
                     reader.readNext();
                     while(reader.isStartElement() == false)
                        reader.readNext();
-
-                    if(reader.name() == "password") {
-                        config->setPassword(reader.readElementText().toStdString());
-                    }
-
-                    if(reader.name() == "apikey") {
-                        config->setAPIKEY(reader.readElementText().toStdString());
-                    }
                 }
             }
+            if(reader.name() == "password") {
+                config->setPassword(reader.readElementText().toStdString());
+            }
+
+            if(reader.name() == "apikey") {
+                config->setAPIKEY(reader.readElementText().toStdString());
+            }
+                
+            if(reader.name() == "slot") {
+                QString titre;
+                QString description;
+                Time *dateDebut;
+                Time *dateFin;
+                
+                reader.readNext();
+                while(reader.isStartElement()==false) {
+                    reader.readNext();
+                }
+                
+                if (reader.name() == "title") {
+                    cout << "Ok" << endl;
+                    titre = reader.readElementText();
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
+                
+                if (reader.name() == "description") {
+                    cout << "Ok2" << endl;
+                    description = reader.readElementText();
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
+                
+                if (reader.name() == "dateStart") {
+                    cout << "Ok3" << endl;
+                    QString dateDebutString = reader.readElementText();
+                    ListOfString chaineHeure = explode(dateDebutString.toStdString(), ':');
+                    ListOfString chaineDate = explode(chaineHeure[3], '/');
+                    int heure = QString(chaineHeure[0].c_str()).toInt();
+                    int minute = QString(chaineHeure[1].c_str()).toInt();
+                    int jour = QString(chaineDate[0].c_str()).toInt();
+                    int mois = QString(chaineDate[1].c_str()).toInt();
+                    int annee = QString(chaineDate[2].c_str()).toInt();
+                    dateDebut = new Time(minute, heure, jour, mois, annee);
+                    reader.readNext();
+                    
+                    cout << description.toStdString() << endl;
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                    cout << "test";
+                }
+                
+                
+                if (reader.name() == "dateEnd") {
+                    cout << "Ok4" << endl;
+                    QString dateFinString = reader.readElementText();
+                    ListOfString chaineHeure = explode(dateFinString.toStdString(), ':');
+                    ListOfString chaineDate = explode(chaineHeure[3], '/');
+                    int heure = QString(chaineHeure[0].c_str()).toInt();
+                    int minute = QString(chaineHeure[1].c_str()).toInt();
+                    int jour = QString(chaineDate[0].c_str()).toInt();
+                    int mois = QString(chaineDate[1].c_str()).toInt();
+                    int annee = QString(chaineDate[2].c_str()).toInt();
+                    dateFin = new Time(minute, heure, jour, mois, annee);
+                }
+                
+                qDebug() << "Getting : " << titre << description;
+                
+                reader.readNext();
+            }
+            
+            
             reader.readNext(); // On va au prochain token
         }
 
@@ -354,4 +424,12 @@ void Controler::changeAPIKey() {
     askingKey.exec();
 
     this->config->setAPIKEY(askingKey.textValue().toStdString());
+}
+
+ListOfString Controler::explode(const std::string& str, const char& delimiter)
+{
+    std::istringstream split(str);
+    std::vector<std::string> tokens;
+    for (std::string each; std::getline(split, each, delimiter); tokens.push_back(each));
+    return tokens;
 }
