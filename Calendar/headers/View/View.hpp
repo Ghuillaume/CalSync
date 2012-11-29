@@ -27,10 +27,6 @@ class View: public QMainWindow
     public:
         View(Model *model);
         ~View();
-	
-        //void setStartView();
-        //void setMenuBar();
-        void setMainFrame();
        
         Time *getTime();
         Model *getModel();
@@ -56,7 +52,7 @@ class View: public QMainWindow
             QAction* changePwdItem;
             QAction* changeKeyItem;
             
-        // Choose buttons
+        // Start view buttons
         QWidget* horizontalLayoutWidgetNewModel;
         QHBoxLayout* horizontalLayoutNewModel;
         QPushButton* newEmptyModel;

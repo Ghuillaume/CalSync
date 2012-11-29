@@ -7,8 +7,6 @@ View::View(Model *model) : QMainWindow(), time(8)
 	// Main window:
     this->setWindowTitle("Emploi du temps");
     this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, 650));
-    this->
-    
     
         // Menubar:
     menubar = new QMenuBar(this);
@@ -77,7 +75,9 @@ View::View(Model *model) : QMainWindow(), time(8)
         changeKeyItem->setObjectName("changeKeyItem");
         editMenu->addAction(changeKeyItem);
         changeKeyItem->setText("Change my API Key");
-        
+    
+    menubar->setVisible(false);
+  
     horizontalLayoutWidgetNewModel = new QWidget(this);
     horizontalLayoutWidgetNewModel->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
     horizontalLayoutWidgetNewModel->setGeometry(QRect(50, 190, TABLE_MARGIN + TABLE_WIDTH + 20 - 100, 200));
@@ -103,10 +103,8 @@ View::View(Model *model) : QMainWindow(), time(8)
     newModelFromGoogle->setText("New Calendar From Google");
     horizontalLayoutNewModel->addWidget(newModelFromGoogle);
     
-
-}
-
-void View::setMainFrame() {
+    horizontalLayoutWidgetNewModel->setVisible(true);
+    
     
 	// Main frame:
     mainFrame = new QWidget(this);
@@ -146,10 +144,8 @@ void View::setMainFrame() {
     slotListWidget->setObjectName(QString::fromUtf8("slotListWidget"));
 
     mainLayout->addWidget(slotListWidget);
-        
-	
-    //this->time.setWeek(this->time.getWeek());
-    //this->setWeek();
+    
+    mainFrame->setVisible(false);
         
     this->display();
 }

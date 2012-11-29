@@ -17,9 +17,11 @@ class Controler : public QWidget {
     public:
         Controler(Model* modele, View* view, Config* config);
         ~Controler();
-        void setMainFrameConnections();
+        
+        int checkIfSaved();
 
     public slots:
+        void setStartView();
         void newEmptyModel();
         void newModelFromLocal();
         void newModelFromGoogle();
@@ -29,7 +31,7 @@ class Controler : public QWidget {
         void deleteSlot();
         void saveModel();
         void loadModel();
-        void checkIfSaved();
+        void close();
         void changePassword();
         void changeAPIKey();
 

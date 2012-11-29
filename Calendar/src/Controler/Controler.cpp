@@ -9,6 +9,24 @@ Controler::Controler(Model* model, View* view, Config* config)
     this -> view = view;
     this -> config = config;
     
+    
+    // Menubar
+    QObject::connect(view -> newItem, SIGNAL(activated()), this, SLOT(setStartView()));
+    QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModel()));
+    QObject::connect(view -> openItem, SIGNAL(activated()), this, SLOT(loadModel()));
+    QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(close()));
+    
+    QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
+    QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
+    QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
+    QObject::connect(view -> changePwdItem, SIGNAL(activated()), this, SLOT(changePassword()));
+    QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
+    
+    
+    // Main frame
+    QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
+    QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
+    
     QObject::connect(view -> newEmptyModel, SIGNAL(clicked()), this, SLOT(newEmptyModel()));
     QObject::connect(view -> newModelFromLocal, SIGNAL(clicked()), this, SLOT(newModelFromLocal()));
     QObject::connect(view -> newModelFromGoogle, SIGNAL(clicked()), this, SLOT(newModelFromGoogle()));
@@ -17,43 +35,56 @@ Controler::Controler(Model* model, View* view, Config* config)
 
 Controler::~Controler() { }
 
-void Controler::setMainFrameConnections() {
+
+void Controler::setStartView() {
     
-    // Connexion signaux/slots de la vue
-    QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModel()));
-    QObject::connect(view -> openItem, SIGNAL(activated()), this, SLOT(loadModel()));
-    QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(checkIfSaved()));
+    // Checking if current local changes are saved
+    bool ok = true;
+    switch(this->checkIfSaved()) {
+        // Not saved but continue
+        case 0:
+            ok = true;
+            break;
+            
+            // Not saved, stop
+        case 1:
+            ok = false;
+            break;
+            
+            // Saved, ok
+        case 2:
+            ok = true;
+            break;
+    }
     
-    QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
-    QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
-    QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
-    QObject::connect(view -> changePwdItem, SIGNAL(activated()), this, SLOT(changePassword()));
-    QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
-    
-    QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
-    QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
+    if(ok) {
+        this->view->menubar->setVisible(false);
+        this->view->mainFrame->setVisible(false);
+        this->view->horizontalLayoutWidgetNewModel->setVisible(true);
+    }
 }
 
-// Public slots :
-
 void Controler::newEmptyModel() {
-    this->view->setMainFrame();
-    this->setMainFrameConnections();
-    delete this->view->horizontalLayoutWidgetNewModel;
-    
+    this->view->menubar->setVisible(true);
+    this->view->mainFrame->setVisible(true);
+    this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+
     if(QMessageBox::question(this, "Password", "Do you want to protect your calendar with a password ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         this->changePassword();
 }
 
 void Controler::newModelFromLocal() {
-    this->view->setMainFrame();
+    this->view->menubar->setVisible(true);
+    this->view->mainFrame->setVisible(true);
+    this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+    
     this->loadModel();
-    this->setMainFrameConnections();
-    delete this->view->horizontalLayoutWidgetNewModel;
 }
 
 void Controler::newModelFromGoogle() {
-    this->view->setMainFrame();
+    this->view->menubar->setVisible(true);
+    this->view->mainFrame->setVisible(true);
+    this->view->horizontalLayoutWidgetNewModel->setVisible(false);
 
     // Todo : verif if it's needed to change API key. Idem for GCal id
     string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
@@ -64,8 +95,6 @@ void Controler::newModelFromGoogle() {
     Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, apiKey, this->model, this);
     p->getEventList();
 
-    this->setMainFrameConnections();
-    delete this->view->horizontalLayoutWidgetNewModel;
 }
 
 void Controler::selectWeek()
@@ -105,7 +134,7 @@ void Controler::createSlot()
         while(overlap) {
             overlap = false;
             list = this->model->getSlotList();
-            for(ListOfSlot::iterator it = list.begin();  it != list.end(); it++) {
+            for(ListOfSlot::iterator it = list.begin();  it != list.end() ; it++) {
                 if((*it)->areSlotsOverlapping(startDateTime, endDateTime)) {
                     // Overlapping, ask user for resolving conflict
                     QString event = (*it)->getIntitule().c_str();
@@ -346,21 +375,39 @@ void Controler::loadModel() {
 
 }
 
-void Controler::checkIfSaved() {
+void Controler::close() {
+    switch(this->checkIfSaved()) {
+        
+        // Not saved but continue
+        case 0:
+            this->view->close();
+            break;
+            
+            // Not saved and stop exiting
+        case 1:
+            break;
+            
+            // Saved, ok
+        case 2:
+            if(QMessageBox::question(this, "Warning", "Are you sure ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+                this->view->close();
+            }
+            break;
+    }
+}
+int Controler::checkIfSaved() {
 
     if(!this->config->isSaved()) {
         if(QMessageBox::warning(this, "Warning", "You didn't save your changes neither localy nor online. Continue ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel) {
-            return;
+            return 1;
         }
         else {
-            this->view->close();
-            return;
+            return 0;
         }
     }
+    else
+        return 2;
 
-    if(QMessageBox::question(this, "Warning", "Are you sure ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
-        this->view->close();
-    }
 }
 
 
