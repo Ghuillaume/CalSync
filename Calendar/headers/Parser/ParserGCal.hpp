@@ -4,6 +4,8 @@
 #include <QHttp>
 #include <QObject>
 #include <QByteArray>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
 
 #include "Parser.hpp"
 #include "../Model/Model.hpp"
@@ -21,9 +23,10 @@ class ParserGCal : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserGCal(string url, bool ssl, string id, string apikey, Model* model, QObject* parent);
+        ParserGCal(string url, bool ssl, string id, string apikey, string authToken, Model* model, QObject* parent);
         virtual ~ParserGCal();
 
+        QString buildQuery();
         virtual void getEventList();
 
 
@@ -31,13 +34,17 @@ class ParserGCal : public QObject, public Parser {
         void stateChanged ( int state );
         void responseHeaderReceived ( const QHttpResponseHeader & resp );
         void requestFinished ( int id, bool error );
+        void replyFinished(QNetworkReply*);
 
     private:
         virtual void parseEvents(QByteArray in);
 
         string id;
         string apiKey;
+        string authToken;
+
         QHttp* query;
+        QNetworkAccessManager* networkManager;
 
 
 };

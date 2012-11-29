@@ -51,6 +51,7 @@ class View: public QMainWindow
             QAction *deleteSlotItem;
             QAction* changePwdItem;
             QAction* changeKeyItem;
+            QAction* googleAccessItem;
             
         // Start view buttons
         QWidget* horizontalLayoutWidgetNewModel;

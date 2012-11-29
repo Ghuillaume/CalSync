@@ -52,3 +52,20 @@ QString Config::getFileName() {
 void Config::setFileName(QString& filename) {
     this->savefileName = filename;
 }
+
+
+QString Config::getGoogleAuthCode() {
+    return this->googleAuthCode;
+}
+
+void Config::setGoogleAuthCode(QString& authcode) {
+    this->googleAuthCode = authcode;
+}
+
+OAuth2* Config::getGoogleOAuth() {
+    return this->oauth2;
+}
+
+void Config::setGoogleOAuth(OAuth2* oauth) {
+    this->oauth2 = oauth;
+}

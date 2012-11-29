@@ -75,6 +75,11 @@ View::View(Model *model) : QMainWindow(), time(8)
         changeKeyItem->setObjectName("changeKeyItem");
         editMenu->addAction(changeKeyItem);
         changeKeyItem->setText("Change my API Key");
+
+        googleAccessItem = new QAction(this);
+        googleAccessItem->setObjectName("googleAccessItem");
+        editMenu->addAction(googleAccessItem);
+        googleAccessItem->setText("OAuth");
     
     menubar->setVisible(false);
   
@@ -165,27 +170,6 @@ int View::getFirstEventPosition() {
     return this->firstEventPosition;
 }
 
-void View::setWeek()
-{
-    /*string dayName[7] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
-    Time tmp = time;
-    for (int i = 0; i < 7; i++)
-    {
-            stringstream stream;
-            stream << dayName[i] << "\n" << tmp.getDate();
-            tableWidget->horizontalHeaderItem(i)->setText(stream.str().c_str());
-
-            tmp.nextDay();
-    }*/
-}
-
-void View::setSlot(const string &s, int row, int column)
-{
-    //QLabel *w = (QLabel*) tableWidget -> cellWidget(row, column);
-    //w -> setText(QString::fromUtf8(s.c_str()));
-}
-
-
 View::~View()
 {
 	delete newItem;
@@ -198,16 +182,10 @@ View::~View()
 	
 	delete menubar;
 	
-        delete datePrevious;
+    delete datePrevious;
 	delete dateNext;
 	delete controlLayout;
-	
-	// Destruction de tous les QLabels créés dynamiquement
-   /* for (int i = 0 ; i < 24 ; i++)
-	    for(int j = 0 ; j < 7 ; j++)
-	        delete tableWidget->cellWidget(i, j);
-	delete tableWidget;*/
-        
+
 	delete mainFrame;
 }
 

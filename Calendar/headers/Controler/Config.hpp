@@ -2,6 +2,7 @@
 #define CONFIG_HPP
 
 #include "../Model/common.h"
+#include "OAuth.hpp"
 
 class Config {
     public:
@@ -19,11 +20,18 @@ class Config {
         QString getFileName();
         void setFileName(QString& filename);
 
+        QString getGoogleAuthCode();
+        void setGoogleAuthCode(QString& authcode);
+        OAuth2* getGoogleOAuth();
+        void setGoogleOAuth(OAuth2* oauth);
+
     private:
         bool saved;
         string password;
         string gCalId;
         string API_KEY;
+        QString googleAuthCode;
+        OAuth2* oauth2;
         
         QString savefileName;
 

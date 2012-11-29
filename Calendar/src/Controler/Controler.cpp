@@ -22,7 +22,7 @@ Controler::Controler(Model* model, View* view, Config* config)
     QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> changePwdItem, SIGNAL(activated()), this, SLOT(changePassword()));
     QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
-    
+    QObject::connect(view -> googleAccessItem, SIGNAL(activated()), this, SLOT(getGoogleAccessToken()));
     
     // Main frame
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
@@ -94,19 +94,9 @@ void Controler::newModelFromGoogle() {
 
     // create Google Parser and parse
     // Todo : ask for password
-    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, apiKey, this->model, this);
+    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, apiKey, this->config->getGoogleAuthCode().toStdString(), this->model, this);
     p->getEventList();
 
-}
-
-void Controler::selectWeek()
-{
-	DateDialog *dialog = new DateDialog(view);
-	QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(setWeek()));
-	QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
-	dialog -> exec();
-	delete dialog;
-	view -> display ();
 }
 
 void Controler::createSlot()
@@ -532,4 +522,17 @@ ListOfString Controler::explode(const std::string& str, const char& delimiter)
     std::vector<std::string> tokens;
     for (std::string each; std::getline(split, each, delimiter); tokens.push_back(each));
     return tokens;
+}
+
+void Controler::getGoogleAccessToken() {
+    this->auth2 = new OAuth2(this);
+    this->auth2->startLogin(false);
+
+    this->connect(this->auth2,SIGNAL(sigCodeObtained(QString)),this,SLOT(googleAccessTokenObtained(QString)));
+
+}
+
+void Controler::googleAccessTokenObtained(QString authCode) {
+    this->config->setGoogleOAuth(this->auth2);
+    this->config->setGoogleAuthCode(authCode);
 }
