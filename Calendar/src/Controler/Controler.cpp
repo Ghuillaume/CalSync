@@ -98,33 +98,40 @@ void Controler::createSlot()
             QMessageBox::critical(this->view, "Error", "You can't create an event which end before starting ! Creation aborted");
             return;
         }
-
-        switch(this->model->createSlot(startDateTime,
-                                    endDateTime,
-                                    dialog->titleEdit->text().toStdString(),
-                                    dialog->descriptionEdit->text().toStdString()))
-        {
-            case 0:
-                //ok
-                this->config->setSaved(false);
-                break;
-            case 2:
-                // slot already inserted
-                qWarning() << "Trying to insert a slot which is already in the list";
-                break;
-
-            case 1:
-                // slot overlaps another slot, ask user if he wants to erase existing slot or keep it
-                QString message = "Event blabla overlap event bloublou and will erase it";
-                if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
-                    qDebug() << "erase" << endl;
+        
+        // Checking conflicts
+        bool overlap = true;
+        ListOfSlot list;
+        while(overlap) {
+            overlap = false;
+            list = this->model->getSlotList();
+            for(ListOfSlot::iterator it = list.begin();  it != list.end(); it++) {
+                if((*it)->areSlotsOverlapping(startDateTime, endDateTime)) {
+                    // Overlapping, ask user for resolving conflict
+                    QString event = (*it)->getIntitule().c_str();
+                    QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
+                    if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
+                        qDebug() << "erase" << endl;
+                        this->config->setSaved(false);
+                        this->model->deleteSlot(*it);
+                        overlap = true;
+                        break;
+                    }
+                    else {
+                        qDebug() << "discard" << endl;
+                        return;
+                    }
                 }
-                else
-                    qDebug() << "discard" << endl;
-                break;
+            }
         }
 
-        this->view->display ();
+        this->config->setSaved(false);
+        this->model->createSlot(startDateTime,
+                                endDateTime,
+                                dialog->titleEdit->text().toStdString(),
+                                dialog->descriptionEdit->text().toStdString());
+
+        this->view->display();
     }
 }
 
@@ -158,12 +165,40 @@ void Controler::editSlot() {
 
             Time* startDateTime = new Time(startTime.minute(), startTime.hour(), startDate.day(), startDate.month(), startDate.year());
             Time* endDateTime = new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year());
-
+            
             if(*startDateTime > *endDateTime) {
                 QMessageBox::critical(this->view, "Error", "You can't create an event which end before starting ! Edition aborted.");
                 return;
             }
+            
+            // Checking conflicts
+            bool overlap = true;
+            ListOfSlot list;
+            while(overlap) {
+                overlap = false;
+                list = this->model->getSlotList();
+                for(ListOfSlot::iterator it = list.begin();  it != list.end(); it++) {
+                    if((*it)->areSlotsOverlapping(startDateTime, endDateTime) && ((*slotToEditIterator) != (*it))) {
+                        qDebug() << (*slotToEditIterator)->toString().c_str() << " & " << (*it)->toString().c_str() << "overlaped";
+                        // Overlapping, ask user for resolving conflict
+                        QString event = (*it)->getIntitule().c_str();
+                        QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
+                        if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
+                            qDebug() << "erase" << endl;
+                            this->config->setSaved(false);
+                            this->model->deleteSlot(*it);
+                            overlap = true;
+                            break;
+                        }
+                        else {
+                            qDebug() << "discard" << endl;
+                            return;
+                        }
+                    }
+                }
+            }
 
+            this->config->setSaved(false);
             (*slotToEditIterator)->editSlot(
                         startDateTime,
                         endDateTime,
@@ -172,10 +207,8 @@ void Controler::editSlot() {
             this->view->display();
         }
 
-        this->config->setSaved(false);
     }
 }
-
 
 void Controler::deleteSlot() {
     if(this->view->slotListWidget->currentRow() == -1)

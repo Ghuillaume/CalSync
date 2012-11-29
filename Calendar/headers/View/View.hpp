@@ -26,9 +26,11 @@ class View: public QMainWindow
 
     public:
         View(Model *model);
-       ~View();
+        ~View();
 	
-       void setMainFrame();
+        //void setStartView();
+        //void setMenuBar();
+        void setMainFrame();
        
         Time *getTime();
         Model *getModel();
