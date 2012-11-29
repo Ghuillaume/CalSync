@@ -40,23 +40,6 @@ int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string desc
 
     cout << "inserting slot : " << newSlot->toString() << endl;
     
-<<<<<<< HEAD
-    int code = 0;
-    bool overlap = false;
-    for(ListOfSlot::iterator it = this->slotlist.begin();  it != this->slotlist.end(); it++) {
-        qDebug() << (*it)->toString().c_str();
-        overlap |= (*it)->areSlotsOverlapping(newSlot);
-    }
-
-    if (overlap) {
-        delete newSlot;
-        code = 1;
-    } else {
-        this->slotlist.insert(newSlot);
-    }
-=======
->>>>>>> c623c2ec8d60c2a9916e1820505f8cec653d2158
-    
     this->slotlist.insert(newSlot);
     
     return 1;
@@ -64,13 +47,8 @@ int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string desc
 }
 
 void Model::deleteSlot(ListOfSlot::iterator it) {
-<<<<<<< HEAD
-    cout << "erasing slot : " << (*it)->toString() << endl;
-    this->slotlist.erase(*it);
-=======
     cout << "erasing slot from iterator : " << (*it)->toString() << endl;
     this->slotlist.erase(it);
->>>>>>> c623c2ec8d60c2a9916e1820505f8cec653d2158
 }
 
 void Model::deleteSlot(Slot* slot) {
