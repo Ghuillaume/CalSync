@@ -26,6 +26,8 @@ Controler::Controler(Model* model, View* view, Config* config)
     QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
     //QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
+    QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importCalendar()));
+    QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
     
     // Main frame
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
@@ -55,18 +57,37 @@ void Controler::newModelFromLocal() {
 }
 
 void Controler::newModelFromGoogle() {
-    this->view->menubar->setVisible(true);
-    this->view->mainFrame->setVisible(true);
-    this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+    bool ok = false;
+    if(this->config->getGoogleAuthCode().isEmpty()) {
+        if(QMessageBox::warning(this, "Warning", "You are not authenticated, click OK if you want to launch authentication", QMessageBox::Ok, QMessageBox::Abort) == QMessageBox::Abort) {
+            ok = false;
+        }
+        else {
+            ok = true;
+            this->getGoogleAccessToken();
+        }
+    }
+    else {
+        ok = true;
 
-    // Todo : verif if it's needed to change API key. Idem for GCal id
-    string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
-    string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
+        if(QMessageBox::warning(this, "Warning", "You are already authenticated, do you want to authenticate with another account ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+            this->getGoogleAccessToken();
+        }
+    }
+    if(ok) {
+        this->view->menubar->setVisible(true);
+        this->view->mainFrame->setVisible(true);
+        this->view->horizontalLayoutWidgetNewModel->setVisible(false);
 
-    // create Google Parser and parse
-    // Todo : ask for password
-    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
-    p->getEventList();
+        // Todo : verif if it's needed to change API key. Idem for GCal id
+        string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
+        string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
+
+        // create Google Parser and parse
+        // Todo : ask for password
+        Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
+        p->getEventList();
+    }
 
 }
 
@@ -102,7 +123,7 @@ void Controler::setStartView() {
 void Controler::saveModel() {
     QString fileName = this->config->getFileName();
     qDebug() << fileName;
-    if(fileName != "0") {
+    if(fileName.isEmpty()) {
         qDebug() << "parse with file name";
         this->parseModel(fileName);
     }
@@ -129,14 +150,32 @@ void Controler::loadModel() {
 
     // LOL
 
-    bool load = true;
-
-    if(!this->config->isSaved()) {
-        if(QMessageBox::warning(this, "Warning", "Your changes will be lost. Continue without save ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel)
-            load = false;
+    // Checking password
+    bool pwdOK = false, load;
+    if(this->config->getPassword().empty())
+        pwdOK = true;
+    else {
+        QString passwdChecking = QInputDialog::getText(this, "Password", "Type your password");
+        if(md5(passwdChecking.toStdString()) == this->config->getPassword()) {
+            pwdOK = true;
+        }
     }
 
-    if(load) {
+    if(!pwdOK) {
+        QMessageBox::warning(this, "Warning", "Wrong password");
+    }
+    else {
+
+        // Checking if saved
+        load = true;
+
+        if(!this->config->isSaved()) {
+            if(QMessageBox::warning(this, "Warning", "Your changes will be lost. Continue without save ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel)
+                load = false;
+        }
+    }
+
+    if(load && pwdOK) {
         this->model->cleanList();
         QXmlStreamReader reader;
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
@@ -439,50 +478,65 @@ void Controler::updateSettings() {
 }
 
 void Controler::parseModel(QString fileName) {
-    
-    // Création de l'arbre DOM
-    QDomDocument dom("dom");
-    QFile xml_doc(fileName);
-    QDomElement rootNode = dom.createElement("Calendar");
-    dom.appendChild(rootNode);
-    QDomElement passwd = dom.createElement("password");
-    passwd.appendChild(dom.createTextNode(this->config->getPassword().c_str()));
-    rootNode.appendChild(passwd);
-    QDomElement apikey = dom.createElement("apikey");
-    apikey.appendChild(dom.createTextNode(this->config->getAPIKEY().c_str()));
-    rootNode.appendChild(apikey);
 
-    ListOfSlot l = this->model->getSlotList();
-    QDomElement slotlistXML = dom.createElement("slotlist");
-    rootNode.appendChild(slotlistXML);
-    for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
-        QDomElement slotXML = dom.createElement("slot");
-        slotlistXML.appendChild(slotXML);
-
-        QDomElement titreXML = dom.createElement("title");
-        titreXML.appendChild(dom.createTextNode((*it)->getIntitule().c_str()));
-        slotXML.appendChild(titreXML);
-        QDomElement descriptionXML = dom.createElement("description");
-        descriptionXML.appendChild(dom.createTextNode((*it)->getDescription().c_str()));
-        slotXML.appendChild(descriptionXML);
-
-        QDomElement dateStartXML = dom.createElement("dateStart");
-        dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getDate().c_str()));
-        slotXML.appendChild(dateStartXML);
-
-        QDomElement dateEndXML = dom.createElement("dateEnd");
-        dateEndXML.appendChild(dom.createTextNode((*it)->getDateFin()->getDate().c_str()));
-        slotXML.appendChild(dateEndXML);
+    bool pwdOK = false;
+    if(this->config->getPassword().empty())
+        pwdOK = true;
+    else {
+        QString passwdChecking = QInputDialog::getText(this, "Password", "Type your password");
+        if(md5(passwdChecking.toStdString()) == this->config->getPassword()) {
+            pwdOK = true;
+        }
     }
+    
+    if(!pwdOK) {
+        QMessageBox::warning(this, "Warning", "Wrong password");
+    }
+    else {
+        // Création de l'arbre DOM
+        QDomDocument dom("dom");
+        QFile xml_doc(fileName);
+        QDomElement rootNode = dom.createElement("Calendar");
+        dom.appendChild(rootNode);
+        QDomElement passwd = dom.createElement("password");
+        passwd.appendChild(dom.createTextNode(this->config->getPassword().c_str()));
+        rootNode.appendChild(passwd);
+        QDomElement apikey = dom.createElement("apikey");
+        apikey.appendChild(dom.createTextNode(this->config->getAPIKEY().c_str()));
+        rootNode.appendChild(apikey);
 
-    // Écriture de l'arbre DOM dans fichier XML
-    xml_doc.open(QIODevice::WriteOnly);
-    QTextStream ts(&xml_doc);
-    ts << dom.toString();
-    xml_doc.close();
+        ListOfSlot l = this->model->getSlotList();
+        QDomElement slotlistXML = dom.createElement("slotlist");
+        rootNode.appendChild(slotlistXML);
+        for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
+            QDomElement slotXML = dom.createElement("slot");
+            slotlistXML.appendChild(slotXML);
+
+            QDomElement titreXML = dom.createElement("title");
+            titreXML.appendChild(dom.createTextNode((*it)->getIntitule().c_str()));
+            slotXML.appendChild(titreXML);
+            QDomElement descriptionXML = dom.createElement("description");
+            descriptionXML.appendChild(dom.createTextNode((*it)->getDescription().c_str()));
+            slotXML.appendChild(descriptionXML);
+
+            QDomElement dateStartXML = dom.createElement("dateStart");
+            dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getDate().c_str()));
+            slotXML.appendChild(dateStartXML);
+
+            QDomElement dateEndXML = dom.createElement("dateEnd");
+            dateEndXML.appendChild(dom.createTextNode((*it)->getDateFin()->getDate().c_str()));
+            slotXML.appendChild(dateEndXML);
+        }
+
+        // Écriture de l'arbre DOM dans fichier XML
+        xml_doc.open(QIODevice::WriteOnly);
+        QTextStream ts(&xml_doc);
+        ts << dom.toString();
+        xml_doc.close();
 
 
-    this->config->setSaved(true);
+        this->config->setSaved(true);
+    }
     
 }
 
@@ -503,7 +557,7 @@ int Controler::checkIfSaved() {
 
 
 void Controler::changePassword() {
-    if(this->config->getPassword().compare("0")) {
+    if(!this->config->getPassword().empty()) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
         if(md5(passwdChecking.toStdString()) != this->config->getPassword()) {
             QMessageBox::warning(this, "Warning", "Wrong password");
@@ -527,14 +581,6 @@ void Controler::changeAPIKey() {
     this->config->setAPIKEY(askingKey.textValue().toStdString());
 }
 
-ListOfString Controler::explode(const std::string& str, const char& delimiter)
-{
-    std::istringstream split(str);
-    std::vector<std::string> tokens;
-    for (std::string each; std::getline(split, each, delimiter); tokens.push_back(each));
-    return tokens;
-}
-
 void Controler::getGoogleAccessToken() {
     this->auth2 = new OAuth2(this);
     this->auth2->startLogin(false);
@@ -546,4 +592,22 @@ void Controler::getGoogleAccessToken() {
 void Controler::googleAccessTokenObtained(QString authCode) {
     this->config->setGoogleOAuth(this->auth2);
     this->config->setGoogleAuthCode(authCode);
+}
+
+void Controler::importCalendar() {
+    QMessageBox::critical(this, "Error", "This feature is currently not available.");
+}
+
+void Controler::exportCalendar() {
+
+    QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
+}
+
+
+ListOfString Controler::explode(const std::string& str, const char& delimiter)
+{
+    std::istringstream split(str);
+    std::vector<std::string> tokens;
+    for (std::string each; std::getline(split, each, delimiter); tokens.push_back(each));
+    return tokens;
 }

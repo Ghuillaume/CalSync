@@ -25,12 +25,14 @@ class SettingsDialog: public QDialog
         QLabel* idCalendarLabel;
         QLabel* googleAuthLabel;
         QLabel* inputCalendarLabel;
+        QLabel* groupLabel;
 
         QPushButton* pwdButton;
-        // selection box ?? pour service
+        QComboBox* serviceBox;
         QLineEdit* idCalendarEdit;
         QPushButton* googleAuthButton;
-        // selection box ?? pour inputcalendar
+        QComboBox* inputCalendarBox;
+        QLineEdit* groupEdit;
 
         QDialogButtonBox *buttonBox;
 };

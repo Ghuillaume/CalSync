@@ -76,6 +76,22 @@ View::View(Model *model) : QMainWindow(), time(8)
         editMenu->addAction(changeKeyItem);
         changeKeyItem->setText("Change my API Key");*/
 
+
+    lolMenu = new QMenu(menubar);
+    lolMenu->setObjectName("lolMenu");
+    menubar->addAction(lolMenu->menuAction());
+    lolMenu->setTitle("LOL");
+
+        importItem = new QAction(this);
+        importItem->setObjectName("importItem");
+        lolMenu->addAction(importItem);
+        importItem->setText("Import an existing calendar");
+
+        exportItem = new QAction(this);
+        exportItem->setObjectName("exportItem");
+        lolMenu->addAction(exportItem);
+        exportItem->setText("Save my calendar online");
+
     menubar->setVisible(false);
   
     horizontalLayoutWidgetNewModel = new QWidget(this);

@@ -2,10 +2,11 @@
 
 Config::Config()
 {
-    this->password = "0";
+    this->password = "";
     this->saved = true;
-    this->API_KEY = "0";
-    this->savefileName = "0";
+    this->API_KEY = "";
+    this->googleAuthCode = "";
+    this->savefileName = "";
 }
 
 Config::~Config() {

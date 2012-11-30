@@ -42,6 +42,8 @@ class Controler : public QWidget {
         void changeAPIKey();
         void getGoogleAccessToken();
         void googleAccessTokenObtained(QString authCode);
+        void importCalendar();
+        void exportCalendar();
 
     private:
         Model* model;

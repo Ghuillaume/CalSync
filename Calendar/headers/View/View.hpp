@@ -46,11 +46,14 @@ class View: public QMainWindow
             QAction *quitItem;
             QAction *openItem;
         QMenu *editMenu;
-        QAction *newSlotItem;
+            QAction *newSlotItem;
             QAction *editSlotItem;
             QAction *deleteSlotItem;
             QAction *settingsItem;
             QAction* changeKeyItem;
+        QMenu* lolMenu;
+            QAction* importItem;
+            QAction* exportItem;
             
         // Start view buttons
         QWidget* horizontalLayoutWidgetNewModel;
