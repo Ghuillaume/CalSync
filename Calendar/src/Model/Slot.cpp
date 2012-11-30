@@ -64,26 +64,16 @@ void Slot::setDescription(string description) {
 }
 
 bool Slot::areSlotsOverlapping(Time* dateDebut, Time* dateFin) {
-    /*
-    return ( ( ((*this->dateDebut) <= (*newSlot->dateDebut)) && ((*newSlot->dateDebut) < (*this->dateFin)) )
-             || ( ((*this->dateDebut) < (*newSlot->dateFin)) && ((*newSlot->dateFin) <= (*this->dateFin)) )
-            );
-    */
-    // slot commence avant ou égal a dateFin ET slot fini après ou égal à dateDebut
+    // The slot begins before or at dateFin and it ands after or at dateDebut
     return ( (*(dateDebut) < *(this->dateFin)) && (*(dateFin) > *(this->dateDebut)));
 }
 
 
-int Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string description) {
+void Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string description) {
     this->dateDebut = dateDebut;
     this->dateFin = dateFin;
     this->intitule = intitule;
     this->description = description;
-
-    int code = 0;
-    // TODO : vérifier cohérence date début et date fin
-
-    return code;
 }
 
 string Slot::toString() {

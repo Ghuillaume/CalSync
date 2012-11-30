@@ -44,7 +44,7 @@ void Controler::newEmptyModel() {
     this->view->mainFrame->setVisible(true);
     this->view->horizontalLayoutWidgetNewModel->setVisible(false);
     
-    // todo : clean model & clean config
+    // Clean model and config
     this->model->cleanList();
     this->config->clean();
 
@@ -87,7 +87,8 @@ void Controler::newModelFromGoogle() {
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
         
-        // todo : clean model & clean config
+        this->model->cleanList();
+        this->config->clean();
 
         // Todo : verif if it's needed to change API key. Idem for GCal id
         string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
@@ -153,15 +154,6 @@ void Controler::saveModelAs() {
 }
 
 void Controler::loadModel() {
-
-    // TODO : fonctionne pas bordel de merde !
-    // FUCK LA TASSE DE CAFÉ
-    // Y A PLUS DE CAFÉ JSUIS DANS LA MAYRDE !!!!
-
-
-
-    // LOL
-
     bool load = true;
 
     if(!this->config->isSaved()) {
@@ -169,10 +161,7 @@ void Controler::loadModel() {
             load = false;
     }
 
-    if(load) {
-        this->model->cleanList();
-        // todo : clean model
-        
+    if(load) {        
         QXmlStreamReader reader;
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
 
@@ -185,6 +174,10 @@ void Controler::loadModel() {
 
         reader.setDevice(&xml_doc);
 
+        // If load didn't fail, clean model & config
+        this->model->cleanList();
+        this->config->clean();
+        
         while (!reader.atEnd()) {
             if (reader.isStartElement())
             {
