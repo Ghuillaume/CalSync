@@ -9,7 +9,11 @@ Controler::Controler(Model* model, View* view, Config* config)
     this -> view = view;
     this -> config = config;
     
-    
+    // Starting view
+    QObject::connect(view -> newEmptyModel, SIGNAL(clicked()), this, SLOT(newEmptyModel()));
+    QObject::connect(view -> newModelFromLocal, SIGNAL(clicked()), this, SLOT(newModelFromLocal()));
+    QObject::connect(view -> newModelFromGoogle, SIGNAL(clicked()), this, SLOT(newModelFromGoogle()));
+
     // Menubar
     QObject::connect(view -> newItem, SIGNAL(activated()), this, SLOT(setStartView()));
     QObject::connect(view -> saveItem, SIGNAL(activated()), this, SLOT(saveModel()));
@@ -20,58 +24,27 @@ Controler::Controler(Model* model, View* view, Config* config)
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
     QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
     QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
-    QObject::connect(view -> changePwdItem, SIGNAL(activated()), this, SLOT(changePassword()));
-    QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
-    
+    QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
+    //QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
+    QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importCalendar()));
+    QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
     
     // Main frame
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
     QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
-    
-    QObject::connect(view -> newEmptyModel, SIGNAL(clicked()), this, SLOT(newEmptyModel()));
-    QObject::connect(view -> newModelFromLocal, SIGNAL(clicked()), this, SLOT(newModelFromLocal()));
-    QObject::connect(view -> newModelFromGoogle, SIGNAL(clicked()), this, SLOT(newModelFromGoogle()));
+
     
 }
 
 Controler::~Controler() { }
 
 
-void Controler::setStartView() {
-    
-    // Checking if current local changes are saved
-    bool ok = true;
-    switch(this->checkIfSaved()) {
-        // Not saved but continue
-        case 0:
-            ok = true;
-            break;
-            
-            // Not saved, stop
-        case 1:
-            ok = false;
-            break;
-            
-            // Saved, ok
-        case 2:
-            ok = true;
-            break;
-    }
-    
-    if(ok) {
-        this->model->cleanList();
-        this->view->menubar->setVisible(false);
-        this->view->mainFrame->setVisible(false);
-        this->view->horizontalLayoutWidgetNewModel->setVisible(true);
-    }
-}
-
 void Controler::newEmptyModel() {
     this->view->menubar->setVisible(true);
     this->view->mainFrame->setVisible(true);
     this->view->horizontalLayoutWidgetNewModel->setVisible(false);
 
-    if(QMessageBox::question(this, "Password", "Do you want to protect your calendar with a password ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
+    if(QMessageBox::question(this, "Password", "Do you want to protect your calendar with a password ?\nYou will be able to modify it in Edit --> Settings menu", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         this->changePassword();
 }
 
@@ -84,29 +57,215 @@ void Controler::newModelFromLocal() {
 }
 
 void Controler::newModelFromGoogle() {
-    this->view->menubar->setVisible(true);
-    this->view->mainFrame->setVisible(true);
-    this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+    bool ok = false;
+    if(this->config->getGoogleAuthCode().isEmpty()) {
+        if(QMessageBox::warning(this, "Warning", "You are not authenticated, click OK if you want to launch authentication", QMessageBox::Ok, QMessageBox::Abort) == QMessageBox::Abort) {
+            ok = false;
+        }
+        else {
+            ok = true;
+            this->getGoogleAccessToken();
+        }
+    }
+    else {
+        ok = true;
 
-    // Todo : verif if it's needed to change API key. Idem for GCal id
-    string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
-    string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
+        if(QMessageBox::warning(this, "Warning", "You are already authenticated, do you want to authenticate with another account ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+            this->getGoogleAccessToken();
+        }
+    }
+    if(ok) {
+        this->view->menubar->setVisible(true);
+        this->view->mainFrame->setVisible(true);
+        this->view->horizontalLayoutWidgetNewModel->setVisible(false);
 
-    // create Google Parser and parse
-    // Todo : ask for password
-    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, apiKey, this->model, this);
-    p->getEventList();
+        // Todo : verif if it's needed to change API key. Idem for GCal id
+        string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
+        string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
+
+        // create Google Parser and parse
+        // Todo : ask for password
+        Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
+        p->getEventList();
+    }
 
 }
 
-void Controler::selectWeek()
-{
-	DateDialog *dialog = new DateDialog(view);
-	QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(setWeek()));
-	QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
-	dialog -> exec();
-	delete dialog;
-	view -> display ();
+void Controler::setStartView() {
+
+    // Checking if current local changes are saved
+    bool ok = true;
+    switch(this->checkIfSaved()) {
+        // Not saved but continue
+        case 0:
+            ok = true;
+            break;
+
+            // Not saved, stop
+        case 1:
+            ok = false;
+            break;
+
+            // Saved, ok
+        case 2:
+            ok = true;
+            break;
+    }
+
+    if(ok) {
+        this->model->cleanList();
+        this->view->menubar->setVisible(false);
+        this->view->mainFrame->setVisible(false);
+        this->view->horizontalLayoutWidgetNewModel->setVisible(true);
+    }
+}
+
+void Controler::saveModel() {
+    QString fileName = this->config->getFileName();
+    qDebug() << fileName;
+    if(fileName.isEmpty()) {
+        qDebug() << "parse with file name";
+        this->parseModel(fileName);
+    }
+    else {
+        qDebug() << "Going to ask filename";
+        this->saveModelAs();
+    }
+}
+
+void Controler::saveModelAs() {
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/home", tr("XML Document (*.xml)"));
+    this->parseModel(fileName);
+    this->config->setFileName(fileName);
+}
+
+void Controler::loadModel() {
+
+    // TODO : fonctionne pas bordel de merde !
+    // FUCK LA TASSE DE CAFÉ
+    // Y A PLUS DE CAFÉ JSUIS DANS LA MAYRDE !!!!
+
+
+
+    // LOL
+
+    bool load = true;
+
+    if(!this->config->isSaved()) {
+        if(QMessageBox::warning(this, "Warning", "Your changes will be lost. Continue without save ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel)
+            load = false;
+    }
+
+    if(load) {
+        this->model->cleanList();
+        QXmlStreamReader reader;
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
+
+        QFile xml_doc(fileName);
+        if(!xml_doc.open(QIODevice::ReadOnly))
+        {
+             QMessageBox::critical(this, "Error", "Failed to open file");
+             return;
+        }
+
+        reader.setDevice(&xml_doc);
+
+        while (!reader.atEnd()) {
+            if (reader.isStartElement())
+            {
+QString titre;
+QString description;
+QString dateDebut;
+QString dateFin;
+
+// Si on est à la racine, rien à faire
+                if(reader.name() == "Calendar") {
+reader.readNext();
+                }
+
+// Import du mot de passe et de la clé API et sauvegarde dans la conf
+if(reader.name() == "password") {
+config->setPassword(reader.readElementText().toStdString());
+}
+
+if(reader.name() == "apikey") {
+config->setAPIKEY(reader.readElementText().toStdString());
+}
+
+// On commence à sauvegarder les informations des slots
+if(reader.name() == "slot") {
+reader.readNext();
+while(reader.isStartElement()==false) {
+reader.readNext();
+}
+}
+
+if (reader.name() == "title") {
+titre = reader.readElementText();
+reader.readNext();
+while(reader.isStartElement()==false) {
+reader.readNext();
+}
+}
+
+if (reader.name() == "description") {
+description = reader.readElementText();
+reader.readNext();
+while(reader.isStartElement()==false) {
+reader.readNext();
+}
+}
+
+if (reader.name() == "dateStart") {
+dateDebut = reader.readElementText();
+reader.readNext();
+while(reader.isStartElement()==false) {
+reader.readNext();
+}
+}
+
+if (reader.name() == "dateEnd") {
+dateFin = reader.readElementText();
+}
+
+// Une fois qu'on a parsé le slot, on crée l'objet correspondant et on l'ajoute au modèle
+if(dateDebut != NULL && dateFin != NULL) {
+model->createSlot( createTime(dateDebut),
+createTime(dateFin),
+titre.toStdString(),
+description.toStdString());
+}
+            }
+            reader.readNext(); // On va au prochain token
+        }
+
+// On ferme le flux et on rafraichit l'interface
+        xml_doc.close();
+        this->view->display();
+    }
+
+}
+
+void Controler::close() {
+    switch(this->checkIfSaved()) {
+
+        // Not saved but continue
+        case 0:
+            this->view->close();
+            break;
+
+            // Not saved and stop exiting
+        case 1:
+            break;
+
+            // Saved, ok
+        case 2:
+            if(QMessageBox::question(this, "Warning", "Are you sure ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+                this->view->close();
+            }
+            break;
+    }
 }
 
 void Controler::createSlot()
@@ -136,7 +295,7 @@ void Controler::createSlot()
         while(overlap) {
             overlap = false;
             list = this->model->getSlotList();
-            for(ListOfSlot::iterator it = list.begin();  it != list.end() ; it++) {
+            for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
                 if((*it)->areSlotsOverlapping(startDateTime, endDateTime)) {
                     // Overlapping, ask user for resolving conflict
                     QString event = (*it)->getIntitule().c_str();
@@ -208,7 +367,7 @@ void Controler::editSlot() {
             while(overlap) {
                 overlap = false;
                 list = this->model->getSlotList();
-                for(ListOfSlot::iterator it = list.begin();  it != list.end(); it++) {
+                for(ListOfSlot::iterator it = list.begin(); it != list.end(); it++) {
                     if((*it)->areSlotsOverlapping(startDateTime, endDateTime) && ((*slotToEditIterator) != (*it))) {
                         qDebug() << (*slotToEditIterator)->toString().c_str() << " & " << (*it)->toString().c_str() << "overlaped";
                         // Overlapping, ask user for resolving conflict
@@ -266,204 +425,82 @@ void Controler::deleteSlot() {
         this->config->setSaved(false);
 
     }
-
 }
 
-void Controler::saveModel() {
-    QString fileName = this->config->getFileName();
-    qDebug() << fileName;
-    if(fileName != "0") {
-        qDebug() << "parse with file name";
-        this->parseModel(fileName);
-    }
-    else {
-        qDebug() << "Going to ask filename";
-        this->saveModelAs();
-    }
-}
+void Controler::updateSettings() {
 
-void Controler::saveModelAs() {
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/home", tr("XML Document (*.xml)"));
-    this->parseModel(fileName);
-    this->config->setFileName(fileName);
+    SettingsDialog* dialog = new SettingsDialog(view);
+    QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+    QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
+    QObject::connect(dialog->pwdButton, SIGNAL(clicked()), this, SLOT(changePassword()));
+    QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), this, SLOT(getGoogleAccessToken()));
+    QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+    dialog -> exec();
 }
 
 void Controler::parseModel(QString fileName) {
-    
-    // Création de l'arbre DOM
-    QDomDocument dom("dom");
-    QFile xml_doc(fileName);
-    QDomElement rootNode = dom.createElement("Calendar");
-    dom.appendChild(rootNode);
-    QDomElement passwd = dom.createElement("password");
-    passwd.appendChild(dom.createTextNode(this->config->getPassword().c_str()));
-    rootNode.appendChild(passwd);
-    QDomElement apikey = dom.createElement("apikey");
-    apikey.appendChild(dom.createTextNode(this->config->getAPIKEY().c_str()));
-    rootNode.appendChild(apikey);
 
-    ListOfSlot l = this->model->getSlotList();
-    QDomElement slotlistXML = dom.createElement("slotlist");
-    rootNode.appendChild(slotlistXML);
-    for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
-        QDomElement slotXML = dom.createElement("slot");
-        slotlistXML.appendChild(slotXML);
-
-        QDomElement titreXML = dom.createElement("title");
-        titreXML.appendChild(dom.createTextNode((*it)->getIntitule().c_str()));
-        slotXML.appendChild(titreXML);
-        QDomElement descriptionXML = dom.createElement("description");
-        descriptionXML.appendChild(dom.createTextNode((*it)->getDescription().c_str()));
-        slotXML.appendChild(descriptionXML);
-
-        QDomElement dateStartXML = dom.createElement("dateStart");
-        dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getDate().c_str()));
-        slotXML.appendChild(dateStartXML);
-
-        QDomElement dateEndXML = dom.createElement("dateEnd");
-        dateEndXML.appendChild(dom.createTextNode((*it)->getDateFin()->getDate().c_str()));
-        slotXML.appendChild(dateEndXML);
+    bool pwdOK = false;
+    if(this->config->getPassword().empty())
+        pwdOK = true;
+    else {
+        QString passwdChecking = QInputDialog::getText(this, "Password", "Type your password");
+        if(md5(passwdChecking.toStdString()) == this->config->getPassword()) {
+            pwdOK = true;
+        }
     }
-
-    // Écriture de l'arbre DOM dans fichier XML
-    xml_doc.open(QIODevice::WriteOnly);
-    QTextStream ts(&xml_doc);
-    ts << dom.toString();
-    xml_doc.close();
-
-
-    this->config->setSaved(true);
     
-}
-
-void Controler::loadModel() {
-
-    // TODO : fonctionne pas bordel de merde !
-    // FUCK LA TASSE DE CAFÉ
-    // Y A PLUS DE CAFÉ JSUIS DANS LA MAYRDE !!!!
-
-
-
-    // LOL
-
-    bool load = true;
-
-    if(!this->config->isSaved()) {
-        if(QMessageBox::warning(this, "Warning", "Your changes will be lost. Continue without save ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel)
-            load = false;
+    if(!pwdOK) {
+        QMessageBox::warning(this, "Warning", "Wrong password");
     }
-
-    if(load) {
-        this->model->cleanList();
-        QXmlStreamReader reader;
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
-
+    else {
+        // Création de l'arbre DOM
+        QDomDocument dom("dom");
         QFile xml_doc(fileName);
-        if(!xml_doc.open(QIODevice::ReadOnly))
-        {
-             QMessageBox::critical(this, "Error", "Failed to open file");
-             return;
+        QDomElement rootNode = dom.createElement("Calendar");
+        dom.appendChild(rootNode);
+        QDomElement passwd = dom.createElement("password");
+        passwd.appendChild(dom.createTextNode(this->config->getPassword().c_str()));
+        rootNode.appendChild(passwd);
+        QDomElement apikey = dom.createElement("apikey");
+        apikey.appendChild(dom.createTextNode(this->config->getAPIKEY().c_str()));
+        rootNode.appendChild(apikey);
+
+        ListOfSlot l = this->model->getSlotList();
+        QDomElement slotlistXML = dom.createElement("slotlist");
+        rootNode.appendChild(slotlistXML);
+        for(ListOfSlot::iterator it = l.begin() ; it != l.end() ; it++) {
+            QDomElement slotXML = dom.createElement("slot");
+            slotlistXML.appendChild(slotXML);
+
+            QDomElement titreXML = dom.createElement("title");
+            titreXML.appendChild(dom.createTextNode((*it)->getIntitule().c_str()));
+            slotXML.appendChild(titreXML);
+            QDomElement descriptionXML = dom.createElement("description");
+            descriptionXML.appendChild(dom.createTextNode((*it)->getDescription().c_str()));
+            slotXML.appendChild(descriptionXML);
+
+            QDomElement dateStartXML = dom.createElement("dateStart");
+            dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getDate().c_str()));
+            slotXML.appendChild(dateStartXML);
+
+            QDomElement dateEndXML = dom.createElement("dateEnd");
+            dateEndXML.appendChild(dom.createTextNode((*it)->getDateFin()->getDate().c_str()));
+            slotXML.appendChild(dateEndXML);
         }
 
-        reader.setDevice(&xml_doc);
-
-        while (!reader.atEnd()) {
-            if (reader.isStartElement())
-            {
-				QString titre;
-				QString description;
-				QString dateDebut;
-				QString dateFin;
-				
-				// Si on est à la racine, rien à faire
-                if(reader.name() == "Calendar") {
-					reader.readNext();
-                }
-				
-				// Import du mot de passe et de la clé API et sauvegarde dans la conf
-				if(reader.name() == "password") {
-					config->setPassword(reader.readElementText().toStdString());
-				}
-
-				if(reader.name() == "apikey") {
-					config->setAPIKEY(reader.readElementText().toStdString());
-				}
-
-				// On commence à sauvegarder les informations des slots
-				if(reader.name() == "slot") {
-					reader.readNext();
-					while(reader.isStartElement()==false) {
-						reader.readNext();
-					}
-				}
-
-				if (reader.name() == "title") {
-					titre = reader.readElementText();
-					reader.readNext();
-					while(reader.isStartElement()==false) {
-						reader.readNext();
-					}
-				}
-
-				if (reader.name() == "description") {
-					description = reader.readElementText();
-					reader.readNext();
-					while(reader.isStartElement()==false) {
-						reader.readNext();
-					}
-				}
-
-				if (reader.name() == "dateStart") {
-					dateDebut = reader.readElementText();
-					reader.readNext();
-					while(reader.isStartElement()==false) {
-						reader.readNext();
-					}
-				}
-
-				if (reader.name() == "dateEnd") {
-					dateFin = reader.readElementText();
-				}
-				
-				// Une fois qu'on a parsé le slot, on crée l'objet correspondant et on l'ajoute au modèle
-				if(dateDebut != NULL && dateFin != NULL) {
-					model->createSlot(  createTime(dateDebut),
-										createTime(dateFin),
-										titre.toStdString(),
-										description.toStdString());
-				}
-            }
-            reader.readNext(); // On va au prochain token
-        }
-
-		// On ferme le flux et on rafraichit l'interface
+        // Écriture de l'arbre DOM dans fichier XML
+        xml_doc.open(QIODevice::WriteOnly);
+        QTextStream ts(&xml_doc);
+        ts << dom.toString();
         xml_doc.close();
-        this->view->display();
-    }
 
+
+        this->config->setSaved(true);
+    }
+    
 }
 
-void Controler::close() {
-    switch(this->checkIfSaved()) {
-        
-        // Not saved but continue
-        case 0:
-            this->view->close();
-            break;
-            
-            // Not saved and stop exiting
-        case 1:
-            break;
-            
-            // Saved, ok
-        case 2:
-            if(QMessageBox::question(this, "Warning", "Are you sure ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
-                this->view->close();
-            }
-            break;
-    }
-}
 int Controler::checkIfSaved() {
 
     if(!this->config->isSaved()) {
@@ -481,7 +518,7 @@ int Controler::checkIfSaved() {
 
 
 void Controler::changePassword() {
-    if(this->config->getPassword().compare("0")) {
+    if(!this->config->getPassword().empty()) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
         if(md5(passwdChecking.toStdString()) != this->config->getPassword()) {
             QMessageBox::warning(this, "Warning", "Wrong password");
@@ -505,6 +542,29 @@ void Controler::changeAPIKey() {
     this->config->setAPIKEY(askingKey.textValue().toStdString());
 }
 
+void Controler::getGoogleAccessToken() {
+    this->auth2 = new OAuth2(this);
+    this->auth2->startLogin(false);
+
+    this->connect(this->auth2,SIGNAL(sigCodeObtained(QString)),this,SLOT(googleAccessTokenObtained(QString)));
+
+}
+
+void Controler::googleAccessTokenObtained(QString authCode) {
+    this->config->setGoogleOAuth(this->auth2);
+    this->config->setGoogleAuthCode(authCode);
+}
+
+void Controler::importCalendar() {
+    QMessageBox::critical(this, "Error", "This feature is currently not available.");
+}
+
+void Controler::exportCalendar() {
+
+    QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
+}
+
+
 ListOfString Controler::explode(const std::string& str, const char& delimiter)
 {
     std::istringstream split(str);
@@ -513,15 +573,16 @@ ListOfString Controler::explode(const std::string& str, const char& delimiter)
     return tokens;
 }
 
+
 Time* Controler::createTime(const QString &chaine) {
-	
-	ListOfString chaineHeure = explode(chaine.toStdString(), ':');
-	ListOfString chaineDate = explode(chaineHeure[2], '/');
-	int heure = QString(chaineHeure[0].c_str()).toInt();
-	int minute = QString(chaineHeure[1].c_str()).toInt();
-	int jour = QString(chaineDate[0].c_str()).toInt();
-	int mois = QString(chaineDate[1].c_str()).toInt();
-	int annee = QString(chaineDate[2].c_str()).toInt();
-	
-	return new Time(minute, heure, jour, mois, annee);
+
+ListOfString chaineHeure = explode(chaine.toStdString(), ':');
+ListOfString chaineDate = explode(chaineHeure[2], '/');
+int heure = QString(chaineHeure[0].c_str()).toInt();
+int minute = QString(chaineHeure[1].c_str()).toInt();
+int jour = QString(chaineDate[0].c_str()).toInt();
+int mois = QString(chaineDate[1].c_str()).toInt();
+int annee = QString(chaineDate[2].c_str()).toInt();
+
+return new Time(minute, heure, jour, mois, annee);
 }
