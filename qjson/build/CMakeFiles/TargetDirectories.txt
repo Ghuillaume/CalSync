@@ -1,0 +1,2 @@
+/home/guillaume/Bureau/CalSync/qjson/build/src/CMakeFiles/qjson.dir
+/home/guillaume/Bureau/CalSync/qjson/build/CMakeFiles/uninstall.dir

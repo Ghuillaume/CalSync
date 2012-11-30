@@ -366,21 +366,14 @@ void Serializer::serialize( const QVariant& v, QIODevice* io, bool* ok)
   }
 }
 
-QByteArray Serializer::serialize( const QVariant &v)
-{
-  bool ok;
-
-  return serialize(v, &ok);
-}
-
 QByteArray Serializer::serialize( const QVariant &v, bool *ok)
 {
-  bool _ok = true;
   d->errorMessage.clear();
 
   if (ok) {
     *ok = true;
   } else {
+    bool _ok = true;
     ok = &_ok;
   }
 
