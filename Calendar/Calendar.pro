@@ -51,7 +51,8 @@ HEADERS += headers/Controler/Config.hpp \
            headers/View/SlotDialog.hpp \
            headers/View/View.hpp \
     headers/View/GoogleAccessDialog.hpp \
-    headers/Controler/OAuth.hpp
+    headers/Controler/OAuth.hpp \
+    headers/View/SettingsDialog.hpp
 SOURCES += main.cpp \
            src/Controler/Config.cpp \
            src/Controler/Controler.cpp \
@@ -67,4 +68,5 @@ SOURCES += main.cpp \
            src/View/SlotDialog.cpp \
            src/View/View.cpp \
     src/View/GoogleAccessDialog.cpp \
-    src/Controler/OAuth.cpp
+    src/Controler/OAuth.cpp \
+    src/View/SettingsDialog.cpp

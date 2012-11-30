@@ -49,9 +49,8 @@ class View: public QMainWindow
         QAction *newSlotItem;
             QAction *editSlotItem;
             QAction *deleteSlotItem;
-            QAction* changePwdItem;
+            QAction *settingsItem;
             QAction* changeKeyItem;
-            QAction* googleAccessItem;
             
         // Start view buttons
         QWidget* horizontalLayoutWidgetNewModel;

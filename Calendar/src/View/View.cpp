@@ -66,21 +66,16 @@ View::View(Model *model) : QMainWindow(), time(8)
 
         editMenu->addSeparator();
 
-        changePwdItem = new QAction(this);
-        changePwdItem->setObjectName("changePwdItem");
-        editMenu->addAction(changePwdItem);
-        changePwdItem->setText("Change password");
+        settingsItem = new QAction(this);
+        settingsItem->setObjectName("settingsItem");
+        editMenu->addAction(settingsItem);
+        settingsItem->setText("Settings..");
 
-        changeKeyItem = new QAction(this);
+        /*changeKeyItem = new QAction(this);
         changeKeyItem->setObjectName("changeKeyItem");
         editMenu->addAction(changeKeyItem);
-        changeKeyItem->setText("Change my API Key");
+        changeKeyItem->setText("Change my API Key");*/
 
-        googleAccessItem = new QAction(this);
-        googleAccessItem->setObjectName("googleAccessItem");
-        editMenu->addAction(googleAccessItem);
-        googleAccessItem->setText("OAuth");
-    
     menubar->setVisible(false);
   
     horizontalLayoutWidgetNewModel = new QWidget(this);

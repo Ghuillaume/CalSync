@@ -8,8 +8,8 @@
 #include "OAuth.hpp"
 #include "../Model/Model.hpp"
 #include "../View/View.hpp"
-#include "../View/DateDialog.hpp"
 #include "../View/SlotDialog.hpp"
+#include "../View/SettingsDialog.hpp"
 #include "../View/GoogleAccessDialog.hpp"
 #include "../Parser/ParserGCal.hpp"
 #include "../Parser/ParserCELCAT.hpp"
@@ -30,7 +30,6 @@ class Controler : public QWidget {
         void newEmptyModel();
         void newModelFromLocal();
         void newModelFromGoogle();
-        //void selectWeek();
         void createSlot();
         void editSlot();
         void deleteSlot();
@@ -38,6 +37,7 @@ class Controler : public QWidget {
         void saveModelAs();
         void loadModel();
         void close();
+        void updateSettings();
         void changePassword();
         void changeAPIKey();
         void getGoogleAccessToken();

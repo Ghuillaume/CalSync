@@ -23,7 +23,7 @@ class ParserGCal : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserGCal(string url, bool ssl, string id, string apikey, string authToken, Model* model, QObject* parent);
+        ParserGCal(string url, bool ssl, string id, string authToken, Model* model, QObject* parent);
         virtual ~ParserGCal();
 
         QString buildQuery();
@@ -40,7 +40,6 @@ class ParserGCal : public QObject, public Parser {
         virtual void parseEvents(QByteArray in);
 
         string id;
-        string apiKey;
         string authToken;
 
         QHttp* query;
