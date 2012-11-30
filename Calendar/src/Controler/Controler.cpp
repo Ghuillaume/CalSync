@@ -546,13 +546,20 @@ void Controler::getGoogleAccessToken() {
     this->auth2 = new OAuth2(this);
     this->auth2->startLogin(false);
 
-    this->connect(this->auth2,SIGNAL(sigCodeObtained(QString)),this,SLOT(googleAccessTokenObtained(QString)));
+    this->connect(this->auth2,SIGNAL(sigCodeObtained(QString)),this,SLOT(googleCodeObtained(QString)));
 
 }
 
-void Controler::googleAccessTokenObtained(QString authCode) {
+void Controler::googleCodeObtained(QString authCode) {
+    qDebug() << "Google code obtained : " << authCode;
+    this->auth2->askTokenAccess(authCode);
+    QObject::connect(this->auth2, SIGNAL(tokenObtained(QString)), this, SLOT(googleAccessTokenObtained(QString)));
+}
+
+void Controler::googleAccessTokenObtained(QString token) {
+    qDebug() << "Google token obtained : " << token;
     this->config->setGoogleOAuth(this->auth2);
-    this->config->setGoogleAuthCode(authCode);
+    this->config->setGoogleAuthCode(token);
 }
 
 void Controler::importCalendar() {

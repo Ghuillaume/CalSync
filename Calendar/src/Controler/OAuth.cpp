@@ -16,6 +16,10 @@ OAuth2::OAuth2(QWidget* parent)
 
     m_pGoogleAccessDialog = new GoogleAccessDialog(parent);
     m_pParent = parent;
+
+    networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+
     connect(m_pGoogleAccessDialog, SIGNAL(codeObtained(QString)),this,SLOT(codeObtained(QString)));
 }
 
@@ -92,3 +96,41 @@ void OAuth2::startLogin(bool bForce)
 }
 
 
+void OAuth2::askTokenAccess(QString code) {
+
+    QString url = QString("https://accounts.google.com/o/oauth2/token");
+    QString params = QString("code=%1&client_id=%2&client_secret=%3&redirect_uri=%4&grant_type=authorization_code")
+            .arg(code)
+            .arg(this->m_strClientID)
+            .arg(this->m_strClientSecret)
+            .arg(this->m_strRedirectURI);
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    this->networkManager->post(request, QByteArray(params.toUtf8()));
+}
+
+
+void OAuth2::replyFinished(QNetworkReply * reply)
+{
+
+    QApplication::restoreOverrideCursor();
+    QString token = "";
+    QString json = reply->readAll();
+
+    QApplication::restoreOverrideCursor();
+    qDebug() << "PROUTPROUT" << json;
+
+    /*QJson::Parser parser;
+    bool ok;
+    QVariant result = parser.parse(json.toLatin1(), &ok);
+    if(!ok) {
+        qCritical() << "error json -> authcode";
+    }
+    if(result.toMap().contains("access_token")) {
+        token = result.toMap()["access_token"].toString();
+    }*/
+
+    emit tokenObtained(token);
+}

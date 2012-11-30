@@ -5,6 +5,12 @@
 #include <QString>
 #include <QObject>
 
+#include <QByteArray>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
+
+//#include <QJson/Parser>
+
 class GoogleAccessDialog;
 
 class OAuth2 : public QObject
@@ -16,6 +22,7 @@ public:
     QString accessToken();
     bool isAuthorized();
     void startLogin(bool bForce);
+    void askTokenAccess(QString code);
     void accessTokenObtained(QString access_token);
 
     QString loginUrl();
@@ -28,10 +35,12 @@ public:
 signals:
     void loginDone();
     void sigCodeObtained(QString);
+    void tokenObtained(QString);
 
 private slots:
 
     void codeObtained(QString code);
+    void replyFinished(QNetworkReply * reply);
 
 private:
     QString m_strAccessToken;
@@ -46,6 +55,8 @@ private:
 
     GoogleAccessDialog* m_pGoogleAccessDialog;
     QWidget* m_pParent;
+
+    QNetworkAccessManager* networkManager;
 };
 
 

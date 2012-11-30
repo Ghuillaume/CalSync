@@ -43,7 +43,8 @@ class Controler : public QWidget {
         void changePassword();
         void changeAPIKey();
         void getGoogleAccessToken();
-        void googleAccessTokenObtained(QString authCode);
+        void googleCodeObtained(QString authCode);
+        void googleAccessTokenObtained(QString token);
         void importCalendar();
         void exportCalendar();
 
