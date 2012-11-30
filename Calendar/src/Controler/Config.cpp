@@ -54,6 +54,13 @@ void Config::setFileName(QString& filename) {
     this->savefileName = filename;
 }
 
+void Config::clean() {
+    this->password = "";
+    this->saved = true;
+    this->API_KEY = "";
+    this->googleAuthCode = "";
+    this->savefileName = "";
+}
 
 QString Config::getGoogleAuthCode() {
     return this->googleAuthCode;

@@ -19,6 +19,7 @@ class Config {
         void setAPIKEY(string key);
         QString getFileName();
         void setFileName(QString& filename);
+        void clean();
 
         QString getGoogleAuthCode();
         void setGoogleAuthCode(QString& authcode);

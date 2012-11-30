@@ -88,6 +88,6 @@ int Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string descr
 
 string Slot::toString() {
     
-    return this->dateDebut->getDate() + " " + this->intitule
-            + " (end " + this->dateFin->getDate() + ")";
+    return this->dateDebut->getReadableDate() + " " + this->intitule
+            + " (end " + this->dateFin->getReadableDate() + ")";
 }
