@@ -43,13 +43,14 @@ class Time
         void previousDay  ();
         
         int         getMinute           () const;
-        int         getHour		() const;
-        int         getDay		() const;
-        int         getWeek		() const;
+        int         getHour				() const;
+        int         getDay				() const;
+        int         getWeek				() const;
         int         getWeekDay          () const;
         int         getMonth            () const;
-        int         getYear		() const;
-        string      getDate		() const;
+        int         getYear				() const;
+        string      getXmlDate			() const;
+        string      getReadableDate		() const;
 };
 
 #endif

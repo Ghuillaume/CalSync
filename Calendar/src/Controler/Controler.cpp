@@ -43,9 +43,15 @@ void Controler::newEmptyModel() {
     this->view->menubar->setVisible(true);
     this->view->mainFrame->setVisible(true);
     this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+    
+    // Clean model and config
+    this->model->cleanList();
+    this->config->clean();
 
     if(QMessageBox::question(this, "Password", "Do you want to protect your calendar with a password ?\nYou will be able to modify it in Edit --> Settings menu", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes)
         this->changePassword();
+    
+    this->view->display();
 }
 
 void Controler::newModelFromLocal() {
@@ -54,6 +60,8 @@ void Controler::newModelFromLocal() {
     this->view->horizontalLayoutWidgetNewModel->setVisible(false);
     
     this->loadModel();
+    
+    this->view->display();
 }
 
 void Controler::newModelFromGoogle() {
@@ -78,6 +86,9 @@ void Controler::newModelFromGoogle() {
         this->view->menubar->setVisible(true);
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+        
+        this->model->cleanList();
+        this->config->clean();
 
         // Todo : verif if it's needed to change API key. Idem for GCal id
         string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
@@ -87,6 +98,8 @@ void Controler::newModelFromGoogle() {
         // Todo : ask for password
         Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
         p->getEventList();
+        
+        this->view->display();
     }
 
 }
@@ -141,15 +154,6 @@ void Controler::saveModelAs() {
 }
 
 void Controler::loadModel() {
-
-    // TODO : fonctionne pas bordel de merde !
-    // FUCK LA TASSE DE CAFÉ
-    // Y A PLUS DE CAFÉ JSUIS DANS LA MAYRDE !!!!
-
-
-
-    // LOL
-
     bool load = true;
 
     if(!this->config->isSaved()) {
@@ -157,8 +161,7 @@ void Controler::loadModel() {
             load = false;
     }
 
-    if(load) {
-        this->model->cleanList();
+    if(load) {        
         QXmlStreamReader reader;
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
 
@@ -171,6 +174,10 @@ void Controler::loadModel() {
 
         reader.setDevice(&xml_doc);
 
+        // If load didn't fail, clean model & config
+        this->model->cleanList();
+        this->config->clean();
+        
         while (!reader.atEnd()) {
             if (reader.isStartElement())
             {
@@ -481,11 +488,11 @@ void Controler::parseModel(QString fileName) {
             slotXML.appendChild(descriptionXML);
 
             QDomElement dateStartXML = dom.createElement("dateStart");
-            dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getDate().c_str()));
+            dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getXmlDate().c_str()));
             slotXML.appendChild(dateStartXML);
 
             QDomElement dateEndXML = dom.createElement("dateEnd");
-            dateEndXML.appendChild(dom.createTextNode((*it)->getDateFin()->getDate().c_str()));
+            dateEndXML.appendChild(dom.createTextNode((*it)->getDateFin()->getXmlDate().c_str()));
             slotXML.appendChild(dateEndXML);
         }
 

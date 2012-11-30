@@ -54,7 +54,7 @@ void Model::deleteSlot(ListOfSlot::iterator it) {
 void Model::deleteSlot(Slot* slot) {
     cout << "erasing slot : " << slot->toString() << endl;
     this->slotlist.erase(slot);
-    //TODO : delete les *slots
+    delete slot;
 }
 
 void Model::cleanList() {

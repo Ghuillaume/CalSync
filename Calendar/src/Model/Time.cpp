@@ -34,7 +34,7 @@ Time& Time::operator= ( const Time &time ) {
 }
 
 // Setters:
-void Time::setWeek ( const int &week ) {
+void Time::setWeek( const int &week ) {
     int weekDay     = this -> getWeekDay ();
     int currentWeek = this -> getWeek ();
     int i = ( currentWeek - week ) * 7 + weekDay;
@@ -44,7 +44,7 @@ void Time::setWeek ( const int &week ) {
     this -> timestamp = mktime ( timestruct );
 }
 
-void Time::setDate ( int minute, int hour, int day, int month, int year ) {
+void Time::setDate( int minute, int hour, int day, int month, int year ) {
     time_t actualtimestamp;
     time ( &actualtimestamp );
     
@@ -68,13 +68,13 @@ void Time::setDate ( int minute, int hour, int day, int month, int year ) {
     this -> timestamp = mktime ( &timestruct );
 }
 
-void Time::nextDay () {
+void Time::nextDay() {
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     timestruct -> tm_mday++;
     this -> timestamp = mktime ( timestruct );
 }
 
-void Time::previousDay ()
+void Time::previousDay()
 {
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     timestruct -> tm_mday--;
@@ -84,56 +84,80 @@ void Time::previousDay ()
 
 // Getters:
 
-int Time::getMinute () const {
+int Time::getMinute() const {
     char minute[3] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( minute, 3, "%M", timestruct );
     return atoi ( minute );
 }
 
-int Time::getHour () const {
+int Time::getHour() const {
     char hour[3] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( hour, 3, "%H", timestruct );
     return atoi ( hour );
 }
 
-int Time::getDay () const {
+int Time::getDay() const {
     char day[3] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( day, 3, "%d", timestruct );
     return atoi ( day );
 }
 
-int Time::getWeekDay () const {
+int Time::getWeekDay() const {
     char weekDay[4] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( weekDay, 4, "%w", timestruct );
     return ( atoi ( weekDay ) + 6 ) % 7;
 }
 
-int Time::getWeek () const {
+int Time::getWeek() const {
     char week[3] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( week, 3, "%W", timestruct );
     return atoi ( week );
 }
 
-int Time::getMonth () const {
+int Time::getMonth() const {
     char month[3] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( month, 3, "%m", timestruct );
     return atoi ( month );
 }
 
-int Time::getYear () const {
+int Time::getYear() const {
     char year[5] = { 0 };
     struct tm *timestruct = localtime ( &(this -> timestamp) );
     strftime ( year, 5, "%Y", timestruct );
     return atoi ( year );
 }
 
-string Time::getDate () const {
+string Time::getXmlDate() const {
+    int minute   = this -> getMinute   ();
+    int hour   = this -> getHour   ();
+    int day   = this -> getDay   ();
+    int month = this -> getMonth ();
+    int year  = this -> getYear  ();
+    
+    stringstream s;
+    s << hour 
+      << ":"
+      << minute 
+      << ":"
+      << ( ( day < 10 ) ? "0":"" )
+      << day
+      << "/"
+      << ( ( month < 10 ) ? "0":"" )
+      << month
+      << "/"
+      << year;
+
+    string date ( s.str () );
+    return date;
+}
+
+string Time::getReadableDate() const {
     int minute   = this -> getMinute   ();
     int hour   = this -> getHour   ();
     int day   = this -> getDay   ();
