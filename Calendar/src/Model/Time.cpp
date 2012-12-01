@@ -133,6 +133,25 @@ int Time::getYear() const {
     return atoi ( year );
 }
 
+
+string Time::getSimpleDate() const {
+    int day   = this -> getDay   ();
+    int month = this -> getMonth ();
+    int year  = this -> getYear  ();
+    
+    stringstream s;
+    s << ( ( day < 10 ) ? "0":"" )
+      << day
+      << "/"
+      << ( ( month < 10 ) ? "0":"" )
+      << month
+      << "/"
+      << year;
+
+    string date ( s.str () );
+    return date;
+}
+
 string Time::getXmlDate() const {
     int minute   = this -> getMinute   ();
     int hour   = this -> getHour   ();

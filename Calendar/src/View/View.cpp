@@ -6,7 +6,8 @@ View::View(Model *model) : QMainWindow(), time(8)
 
 	// Main window:
     this->setWindowTitle("Emploi du temps");
-    this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, 650));
+    this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT));
+	//this->setFixedSize(size());
     
         // Menubar:
     menubar = new QMenuBar(this);
@@ -96,7 +97,7 @@ View::View(Model *model) : QMainWindow(), time(8)
   
     horizontalLayoutWidgetNewModel = new QWidget(this);
     horizontalLayoutWidgetNewModel->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-    horizontalLayoutWidgetNewModel->setGeometry(QRect(50, 190, TABLE_MARGIN + TABLE_WIDTH + 20 - 100, 200));
+    horizontalLayoutWidgetNewModel->setGeometry(QRect(50, 190, TABLE_MARGIN + TABLE_WIDTH + 20 - 100, 200)); 
     horizontalLayoutNewModel = new QHBoxLayout(horizontalLayoutWidgetNewModel);
     horizontalLayoutNewModel->setObjectName(QString::fromUtf8("horizontalLayout"));
     horizontalLayoutNewModel->setContentsMargins(0, 0, 0, 0);
@@ -129,7 +130,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     
     mainLayoutWidget = new QWidget(mainFrame);
     mainLayoutWidget->setObjectName(QString::fromUtf8("mainLayoutWidget"));
-    mainLayoutWidget->setGeometry(QRect(TABLE_MARGIN, TOP_MARGIN, TABLE_WIDTH, 600));
+    mainLayoutWidget->setGeometry(QRect(LEFT_MARGIN, TOP_MARGIN, TABLE_WIDTH + 250, TABLE_HEIGHT));
     mainLayout = new QVBoxLayout(mainLayoutWidget);
     mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -156,11 +157,46 @@ View::View(Model *model) : QMainWindow(), time(8)
     mainLayout->addLayout(controlLayout);
     
     
-    slotListWidget = new QListWidget(mainLayoutWidget);
-    slotListWidget->setObjectName(QString::fromUtf8("slotListWidget"));
-
-    mainLayout->addWidget(slotListWidget);
+//    slotListWidget = new QListWidget(mainLayoutWidget);
+//    slotListWidget->setObjectName(QString::fromUtf8("slotListWidget"));
+//
+//    mainLayout->addWidget(slotListWidget);
+	
+    //
+	tableWidget = new QTableWidget(mainLayoutWidget);
+	tableWidget-> setObjectName(QString::fromUtf8("tableWidget"));
+    tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
+	
+	tableWidget->setRowCount(7);
+    tableWidget->verticalHeader()->setDefaultSectionSize(90);
+	this->setWeek();
     
+    tableWidget->setColumnCount(11);
+    tableWidget->horizontalHeader()->setDefaultSectionSize(100);
+	
+    for ( int i = 0; i < 11; ++i )
+    {
+     std::stringstream stream;
+        stream << ( i > 1 ? "" : "0" ) << i+8 << "h00";
+    
+        QTableWidgetItem *columnHead = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(i, columnHead);
+        columnHead->setText(stream.str().c_str());
+    }
+	
+	mainLayout->addWidget(tableWidget);
+	//
+	
+	/**/
+//	QPushButton *button = new QPushButton(QString("Test"), mainLayoutWidget);
+//	button->setGeometry(98, 59, 100, 90);
+//	button->setDisabled(TRUE);
+//	
+//	QPushButton *button2 = new QPushButton(QString("Test2"), mainLayoutWidget);
+//	button2->setGeometry(98+100, 59, 100, 90);
+//	button->setDisabled(TRUE);
+	/**/
+	
     mainFrame->setVisible(false);
         
     this->display();
@@ -200,53 +236,118 @@ View::~View()
 	delete mainFrame;
 }
 
-void View::display()
+void View::setWeek()
 {
-    
+    string dayName[7] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
+    Time tmp = *(this->model->getCurrentDate());
+	for (int i = 0; i < 7; i++)
+    {
+            stringstream stream;
+            stream << dayName[i] << "\n" << tmp.getSimpleDate();
+			QTableWidgetItem *rowHead = new QTableWidgetItem();
+			tableWidget->setVerticalHeaderItem(i, rowHead);
+			rowHead->setText(stream.str().c_str());
+			
+            tmp.nextDay();
+    }
+}
+
+void View::display()
+{	
     // Display current week 
     Time* curDate = this->model->getCurrentDate();
     string str = "Week " + convertInt(curDate->getWeek());
     currentWeek->setText(QApplication::translate("MainWindow", const_cast<char *>(str.c_str()), 0, QApplication::UnicodeUTF8));
-    
-    // Clear slot list
-    this->slotListWidget->clear();
-    
-    
-    // Display slot of the current week
-    ListOfSlot l = this->model->getSlotList();
-    ListOfSlot::iterator it;
+	ListOfSlot l = this->model->getSlotList();
+    ListOfSlot::iterator it = l.begin();
+	bool firstSlotFound = FALSE;
+	
+	
+	// Destroy pointers of currentButtons and clean vectors of current objects
+	for(unsigned int i = 0; i < currentSlots.size(); i++) {
+		delete currentButtons.at(i);
+	}
+	currentSlots.clear();
+	currentButtons.clear();
     
     // Recherche du premier créneau correspondant à la semaine qu'on affiche
     int pos = 0;
-    for(it = l.begin() ; it != l.end() ; it++) {
+	while (!firstSlotFound && it != l.end()) {
         if((*it)->getDateDebut()->getWeek() == this->model->getCurrentDate()->getWeek()
                 && (*it)->getDateDebut()->getYear() == this->model->getCurrentDate()->getYear()) {
             this->firstEventPosition = pos;
-            break;
+            firstSlotFound = TRUE;
         }
+		if (!firstSlotFound) {
         pos++;
+		it++;
+		}
     }
     
     // A partir du premier créneau, afficher tous les créneaux jusqu'à ce que la semaine ne corresponde plus
-    for( ; it != l.end() ; it++) {
+	bool newWeek = FALSE;
+	while (!newWeek && it != l.end()) {
         if((*it)->getDateDebut()->getWeek() != this->model->getCurrentDate()->getWeek()
-                || (*it)->getDateDebut()->getYear() != this->model->getCurrentDate()->getYear())
-            break;
-        
-        this->slotListWidget->addItem( QString((*it)->toString().c_str()) );
+                || (*it)->getDateDebut()->getYear() != this->model->getCurrentDate()->getYear()) {
+            newWeek = TRUE;
+		}
+		//this->slotListWidget->addItem( QString((*it)->toString().c_str()) );
+		currentSlots.push_back(*it);
+		
+		if (!newWeek) {
+			it++;
+		}
     }
-    
-    
+	
+	this->displaySlots();
 }
 
 void View::previousWeek()
 {
     this->model->previousWeek();
+	this->setWeek();
     this->display();
 }
 
 void View::nextWeek()
 {
     this->model->nextWeek();
+	this->setWeek();
     this->display();
+}
+
+void View::displaySlots() {
+	for(unsigned int i = 0; i < currentSlots.size(); i++) {
+		int weekDay = (currentSlots.at(i))->getDateDebut()->getWeekDay();
+		int hourStart = (currentSlots.at(i))->getDateDebut()->getHour();
+		int minuteStart = (currentSlots.at(i))->getDateDebut()->getMinute();
+		int hourEnd = (currentSlots.at(i))->getDateFin()->getHour();
+		int minuteEnd = (currentSlots.at(i))->getDateFin()->getMinute();
+		
+		// Build of the event name (title + description)
+		QString title((currentSlots.at(i))->getIntitule().c_str());
+		title.append('\n');
+		title.append((currentSlots.at(i))->getDescription().c_str());
+		
+		QPushButton *button = new QPushButton(title, mainLayoutWidget);
+		int eventStartX = (hourStart - 8) * 100 + (minuteStart * 100 / 60) + 98;
+		int eventStartY = weekDay * 90 + 59;
+		
+		int hourDuration = hourEnd - hourStart;
+		int minuteDuration = 0;
+		if ((minuteEnd - minuteStart) < 0) {
+			minuteDuration = (60 + minuteEnd) - minuteStart;
+			hourDuration--;
+		} else {
+			minuteDuration = minuteEnd - minuteStart;
+		}
+		int fullDuration = hourDuration * 100 + (minuteDuration*100/60);
+		
+		//xywh
+		button->setGeometry( eventStartX, eventStartY, fullDuration, 90);
+		button->setVisible(TRUE);
+		button->setDisabled(TRUE);
+		
+		currentButtons.push_back(button);
+	}
 }

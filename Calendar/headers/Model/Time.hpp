@@ -49,6 +49,7 @@ class Time
         int         getWeekDay          () const;
         int         getMonth            () const;
         int         getYear				() const;
+        string      getSimpleDate		() const;
         string      getXmlDate			() const;
         string      getReadableDate		() const;
 };

@@ -8,6 +8,7 @@
 #include <qt4/QtCore/qglobal.h>
 
 #include "../../headers/Model/Model.hpp"
+#include "View.hpp"
 
 
 Model::Model() {
@@ -27,12 +28,14 @@ Time* Model::getCurrentDate() {
 }
 
 void Model::nextWeek() {
-    for (unsigned int i = 0 ; i < 7 ; i++)
+    for (unsigned int i = 0 ; i < 7 ; i++) {
         this->currentDate->nextDay();
+	}
 }
 void Model::previousWeek() {
-    for (unsigned int i = 0 ; i < 7 ; i++)
+    for (unsigned int i = 0 ; i < 7 ; i++) {
         this->currentDate->previousDay();
+	}
 }
 
 int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {

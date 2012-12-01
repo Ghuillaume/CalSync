@@ -15,10 +15,11 @@
 #include "DateDialog.hpp"
 #include "SlotDialog.hpp"
 
-#define TOP_MARGIN 20
-#define LEFT_MARGIN 20
+#define TOP_MARGIN 10
+#define LEFT_MARGIN 10
 #define TABLE_MARGIN 250
-#define TABLE_WIDTH 770
+#define TABLE_WIDTH 950
+#define TABLE_HEIGHT 710
 
 class View: public QMainWindow
 {
@@ -73,15 +74,19 @@ class View: public QMainWindow
         QPushButton *datePrevious;
         QLabel *currentWeek;
         QPushButton *dateNext;
-        QListWidget *slotListWidget;
-
-
+        //QListWidget *slotListWidget;
+		//
+		QTableWidget *tableWidget;
+		//
     
     private:
         Time time;
         Model *model;
         int firstEventPosition;
-	
+		vector<Slot*> currentSlots;
+		vector<QPushButton*> currentButtons;
+		
+		void displaySlots();
 
     public slots:
         void display ();
