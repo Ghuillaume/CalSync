@@ -292,43 +292,46 @@ void Controler::createSlot()
         Time *endDateTime = new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year());
 
         if(*startDateTime > *endDateTime) {
-            QMessageBox::critical(this->view, "Error", "You can't create an event which end before starting ! Creation aborted");
-            return;
-        }
-        
-        // Checking conflicts
-        bool overlap = true;
-        ListOfSlot list;
-        while(overlap) {
-            overlap = false;
-            list = this->model->getSlotList();
-            for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
-                if((*it)->areSlotsOverlapping(startDateTime, endDateTime)) {
-                    // Overlapping, ask user for resolving conflict
-                    QString event = (*it)->getIntitule().c_str();
-                    QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
-                    if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
-                        qDebug() << "erase" << endl;
-                        this->config->setSaved(false);
-                        this->model->deleteSlot(*it);
-                        overlap = true;
-                        break;
-                    }
-                    else {
-                        qDebug() << "discard" << endl;
-                        return;
-                    }
-                }
-            }
-        }
+            QMessageBox::critical(this->view, "Error", "You can't create an event which end before starting!\n Creation aborted");
+        } else if (startDateTime->getDay() != endDateTime->getDay()
+					|| startDateTime->getMonth() != endDateTime->getMonth()
+					|| startDateTime->getYear() != endDateTime->getYear()) {
+            QMessageBox::critical(this->view, "Error", "The date of the beginning of the event must be the same for the end!\n Creation aborted");
+		} else {
+			// Checking conflicts
+			bool overlap = true;
+			ListOfSlot list;
+			while(overlap) {
+				overlap = false;
+				list = this->model->getSlotList();
+				for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
+					if((*it)->areSlotsOverlapping(startDateTime, endDateTime)) {
+						// Overlapping, ask user for resolving conflict
+						QString event = (*it)->getIntitule().c_str();
+						QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
+						if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
+							qDebug() << "erase" << endl;
+							this->config->setSaved(false);
+							this->model->deleteSlot(*it);
+							overlap = true;
+							break;
+						}
+						else {
+							qDebug() << "discard" << endl;
+							return;
+						}
+					}
+				}
+			}
 
-        this->config->setSaved(false);
-        this->model->createSlot(startDateTime,
-                                endDateTime,
-                                dialog->titleEdit->text().toStdString(),
-                                dialog->descriptionEdit->text().toStdString());
+			this->config->setSaved(false);
+			this->model->createSlot(startDateTime,
+									endDateTime,
+									dialog->titleEdit->text().toStdString(),
+									dialog->descriptionEdit->text().toStdString());
 
-        this->view->display();
+			this->view->display();
+		}
     }
 }
 

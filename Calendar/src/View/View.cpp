@@ -187,16 +187,6 @@ View::View(Model *model) : QMainWindow(), time(8)
 	mainLayout->addWidget(tableWidget);
 	//
 	
-	/**/
-//	QPushButton *button = new QPushButton(QString("Test"), mainLayoutWidget);
-//	button->setGeometry(98, 59, 100, 90);
-//	button->setDisabled(TRUE);
-//	
-//	QPushButton *button2 = new QPushButton(QString("Test2"), mainLayoutWidget);
-//	button2->setGeometry(98+100, 59, 100, 90);
-//	button->setDisabled(TRUE);
-	/**/
-	
     mainFrame->setVisible(false);
         
     this->display();
@@ -318,6 +308,7 @@ void View::nextWeek()
 
 void View::displaySlots() {
 	for(unsigned int i = 0; i < currentSlots.size(); i++) {
+		// Recover data from slot
 		int weekDay = (currentSlots.at(i))->getDateDebut()->getWeekDay();
 		int hourStart = (currentSlots.at(i))->getDateDebut()->getHour();
 		int minuteStart = (currentSlots.at(i))->getDateDebut()->getMinute();
@@ -329,10 +320,12 @@ void View::displaySlots() {
 		title.append('\n');
 		title.append((currentSlots.at(i))->getDescription().c_str());
 		
+		// Calculate coordinates of the begin of the button
 		QPushButton *button = new QPushButton(title, mainLayoutWidget);
 		int eventStartX = (hourStart - 8) * 100 + (minuteStart * 100 / 60) + 98;
 		int eventStartY = weekDay * 90 + 59;
 		
+		// Calculate width of the button 
 		int hourDuration = hourEnd - hourStart;
 		int minuteDuration = 0;
 		if ((minuteEnd - minuteStart) < 0) {
@@ -343,7 +336,7 @@ void View::displaySlots() {
 		}
 		int fullDuration = hourDuration * 100 + (minuteDuration*100/60);
 		
-		//xywh
+		// Creation of the button
 		button->setGeometry( eventStartX, eventStartY, fullDuration, 90);
 		button->setVisible(TRUE);
 		button->setDisabled(TRUE);
