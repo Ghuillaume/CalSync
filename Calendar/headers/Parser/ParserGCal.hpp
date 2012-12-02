@@ -6,10 +6,13 @@
 #include <QByteArray>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
+#include <../../../qjson/include/QJson/Parser>
+#include <QtCore>
 
 #include "Parser.hpp"
 #include "../Model/Model.hpp"
 #include "../Model/common.h"
+#include "../Model/Time.hpp"
 #include "../Controler/Controler.hpp"
 
 class Controler;
@@ -28,7 +31,7 @@ class ParserGCal : public QObject, public Parser {
 
         QString buildQuery();
         virtual void getEventList();
-
+		Time* buildDate(QString &strDate);
 
     public slots:
         void stateChanged ( int state );
@@ -44,8 +47,9 @@ class ParserGCal : public QObject, public Parser {
 
         QHttp* query;
         QNetworkAccessManager* networkManager;
-
-
+		
+		QVariantList m_calendars;
+		QVariantList m_events;
 };
 
 #endif // PARSERGCAL_HPP

@@ -1,8 +1,5 @@
 #include "../../headers/Controler/Controler.hpp"
 
-#include <qt4/QtXml/QtXml>
-#include <qt4/QtXml/QDomDocument>
-
 Controler::Controler(Model* model, View* view, Config* config)
 {
     this -> model = model;
@@ -334,9 +331,7 @@ void Controler::createSlot()
 			
 			for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
 				QPushButton *button = this->view->currentButtons.at(i);
-				cout << button->text().toStdString() << endl;
 				QObject::connect(button, SIGNAL(clicked()), this, SLOT(clickSlot()));
-				cout << "test" << endl;
 			}
 		}
     }
@@ -586,14 +581,6 @@ void Controler::exportCalendar() {
     QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
 }
 
-ListOfString Controler::explode(const std::string& str, const char& delimiter)
-{
-    std::istringstream split(str);
-    std::vector<std::string> tokens;
-    for (std::string each; std::getline(split, each, delimiter); tokens.push_back(each));
-    return tokens;
-}
-
 Time* Controler::createTime(const QString &chaine) {
 
 	ListOfString chaineHeure = explode(chaine.toStdString(), ':');
@@ -611,6 +598,6 @@ void Controler::clickSlot() {
 	SlotActionDialog *slotActionDialog = new SlotActionDialog(view);
 	slotActionDialog->setVisible(TRUE);
 	
-    QObject::connect(slotActionDialog->editionButton, SIGNAL(customContextMenuRequested()), this, SLOT(editSlot()));
+    QObject::connect(slotActionDialog->editionButton, SIGNAL(clicked()), this, SLOT(editSlot()));
     QObject::connect(slotActionDialog->cancelButton, SIGNAL(clicked()), slotActionDialog, SLOT(close()));
 }

@@ -18,7 +18,6 @@ SlotActionDialog::SlotActionDialog(QWidget *view) {
 	
 	editionButton = new QPushButton(this);
 	editionButton->setText(QString("Edit"));
-	QObject::connect(editionButton, SIGNAL(clicked()), qApp, SLOT(editSlotAction()));
 	
 	deletionButton = new QPushButton(this);
 	deletionButton->setText(QString("Delete"));

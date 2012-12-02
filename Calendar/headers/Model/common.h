@@ -20,6 +20,9 @@ using namespace std;
 #include <QDebug>
 
 #include "Slot.hpp"
+#include "Slot.hpp"
+
+typedef std::vector<std::string> ListOfString;
 
 class Slot;
 class Time;
@@ -27,8 +30,12 @@ class Model;
 
 std::string convertInt(int number);
 
-
-
-
+static ListOfString explode(const std::string& str, const char& delimiter)
+{
+    std::istringstream split(str);
+    std::vector<std::string> tokens;
+    for (std::string each; std::getline(split, each, delimiter); tokens.push_back(each));
+    return tokens;
+}
 
 #endif	/* COMMON_H */

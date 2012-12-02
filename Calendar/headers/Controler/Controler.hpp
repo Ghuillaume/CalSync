@@ -2,11 +2,14 @@
 #define _CONTROLER_HPP_
 
 #include <QtGui>
+#include <QtXml>
+#include <QDomDocument>
 
 #include "Config.hpp"
 #include "md5.hpp"
 #include "OAuth.hpp"
 #include "../Model/Model.hpp"
+#include "../Model/common.h"
 #include "../View/View.hpp"
 #include "../View/DateDialog.hpp"
 #include "../View/SlotDialog.hpp"
@@ -15,8 +18,6 @@
 #include "../Parser/ParserGCal.hpp"
 #include "../Parser/ParserCELCAT.hpp"
 
-typedef std::vector<std::string> ListOfString;
-
 class Controler : public QWidget {
     Q_OBJECT
     public:
@@ -24,7 +25,6 @@ class Controler : public QWidget {
         ~Controler();
         int checkIfSaved();
         void parseModel(QString fileName);
-        static ListOfString explode(const std::string& str, const char& delimiter);
 		static Time* createTime(const QString &chaine);
 
     public slots:
