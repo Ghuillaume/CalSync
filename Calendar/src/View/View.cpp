@@ -155,12 +155,6 @@ View::View(Model *model) : QMainWindow(), time(8)
     
     
     mainLayout->addLayout(controlLayout);
-    
-    
-//    slotListWidget = new QListWidget(mainLayoutWidget);
-//    slotListWidget->setObjectName(QString::fromUtf8("slotListWidget"));
-//
-//    mainLayout->addWidget(slotListWidget);
 	
     //
 	tableWidget = new QTableWidget(mainLayoutWidget);
@@ -188,7 +182,7 @@ View::View(Model *model) : QMainWindow(), time(8)
 	//
 	
     mainFrame->setVisible(false);
-        
+	
     this->display();
 }
 
@@ -339,7 +333,6 @@ void View::displaySlots() {
 		// Creation of the button
 		button->setGeometry( eventStartX, eventStartY, fullDuration, 90);
 		button->setVisible(TRUE);
-		button->setDisabled(TRUE);
 		
 		currentButtons.push_back(button);
 	}

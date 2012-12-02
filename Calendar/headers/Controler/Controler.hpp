@@ -32,6 +32,7 @@ class Controler : public QWidget {
         void newEmptyModel();
         void newModelFromLocal();
         void newModelFromGoogle();
+        void clickSlot();
         void createSlot();
         void editSlot();
         void deleteSlot();

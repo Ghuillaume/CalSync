@@ -331,6 +331,13 @@ void Controler::createSlot()
 									dialog->descriptionEdit->text().toStdString());
 
 			this->view->display();
+			
+			for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
+				QPushButton *button = this->view->currentButtons.at(i);
+				cout << button->text().toStdString() << endl;
+				QObject::connect(button, SIGNAL(clicked()), this, SLOT(clickSlot()));
+				cout << "test" << endl;
+			}
 		}
     }
 }
@@ -526,7 +533,6 @@ int Controler::checkIfSaved() {
 
 }
 
-
 void Controler::changePassword() {
     if(!this->config->getPassword().empty()) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
@@ -541,7 +547,6 @@ void Controler::changePassword() {
 
     this->config->setPassword(md5(passwd.toStdString()));
 }
-
 
 void Controler::changeAPIKey() {
     QInputDialog askingKey(this);
@@ -581,7 +586,6 @@ void Controler::exportCalendar() {
     QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
 }
 
-
 ListOfString Controler::explode(const std::string& str, const char& delimiter)
 {
     std::istringstream split(str);
@@ -590,16 +594,23 @@ ListOfString Controler::explode(const std::string& str, const char& delimiter)
     return tokens;
 }
 
-
 Time* Controler::createTime(const QString &chaine) {
 
-ListOfString chaineHeure = explode(chaine.toStdString(), ':');
-ListOfString chaineDate = explode(chaineHeure[2], '/');
-int heure = QString(chaineHeure[0].c_str()).toInt();
-int minute = QString(chaineHeure[1].c_str()).toInt();
-int jour = QString(chaineDate[0].c_str()).toInt();
-int mois = QString(chaineDate[1].c_str()).toInt();
-int annee = QString(chaineDate[2].c_str()).toInt();
+	ListOfString chaineHeure = explode(chaine.toStdString(), ':');
+	ListOfString chaineDate = explode(chaineHeure[2], '/');
+	int heure = QString(chaineHeure[0].c_str()).toInt();
+	int minute = QString(chaineHeure[1].c_str()).toInt();
+	int jour = QString(chaineDate[0].c_str()).toInt();
+	int mois = QString(chaineDate[1].c_str()).toInt();
+	int annee = QString(chaineDate[2].c_str()).toInt();
 
-return new Time(minute, heure, jour, mois, annee);
+	return new Time(minute, heure, jour, mois, annee);
+}
+
+void Controler::clickSlot() {
+	SlotActionDialog *slotActionDialog = new SlotActionDialog(view);
+	slotActionDialog->setVisible(TRUE);
+	
+    QObject::connect(slotActionDialog->editionButton, SIGNAL(customContextMenuRequested()), this, SLOT(editSlot()));
+    QObject::connect(slotActionDialog->cancelButton, SIGNAL(clicked()), slotActionDialog, SLOT(close()));
 }

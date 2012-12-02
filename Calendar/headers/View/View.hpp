@@ -14,6 +14,7 @@
 #include "../Model/Model.hpp"
 #include "DateDialog.hpp"
 #include "SlotDialog.hpp"
+#include "SlotActionDialog.hpp"
 
 #define TOP_MARGIN 10
 #define LEFT_MARGIN 10
@@ -78,13 +79,14 @@ class View: public QMainWindow
 		//
 		QTableWidget *tableWidget;
 		//
+		
+		vector<Slot*> currentSlots;
+		vector<QPushButton*> currentButtons;
     
     private:
         Time time;
         Model *model;
         int firstEventPosition;
-		vector<Slot*> currentSlots;
-		vector<QPushButton*> currentButtons;
 		
 		void displaySlots();
 
