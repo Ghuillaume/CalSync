@@ -56,55 +56,38 @@ void ParserGCal::getEventList() {
 }
 
 void ParserGCal::parseEvents(QByteArray in) {
-    //qDebug() << in;
 	QJson::Parser parser;
 	bool ok = FALSE;
 
 	QVariant result = parser.parse (in, &ok).toMap();
 	if (!ok) {
 	  qFatal("An error occurred during parsing");
-	  //exit (1);
 	} else {
-
 		if(result.toMap().contains("error"))
 		{
 			qDebug() << "ERROR occured:\n";
-			//emit errorOccured(result.toMap()["error"].toMap()["message"].toString());
 			return;
-		}
-		if(result.toMap()["kind"].toString() == "calendar#calendarList")
-		{
-			cout << "pas encore géré" << endl;
-			//m_calendars = result.toMap()["items"].toList();
-			//emit calendarListReady();
-		}
-		else if(result.toMap()["kind"].toString() == "calendar#calendar")
-		{
-			cout << "pas encore géré" << endl;
-			//emit calendarListChanged();
-		}
-		else if(result.toMap()["kind"].toString() == "calendar#events")
-		{
+		} 
+		// If we parse events of a calendar
+		else if(result.toMap()["kind"].toString() == "calendar#events") {
 			m_events = result.toMap()["items"].toList();
+			// for all events, build the slot
 			for(int i = 0; i < m_events.count(); ++i)
 			{
+				// Build the title from string "summary"
 				QVariantMap mapEvents = m_events[i].toMap();
 				string eventName = mapEvents["summary"].toString().toStdString();
-				cout << eventName << endl;
+				// Build the timeBegin from start date string
 				QVariantMap nestedMap = mapEvents["start"].toMap();
 				QString dateBegin = nestedMap["dateTime"].toString();
-				cout << dateBegin.toStdString() << endl;
 				Time* timeBegin = this->buildDate(dateBegin);
+				// Build the timeEnd from end date string
 				nestedMap = mapEvents["end"].toMap();
 				QString dateEnd = nestedMap["dateTime"].toString();
 				Time* timeEnd = this->buildDate(dateEnd);
+				// Create slot with previous variables
 				this->model->createSlot(timeBegin, timeEnd, eventName, "");
 			}
-		}
-		else if(result.toMap()["kind"].toString() == "calendar#event")
-		{
-			cout << "pas encore géré" << endl;
-			//emit eventChanged(result.toMap()["id"].toString());
 		}
 	}
 }
