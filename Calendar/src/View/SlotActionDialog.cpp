@@ -1,10 +1,3 @@
-/* 
- * File:   SlotActionDialog.cpp
- * Author: yoros
- * 
- * Created on 2 décembre 2012, 09:02
- */
-
 #include "../../headers/View/SlotActionDialog.hpp"
 
 SlotActionDialog::SlotActionDialog(QWidget *view) {
