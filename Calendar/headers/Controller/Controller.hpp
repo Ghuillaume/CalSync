@@ -17,6 +17,7 @@
 #include "../View/GoogleAccessDialog.hpp"
 #include "../Parser/ParserGCal.hpp"
 #include "../Parser/ParserCELCAT.hpp"
+#include "SlotFrame.hpp"
 
 class Controller : public QWidget {
     Q_OBJECT
@@ -27,6 +28,7 @@ class Controller : public QWidget {
         bool checkGoogleAuth();
         void parseModel(QString fileName);
         static Time* createTime(const QString &chaine);
+        void connectAllButtons();
 
     public slots:
         void setStartView();
@@ -49,6 +51,9 @@ class Controller : public QWidget {
         void googleAccessTokenObtained(QString token);
         void importCalendar();
         void exportCalendar();
+        
+        void previousWeek();
+        void nextWeek();
 
     private:
         Model* model;

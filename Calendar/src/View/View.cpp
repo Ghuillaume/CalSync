@@ -1,4 +1,5 @@
 #include "../../headers/View/View.hpp"
+#include "SlotFrame.hpp"
 
 View::View(Model *model) : QMainWindow(), time(8)
 {
@@ -315,11 +316,10 @@ void View::displaySlots() {
 		
 		// Build of the event name (title + description)
 		QString title((currentSlots.at(i))->getIntitule().c_str());
-		title.append('\n');
-		title.append((currentSlots.at(i))->getDescription().c_str());
+		QString description((currentSlots.at(i))->getDescription().c_str());
 		
 		// Calculate coordinates of the begin of the button
-		QPushButton *button = new QPushButton(title, mainLayoutWidget);
+		SlotFrame *frame = new SlotFrame(title, description);
 		int eventStartX = (hourStart - 8) * 100 + (minuteStart * 100 / 60) + 98;
 		int eventStartY = weekDay * 90 + 59;
 		
@@ -335,9 +335,11 @@ void View::displaySlots() {
 		int fullDuration = hourDuration * 100 + (minuteDuration*100/60);
 		
 		// Creation of the button
-		button->setGeometry( eventStartX, eventStartY, fullDuration, 90);
-		button->setVisible(TRUE);
+		frame->setGeometry( eventStartX, eventStartY, fullDuration, 90);
+		frame->setVisible(TRUE);
+                frame->setParent(this->tableWidget);
+                frame->show();
 		
-		currentButtons.push_back(button);
+		currentButtons.push_back(frame);
 	}
 }

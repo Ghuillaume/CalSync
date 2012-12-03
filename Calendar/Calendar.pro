@@ -29,7 +29,7 @@ DEPENDPATH += . \
               headers/Model \
               headers/Parser \
               headers/View \
-              src/Controler \
+              src/Controller \
               src/Model \
               src/Parser \
               src/View
@@ -50,6 +50,7 @@ HEADERS += headers/Controller/Config.hpp \
             headers/Parser/ParserGCal.hpp \
             headers/View/DateDialog.hpp \
             headers/View/SlotDialog.hpp \
+            headers/View/SlotFrame.hpp \
             headers/View/SlotActionDialog.hpp \
             headers/View/View.hpp \
             headers/View/GoogleAccessDialog.hpp \
@@ -69,6 +70,7 @@ SOURCES += main.cpp \
             src/Parser/ParserGCal.cpp \
             src/View/DateDialog.cpp \
             src/View/SlotDialog.cpp \
+            src/View/SlotFrame.cpp \
             src/View/SlotActionDialog.cpp \
             src/View/View.cpp \
             src/View/GoogleAccessDialog.cpp \

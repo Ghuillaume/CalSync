@@ -15,6 +15,7 @@
 #include "DateDialog.hpp"
 #include "SlotDialog.hpp"
 #include "SlotActionDialog.hpp"
+#include "SlotFrame.hpp"
 
 #define TOP_MARGIN 10
 #define LEFT_MARGIN 10
@@ -67,7 +68,6 @@ class View: public QMainWindow
         QWidget *mainFrame;
         
         // Table:
-        //QTableWidget *tableWidget;
         QWidget *mainLayoutWidget;
         QVBoxLayout *mainLayout;
         QHBoxLayout *controlLayout;
@@ -80,7 +80,7 @@ class View: public QMainWindow
 		//
 		
 		vector<Slot*> currentSlots;
-		vector<QPushButton*> currentButtons;
+		vector<SlotFrame*> currentButtons;
     
     private:
         Time time;
