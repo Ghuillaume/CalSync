@@ -35,9 +35,9 @@ class Controller : public QWidget {
         void newEmptyModel();
         void newModelFromLocal();
         void newModelFromGoogle();
-        void clickSlot();
+        void clickSlot(SlotFrame *frame);
         void createSlot();
-        void editSlot();
+        void editSlot(SlotFrame *frame);
         void deleteSlot();
         void saveModel();
         void saveModelAs();

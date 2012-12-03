@@ -337,8 +337,8 @@ void View::displaySlots() {
 		// Creation of the button
 		frame->setGeometry( eventStartX, eventStartY, fullDuration, 90);
 		frame->setVisible(TRUE);
-                frame->setParent(this->tableWidget);
-                frame->show();
+		frame->setParent(this->tableWidget);
+		frame->show();
 		
 		currentButtons.push_back(frame);
 	}

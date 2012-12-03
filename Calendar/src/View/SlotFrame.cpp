@@ -1,8 +1,9 @@
 #include "SlotFrame.hpp"
 
 SlotFrame::SlotFrame(QString title, QString description): QFrame() {
-    titleLabel = new QLabel(title, this);
-    descriptionLabel = new QLabel(description, this);
+    this->titleLabel = new QLabel(title, this);
+    this->descriptionLabel = new QLabel(description, this);
+	this->slot = NULL;
     
     QPalette palette = this->palette();
     palette.setColor(backgroundRole(),QColor(200,0,0));
@@ -31,6 +32,6 @@ SlotFrame::~SlotFrame() {
 
 void SlotFrame::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        emit sigCreneauClicked(this);
+        emit slotClickedSignal(this);
     }
 }

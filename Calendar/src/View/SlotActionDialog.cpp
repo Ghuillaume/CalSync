@@ -1,7 +1,10 @@
+#include <QtGui/qpushbutton.h>
+
 #include "../../headers/View/SlotActionDialog.hpp"
 
-SlotActionDialog::SlotActionDialog(QWidget *view) {
+SlotActionDialog::SlotActionDialog(QWidget *view, SlotFrame *frame) {
 	this->view = (View*) view;
+	this->frame = frame;
 
     this->setObjectName("ActionOnSlot");
     this->resize(300,50);
@@ -21,6 +24,10 @@ SlotActionDialog::SlotActionDialog(QWidget *view) {
 	horizontalLayout->addWidget(editionButton);
 	horizontalLayout->addWidget(deletionButton);
 	horizontalLayout->addWidget(cancelButton);
+	
+	QObject::connect(this->editionButton, SIGNAL(clicked()), this, SLOT(editSlot()));
+
+	
 }
 
 SlotActionDialog::~SlotActionDialog() {
@@ -28,4 +35,9 @@ SlotActionDialog::~SlotActionDialog() {
 	delete deletionButton;
 	delete cancelButton;
 	delete horizontalLayout;
+}
+
+
+void SlotActionDialog::editSlot() {
+	emit editSlotSignal(this->frame);
 }

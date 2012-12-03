@@ -77,7 +77,8 @@ void Controller::newModelFromGoogle() {
 void Controller::connectAllButtons() {
     for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
             SlotFrame *frame = this->view->currentButtons.at(i);
-            QObject::connect(frame, SIGNAL(clicked()), this, SLOT(clickSlot()));
+			frame->slot = this->view->currentSlots.at(i);
+            QObject::connect(frame, SIGNAL(slotClickedSignal(SlotFrame*)), this, SLOT(clickSlot(SlotFrame*)));
     }
 }
 
@@ -314,79 +315,80 @@ void Controller::createSlot()
     }
 }
 
-void Controller::editSlot() {
-//    if(this->view->slotListWidget->currentRow() == -1)
-//        QMessageBox::warning(this, "Error", "You must select an event in the list before edit it.");
-//    else {
-//
-//        // Récupération de l'élement à modifier
-//        ListOfSlot l = this->model->getSlotList();
-//        ListOfSlot::iterator slotToEditIterator;
-//        int cpt = 0;
-//        for(slotToEditIterator = l.begin() ;
-//            slotToEditIterator != l.end() && cpt < (this->view->getFirstEventPosition() + this->view->slotListWidget->currentRow()) ;
-//            slotToEditIterator++)
-//        {
-//            cpt++;
-//        }
-//
-//        SlotDialog *dialog = new SlotDialog(view);
-//        QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
-//        QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
-//        dialog->setArgs((*slotToEditIterator)->getDateDebut(), (*slotToEditIterator)->getDateFin(), (*slotToEditIterator)->getIntitule(), (*slotToEditIterator)->getDescription());
-//        dialog -> exec();
-//        if(dialog->result() == QDialog::Accepted) {
-//            view -> display ();
-//            QDate startDate = dialog->dateStartEdit->date();
-//            QTime startTime = dialog->dateStartEdit->time();
-//            QDate endDate = dialog->dateEndEdit->date();
-//            QTime endTime = dialog->dateEndEdit->time();
-//
-//            Time* startDateTime = new Time(startTime.minute(), startTime.hour(), startDate.day(), startDate.month(), startDate.year());
-//            Time* endDateTime = new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year());
-//            
-//            if(*startDateTime > *endDateTime) {
-//                QMessageBox::critical(this->view, "Error", "You can't create an event which end before starting ! Edition aborted.");
-//                return;
-//            }
-//            
-//            // Checking conflicts
-//            bool overlap = true;
-//            ListOfSlot list;
-//            while(overlap) {
-//                overlap = false;
-//                list = this->model->getSlotList();
-//                for(ListOfSlot::iterator it = list.begin(); it != list.end(); it++) {
-//                    if((*it)->areSlotsOverlapping(startDateTime, endDateTime) && ((*slotToEditIterator) != (*it))) {
-//                        qDebug() << (*slotToEditIterator)->toString().c_str() << " & " << (*it)->toString().c_str() << "overlaped";
-//                        // Overlapping, ask user for resolving conflict
-//                        QString event = (*it)->getIntitule().c_str();
-//                        QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
-//                        if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
-//                            qDebug() << "erase" << endl;
-//                            this->config->setSaved(false);
-//                            this->model->deleteSlot(*it);
-//                            overlap = true;
-//                            break;
-//                        }
-//                        else {
-//                            qDebug() << "discard" << endl;
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-//
-//            this->config->setSaved(false);
-//            (*slotToEditIterator)->editSlot(
-//                        startDateTime,
-//                        endDateTime,
-//                        dialog->titleEdit->text().toStdString(),
-//                        dialog->descriptionEdit->text().toStdString());
-//            this->view->display();
-//        }
-//
-//    }
+void Controller::editSlot(SlotFrame *frame) {
+	// Récupération de l'élement à modifier
+//	ListOfSlot l = this->model->getSlotList();
+//	ListOfSlot::iterator slotToEditIterator;
+//	int cpt = 0;
+//	for(slotToEditIterator = l.begin() ;
+//		slotToEditIterator != l.end() && cpt < (this->view->getFirstEventPosition() + this->view->slotListWidget->currentRow()) ;
+//		slotToEditIterator++)
+//	{
+//		cpt++;
+//	}
+
+	SlotDialog *dialog = new SlotDialog(view);
+	QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+	QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
+	
+	dialog->setArgs(frame->slot->getDateDebut(), frame->slot->getDateFin(),
+					frame->slot->getIntitule(), frame->slot->getDescription());
+	dialog -> exec();
+	cout << "LULZ" << endl;
+	if(dialog->result() == QDialog::Accepted) {
+		view -> display ();
+		QDate startDate = dialog->dateStartEdit->date();
+		QTime startTime = dialog->dateStartEdit->time();
+		QDate endDate = dialog->dateEndEdit->date();
+		QTime endTime = dialog->dateEndEdit->time();
+
+		Time* startDateTime = new Time(startTime.minute(), startTime.hour(), startDate.day(), startDate.month(), startDate.year());
+		Time* endDateTime = new Time(endTime.minute(), endTime.hour(), endDate.day(), endDate.month(), endDate.year());
+
+		if(*startDateTime > *endDateTime) {
+			QMessageBox::critical(this->view, "Error", "You can't create an event which ends before starting ! Edition aborted.");
+			return;
+		}
+		
+		// Checking conflicts
+		bool overlap = true;
+		ListOfSlot list;
+		while(overlap) {
+			overlap = false;
+			list = this->model->getSlotList();
+			cout << "ok" << endl;
+			ListOfSlot::iterator it;
+			for(it = list.begin(); it != list.end(); it++) {
+				cout << (*it)->toString().c_str() << endl;
+				if((*it)->areSlotsOverlapping(startDateTime, endDateTime) && (frame->slot != (*it))) {
+					cout << "overlapping" << endl;
+					qDebug() << frame->slot->toString().c_str() << " & " << (*it)->toString().c_str() << "overlaped";
+					// Overlapping, ask user for resolving conflict
+					QString event = (*it)->getIntitule().c_str();
+					QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
+					if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
+						qDebug() << "erase" << endl;
+						this->config->setSaved(false);
+						this->model->deleteSlot(*it);
+						overlap = true;
+						break;
+					}
+					else {
+						qDebug() << "discard" << endl;
+						return;
+					}
+				}
+			}
+		}
+
+		this->config->setSaved(false);
+		frame->slot->editSlot(
+					startDateTime,
+					endDateTime,
+					dialog->titleEdit->text().toStdString(),
+					dialog->descriptionEdit->text().toStdString());
+		this->view->display();
+	}
 }
 
 void Controller::deleteSlot() {
@@ -618,12 +620,11 @@ Time* Controller::createTime(const QString &chaine) {
 	return new Time(minute, heure, jour, mois, annee);
 }
 
-void Controller::clickSlot() {
-	SlotActionDialog *slotActionDialog = new SlotActionDialog(view);
+void Controller::clickSlot(SlotFrame *frame) {
+	SlotActionDialog *slotActionDialog = new SlotActionDialog(view, frame);
 	slotActionDialog->setVisible(TRUE);
         
-        
-	
     QObject::connect(slotActionDialog->editionButton, SIGNAL(clicked()), slotActionDialog, SLOT(editSlot()));
+    QObject::connect(slotActionDialog, SIGNAL(editSlotSignal(SlotFrame*)), this, SLOT(editSlot(SlotFrame*)));
     QObject::connect(slotActionDialog->cancelButton, SIGNAL(clicked()), slotActionDialog, SLOT(close()));
 }

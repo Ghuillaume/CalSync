@@ -19,7 +19,7 @@ public:
     void mousePressEvent(QMouseEvent *event);
     
 signals:
-    void sigCreneauClicked(SlotFrame*);
+    void slotClickedSignal(SlotFrame*);
 };
 
 #endif	
