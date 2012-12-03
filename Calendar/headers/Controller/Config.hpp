@@ -22,7 +22,7 @@ class Config {
         void clean();
 
         QString getGoogleAuthCode();
-        void setGoogleAuthCode(QString& authcode);
+        void setGoogleAuthCode(QString authcode);
         OAuth2* getGoogleOAuth();
         void setGoogleOAuth(OAuth2* oauth);
 

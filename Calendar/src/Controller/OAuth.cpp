@@ -1,9 +1,4 @@
-#include "../../headers/Controler/OAuth.hpp"
-#include <QDebug>
-#include <QApplication>
-#include "../View/GoogleAccessDialog.hpp"
-#include <QSettings>
-#include <QMessageBox>
+#include "../../headers/Controller/OAuth.hpp"
 
 OAuth2::OAuth2(QWidget* parent)
 {
@@ -122,7 +117,7 @@ void OAuth2::replyFinished(QNetworkReply * reply)
     QApplication::restoreOverrideCursor();
     qDebug() << "PROUTPROUT" << json;
 
-    /*QJson::Parser parser;
+    QJson::Parser parser;
     bool ok;
     QVariant result = parser.parse(json.toLatin1(), &ok);
     if(!ok) {
@@ -130,7 +125,7 @@ void OAuth2::replyFinished(QNetworkReply * reply)
     }
     if(result.toMap().contains("access_token")) {
         token = result.toMap()["access_token"].toString();
-    }*/
+    }
 
     emit tokenObtained(token);
 }

@@ -18,14 +18,14 @@
 #include "../Parser/ParserGCal.hpp"
 #include "../Parser/ParserCELCAT.hpp"
 
-class Controler : public QWidget {
+class Controller : public QWidget {
     Q_OBJECT
     public:
-        Controler(Model* modele, View* view, Config* config);
-        ~Controler();
+        Controller(Model* modele, View* view, Config* config);
+        ~Controller();
         int checkIfSaved();
         void parseModel(QString fileName);
-		static Time* createTime(const QString &chaine);
+        static Time* createTime(const QString &chaine);
 
     public slots:
         void setStartView();

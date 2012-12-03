@@ -4,12 +4,17 @@
 #include <iostream>
 #include <QString>
 #include <QObject>
+#include <QDebug>
+#include <QApplication>
 
 #include <QByteArray>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
+#include <QSettings>
+#include <QMessageBox>
 
-//#include <QJson/Parser>
+#include <QJson/Parser>
+#include "../View/GoogleAccessDialog.hpp"
 
 class GoogleAccessDialog;
 

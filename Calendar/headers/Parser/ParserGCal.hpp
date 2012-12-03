@@ -13,9 +13,9 @@
 #include "../Model/Model.hpp"
 #include "../Model/common.h"
 #include "../Model/Time.hpp"
-#include "../Controler/Controler.hpp"
+#include "../Controller/Controller.hpp"
 
-class Controler;
+class Controller;
 
 // DINGO !!!
 // 30min perdue sur une putain d'erreur, faut pas mettre :

@@ -6,8 +6,9 @@ View::View(Model *model) : QMainWindow(), time(8)
 
 	// Main window:
     this->setWindowTitle("Emploi du temps");
+    QSize sizeWindow = QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT);
     this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT));
-	//this->setFixedSize(size());
+    this->setFixedSize(sizeWindow);
     
         // Menubar:
     menubar = new QMenuBar(this);
@@ -81,7 +82,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     lolMenu = new QMenu(menubar);
     lolMenu->setObjectName("lolMenu");
     menubar->addAction(lolMenu->menuAction());
-    lolMenu->setTitle("LOL");
+    lolMenu->setTitle("Synchronization");
 
         importItem = new QAction(this);
         importItem->setObjectName("importItem");
@@ -141,7 +142,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     datePrevious = new QPushButton(mainLayoutWidget);
     datePrevious->setObjectName("datePrevious");
     controlLayout->addWidget(datePrevious);
-    datePrevious->setText(QString::fromUtf8("<<< Semaine précédente"));
+    datePrevious->setText(QString::fromUtf8("<<< Previous week"));
     
     currentWeek = new QLabel(mainLayoutWidget);
     currentWeek->setObjectName(QString::fromUtf8("currentWeek"));
@@ -151,19 +152,21 @@ View::View(Model *model) : QMainWindow(), time(8)
     dateNext = new QPushButton(mainLayoutWidget);
     dateNext->setObjectName("dateNext");
     controlLayout->addWidget(dateNext);
-    dateNext->setText(QString::fromUtf8("Semaine suivante >>>"));
+    dateNext->setText(QString::fromUtf8("Next week >>>"));
     
     
     mainLayout->addLayout(controlLayout);
 	
-    //
-	tableWidget = new QTableWidget(mainLayoutWidget);
-	tableWidget-> setObjectName(QString::fromUtf8("tableWidget"));
+    tableWidget = new QTableWidget(mainLayoutWidget);
+    tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
     tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
+    tableWidget->setGridStyle(Qt::NoPen);
+    tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	
-	tableWidget->setRowCount(7);
+    tableWidget->setRowCount(7);
     tableWidget->verticalHeader()->setDefaultSectionSize(90);
-	this->setWeek();
+    
+    this->updateDays();
     
     tableWidget->setColumnCount(11);
     tableWidget->horizontalHeader()->setDefaultSectionSize(100);
@@ -177,13 +180,30 @@ View::View(Model *model) : QMainWindow(), time(8)
         tableWidget->setHorizontalHeaderItem(i, columnHead);
         columnHead->setText(stream.str().c_str());
     }
+    
+    tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	
-	mainLayout->addWidget(tableWidget);
-	//
+    mainLayout->addWidget(tableWidget);
 	
     mainFrame->setVisible(false);
 	
     this->display();
+}
+
+void View::updateDays() {
+    string dayName[7] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    Time tmp = *(this->model->getCurrentDate());
+    for (int i = 0; i < 7; i++)
+    {
+        stringstream stream;
+        stream << dayName[i] << "\n" << tmp.getSimpleDate();
+        QTableWidgetItem *rowHead = new QTableWidgetItem();
+        tableWidget->setVerticalHeaderItem(i, rowHead);
+        rowHead->setText(stream.str().c_str());
+        tableWidget->verticalHeader()->setResizeMode(QHeaderView::Stretch);
+
+        tmp.nextDay();
+    }
 }
 
 Time* View::getTime()
@@ -218,22 +238,6 @@ View::~View()
 	delete controlLayout;
 
 	delete mainFrame;
-}
-
-void View::setWeek()
-{
-    string dayName[7] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
-    Time tmp = *(this->model->getCurrentDate());
-	for (int i = 0; i < 7; i++)
-    {
-            stringstream stream;
-            stream << dayName[i] << "\n" << tmp.getSimpleDate();
-			QTableWidgetItem *rowHead = new QTableWidgetItem();
-			tableWidget->setVerticalHeaderItem(i, rowHead);
-			rowHead->setText(stream.str().c_str());
-			
-            tmp.nextDay();
-    }
 }
 
 void View::display()
@@ -289,14 +293,14 @@ void View::display()
 void View::previousWeek()
 {
     this->model->previousWeek();
-	this->setWeek();
+    this->updateDays();
     this->display();
 }
 
 void View::nextWeek()
 {
     this->model->nextWeek();
-	this->setWeek();
+    this->updateDays();
     this->display();
 }
 

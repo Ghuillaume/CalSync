@@ -14,9 +14,9 @@ using namespace std;
 
 #include "headers/Model/Time.hpp"
 #include "headers/Model/Model.hpp"
-#include "headers/Controler/Controler.hpp"
-#include "headers/Controler/Config.hpp"
-#include "headers/Controler/md5.hpp"
+#include "headers/Controller/Controller.hpp"
+#include "headers/Controller/Config.hpp"
+#include "headers/Controller/md5.hpp"
 #include "headers/View/View.hpp"
 
 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     Config *config = new Config();
     Model *model = new Model();
     View *view = new View(model);
-    Controler *controler = new Controler(model, view, config);
+    Controller *controller = new Controller(model, view, config);
 
     view->show();
 

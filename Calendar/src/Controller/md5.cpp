@@ -31,7 +31,7 @@ documentation and/or software.
 */
 
 /* interface header */
-#include "../../headers/Controler/md5.hpp"
+#include "../../headers/Controller/md5.hpp"
 #include "../../headers/Model/common.h"
 
 /* system implementation headers */

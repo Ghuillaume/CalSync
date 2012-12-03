@@ -1,6 +1,6 @@
-#include "../../headers/Controler/Controler.hpp"
+#include "../../headers/Controller/Controller.hpp"
 
-Controler::Controler(Model* model, View* view, Config* config)
+Controller::Controller(Model* model, View* view, Config* config)
 {
     this -> model = model;
     this -> view = view;
@@ -33,10 +33,10 @@ Controler::Controler(Model* model, View* view, Config* config)
     
 }
 
-Controler::~Controler() { }
+Controller::~Controller() { }
 
 
-void Controler::newEmptyModel() {
+void Controller::newEmptyModel() {
     this->view->menubar->setVisible(true);
     this->view->mainFrame->setVisible(true);
     this->view->horizontalLayoutWidgetNewModel->setVisible(false);
@@ -51,7 +51,7 @@ void Controler::newEmptyModel() {
     this->view->display();
 }
 
-void Controler::newModelFromLocal() {
+void Controller::newModelFromLocal() {
     this->view->menubar->setVisible(true);
     this->view->mainFrame->setVisible(true);
     this->view->horizontalLayoutWidgetNewModel->setVisible(false);
@@ -61,7 +61,7 @@ void Controler::newModelFromLocal() {
     this->view->display();
 }
 
-void Controler::newModelFromGoogle() {
+void Controller::newModelFromGoogle() {
     bool ok = false;
     if(this->config->getGoogleAuthCode().isEmpty()) {
         if(QMessageBox::warning(this, "Warning", "You are not authenticated, click OK if you want to launch authentication", QMessageBox::Ok, QMessageBox::Abort) == QMessageBox::Abort) {
@@ -101,7 +101,7 @@ void Controler::newModelFromGoogle() {
 
 }
 
-void Controler::setStartView() {
+void Controller::setStartView() {
 
     // Checking if current local changes are saved
     bool ok = true;
@@ -130,7 +130,7 @@ void Controler::setStartView() {
     }
 }
 
-void Controler::saveModel() {
+void Controller::saveModel() {
     QString fileName = this->config->getFileName();
     qDebug() << fileName;
     if(fileName.isEmpty()) {
@@ -143,14 +143,14 @@ void Controler::saveModel() {
     }
 }
 
-void Controler::saveModelAs() {
+void Controller::saveModelAs() {
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/home", tr("XML Document (*.xml)"));
     this->parseModel(fileName);
     this->config->setFileName(fileName);
 }
 
-void Controler::loadModel() {
+void Controller::loadModel() {
     bool load = true;
 
     if(!this->config->isSaved()) {
@@ -193,8 +193,8 @@ if(reader.name() == "password") {
 config->setPassword(reader.readElementText().toStdString());
 }
 
-if(reader.name() == "apikey") {
-config->setAPIKEY(reader.readElementText().toStdString());
+if(reader.name() == "googleToken") {
+config->setGoogleAuthCode(reader.readElementText());
 }
 
 // On commence à sauvegarder les informations des slots
@@ -251,7 +251,7 @@ description.toStdString());
 
 }
 
-void Controler::close() {
+void Controller::close() {
     switch(this->checkIfSaved()) {
 
         // Not saved but continue
@@ -272,7 +272,7 @@ void Controler::close() {
     }
 }
 
-void Controler::createSlot()
+void Controller::createSlot()
 {
     SlotDialog *dialog = new SlotDialog(view);
     QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
@@ -337,7 +337,7 @@ void Controler::createSlot()
     }
 }
 
-void Controler::editSlot() {
+void Controller::editSlot() {
 //    if(this->view->slotListWidget->currentRow() == -1)
 //        QMessageBox::warning(this, "Error", "You must select an event in the list before edit it.");
 //    else {
@@ -412,7 +412,7 @@ void Controler::editSlot() {
 //    }
 }
 
-void Controler::deleteSlot() {
+void Controller::deleteSlot() {
 //    if(this->view->slotListWidget->currentRow() == -1)
 //        QMessageBox::warning(this, "Error", "You must select an event in the list before delete it.");
 //    else {
@@ -439,7 +439,7 @@ void Controler::deleteSlot() {
 //    }
 }
 
-void Controler::updateSettings() {
+void Controller::updateSettings() {
 
     SettingsDialog* dialog = new SettingsDialog(view);
     QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
@@ -450,7 +450,7 @@ void Controler::updateSettings() {
     dialog -> exec();
 }
 
-void Controler::parseModel(QString fileName) {
+void Controller::parseModel(QString fileName) {
 
     bool pwdOK = false;
     if(this->config->getPassword().empty())
@@ -474,9 +474,9 @@ void Controler::parseModel(QString fileName) {
         QDomElement passwd = dom.createElement("password");
         passwd.appendChild(dom.createTextNode(this->config->getPassword().c_str()));
         rootNode.appendChild(passwd);
-        QDomElement apikey = dom.createElement("apikey");
-        apikey.appendChild(dom.createTextNode(this->config->getAPIKEY().c_str()));
-        rootNode.appendChild(apikey);
+        QDomElement token = dom.createElement("googleToken");
+        token.appendChild(dom.createTextNode(this->config->getGoogleAuthCode()));
+        rootNode.appendChild(token);
 
         ListOfSlot l = this->model->getSlotList();
         QDomElement slotlistXML = dom.createElement("slotlist");
@@ -513,7 +513,7 @@ void Controler::parseModel(QString fileName) {
     
 }
 
-int Controler::checkIfSaved() {
+int Controller::checkIfSaved() {
 
     if(!this->config->isSaved()) {
         if(QMessageBox::warning(this, "Warning", "You didn't save your changes neither localy nor online. Continue ?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel) {
@@ -528,7 +528,7 @@ int Controler::checkIfSaved() {
 
 }
 
-void Controler::changePassword() {
+void Controller::changePassword() {
     if(!this->config->getPassword().empty()) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
         if(md5(passwdChecking.toStdString()) != this->config->getPassword()) {
@@ -543,7 +543,7 @@ void Controler::changePassword() {
     this->config->setPassword(md5(passwd.toStdString()));
 }
 
-void Controler::changeAPIKey() {
+void Controller::changeAPIKey() {
     QInputDialog askingKey(this);
     askingKey.setLabelText("API Key");
     askingKey.setTextValue(this->config->getAPIKEY().c_str());
@@ -552,7 +552,7 @@ void Controler::changeAPIKey() {
     this->config->setAPIKEY(askingKey.textValue().toStdString());
 }
 
-void Controler::getGoogleAccessToken() {
+void Controller::getGoogleAccessToken() {
     this->auth2 = new OAuth2(this);
     this->auth2->startLogin(false);
 
@@ -560,28 +560,28 @@ void Controler::getGoogleAccessToken() {
 
 }
 
-void Controler::googleCodeObtained(QString authCode) {
+void Controller::googleCodeObtained(QString authCode) {
     qDebug() << "Google code obtained : " << authCode;
     this->auth2->askTokenAccess(authCode);
     QObject::connect(this->auth2, SIGNAL(tokenObtained(QString)), this, SLOT(googleAccessTokenObtained(QString)));
 }
 
-void Controler::googleAccessTokenObtained(QString token) {
+void Controller::googleAccessTokenObtained(QString token) {
     qDebug() << "Google token obtained : " << token;
     this->config->setGoogleOAuth(this->auth2);
     this->config->setGoogleAuthCode(token);
 }
 
-void Controler::importCalendar() {
+void Controller::importCalendar() {
     QMessageBox::critical(this, "Error", "This feature is currently not available.");
 }
 
-void Controler::exportCalendar() {
+void Controller::exportCalendar() {
 
     QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
 }
 
-Time* Controler::createTime(const QString &chaine) {
+Time* Controller::createTime(const QString &chaine) {
 
 	ListOfString chaineHeure = explode(chaine.toStdString(), ':');
 	ListOfString chaineDate = explode(chaineHeure[2], '/');
@@ -594,7 +594,7 @@ Time* Controler::createTime(const QString &chaine) {
 	return new Time(minute, heure, jour, mois, annee);
 }
 
-void Controler::clickSlot() {
+void Controller::clickSlot() {
 	SlotActionDialog *slotActionDialog = new SlotActionDialog(view);
 	slotActionDialog->setVisible(TRUE);
 	

@@ -6,7 +6,7 @@ SettingsDialog::SettingsDialog(QWidget* parent):
     this->parent = (View*) parent;
 
     this->setObjectName("Dialog");
-    this->resize(500,600);
+    this->resize(400,350);
     this->setWindowTitle(QString::fromUtf8("Edit settings"));
 
     frame = new QWidget(this);

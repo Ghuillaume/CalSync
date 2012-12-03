@@ -25,7 +25,7 @@ LIBS += -F./ -framework qjson
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += . \
-              headers/Controler \
+              headers/Controller \
               headers/Model \
               headers/Parser \
               headers/View \
@@ -33,43 +33,43 @@ DEPENDPATH += . \
               src/Model \
               src/Parser \
               src/View
-INCLUDEPATH += . headers/Model headers/Controler headers/View headers/Parser
+INCLUDEPATH += . headers/Model headers/Controller headers/View headers/Parser
 
 # Input
-HEADERS += headers/Controler/Config.hpp \
-           headers/Controler/Controler.hpp \
-           headers/Controler/md5.hpp \
-           headers/Model/common.h \
-           headers/Model/Model.hpp \
-           headers/Model/Slot.hpp \
-           headers/Model/Time.hpp \
-           headers/Parser/common.h \
-           headers/Parser/Parser.hpp \
-           headers/Parser/ParserCELCAT.hpp \
-           headers/Parser/ParserGCal.hpp \
-           headers/View/DateDialog.hpp \
-           headers/View/SlotDialog.hpp \
-           headers/View/SlotActionDialog.hpp \
-           headers/View/View.hpp \
-		headers/View/GoogleAccessDialog.hpp \
-		headers/Controler/OAuth.hpp \
-		headers/View/SettingsDialog.hpp
+HEADERS += headers/Controller/Config.hpp \
+            headers/Controller/Controller.hpp \
+            headers/Controller/md5.hpp \
+            headers/Controller/OAuth.hpp \
+            headers/Model/common.h \
+            headers/Model/Model.hpp \
+            headers/Model/Slot.hpp \
+            headers/Model/Time.hpp \
+            headers/Parser/common.h \
+            headers/Parser/Parser.hpp \
+            headers/Parser/ParserCELCAT.hpp \
+            headers/Parser/ParserGCal.hpp \
+            headers/View/DateDialog.hpp \
+            headers/View/SlotDialog.hpp \
+            headers/View/SlotActionDialog.hpp \
+            headers/View/View.hpp \
+            headers/View/GoogleAccessDialog.hpp \
+            headers/View/SettingsDialog.hpp
 		
 SOURCES += main.cpp \
-           src/Controler/Config.cpp \
-           src/Controler/Controler.cpp \
-           src/Controler/md5.cpp \
-           src/Model/common.cpp \
-           src/Model/Model.cpp \
-           src/Model/Slot.cpp \
-           src/Model/Time.cpp \
-           src/Parser/Parser.cpp \
-           src/Parser/ParserCELCAT.cpp \
-           src/Parser/ParserGCal.cpp \
-           src/View/DateDialog.cpp \
-           src/View/SlotDialog.cpp \
-           src/View/SlotActionDialog.cpp \
-           src/View/View.cpp \
-    src/View/GoogleAccessDialog.cpp \
-    src/Controler/OAuth.cpp \
-    src/View/SettingsDialog.cpp
+            src/Controller/Config.cpp \
+            src/Controller/Controller.cpp \
+            src/Controller/md5.cpp \
+            src/Controller/OAuth.cpp \
+            src/Model/common.cpp \
+            src/Model/Model.cpp \
+            src/Model/Slot.cpp \
+            src/Model/Time.cpp \
+            src/Parser/Parser.cpp \
+            src/Parser/ParserCELCAT.cpp \
+            src/Parser/ParserGCal.cpp \
+            src/View/DateDialog.cpp \
+            src/View/SlotDialog.cpp \
+            src/View/SlotActionDialog.cpp \
+            src/View/View.cpp \
+            src/View/GoogleAccessDialog.cpp \
+            src/View/SettingsDialog.cpp

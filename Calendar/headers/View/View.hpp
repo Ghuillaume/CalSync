@@ -33,8 +33,7 @@ class View: public QMainWindow
         Time *getTime();
         Model *getModel();
         int getFirstEventPosition();
-
-        void setWeek();
+        void updateDays();
         void setSlot(const string &s, int row, int column);
 
         void updateFilter ();

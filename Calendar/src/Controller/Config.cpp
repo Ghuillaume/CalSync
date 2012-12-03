@@ -1,4 +1,4 @@
-#include "../../headers/Controler/Config.hpp"
+#include "../../headers/Controller/Config.hpp"
 
 Config::Config()
 {
@@ -66,7 +66,7 @@ QString Config::getGoogleAuthCode() {
     return this->googleAuthCode;
 }
 
-void Config::setGoogleAuthCode(QString& authcode) {
+void Config::setGoogleAuthCode(QString authcode) {
     this->googleAuthCode = authcode;
 }
 
