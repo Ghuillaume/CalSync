@@ -28,7 +28,7 @@ ParserCELCAT::~ParserCELCAT() {
 void ParserCELCAT::getEventList() {
     qCritical() << "Getting events from CELCAT";
 
-    QString queryString = QString(this->groupId.c_str()) + ".ics";
+    QString queryString = QString(this->groupId.c_str()) + ".xml";
     qDebug() << "Query string = " << queryString;
     query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
     query->get(queryString);

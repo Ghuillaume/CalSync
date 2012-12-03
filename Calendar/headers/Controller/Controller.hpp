@@ -24,6 +24,7 @@ class Controller : public QWidget {
         Controller(Model* modele, View* view, Config* config);
         ~Controller();
         int checkIfSaved();
+        bool checkGoogleAuth();
         void parseModel(QString fileName);
         static Time* createTime(const QString &chaine);
 

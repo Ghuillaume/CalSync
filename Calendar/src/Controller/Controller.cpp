@@ -62,39 +62,12 @@ void Controller::newModelFromLocal() {
 }
 
 void Controller::newModelFromGoogle() {
-    bool ok = false;
-    if(this->config->getGoogleAuthCode().isEmpty()) {
-        if(QMessageBox::warning(this, "Warning", "You are not authenticated, click OK if you want to launch authentication", QMessageBox::Ok, QMessageBox::Abort) == QMessageBox::Abort) {
-            ok = false;
-        }
-        else {
-            ok = true;
-            this->getGoogleAccessToken();
-        }
-    }
-    else {
-        ok = true;
-
-        if(QMessageBox::warning(this, "Warning", "You are already authenticated, do you want to authenticate with another account ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
-            this->getGoogleAccessToken();
-        }
-    }
-    if(ok) {
+    if(checkGoogleAuth()) {
         this->view->menubar->setVisible(true);
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
         
-        this->model->cleanList();
-        this->config->clean();
-
-        // Todo : verif if it's needed to change API key. Idem for GCal id
-        string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
-        string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
-
-        // create Google Parser and parse
-        // Todo : ask for password
-        Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
-        p->getEventList();
+        this->exportCalendar();
         
         this->view->display();
     }
@@ -528,6 +501,28 @@ int Controller::checkIfSaved() {
 
 }
 
+bool Controller::checkGoogleAuth() {
+    bool ok = false;
+    if(this->config->getGoogleAuthCode().isEmpty()) {
+        if(QMessageBox::warning(this, "Warning", "You are not authenticated, click OK if you want to launch authentication", QMessageBox::Ok, QMessageBox::Abort) == QMessageBox::Abort) {
+            ok = false;
+        }
+        else {
+            ok = true;
+            this->getGoogleAccessToken();
+        }
+    }
+    else {
+        ok = true;
+
+        if(QMessageBox::warning(this, "Warning", "You are already authenticated, do you want to authenticate with another account ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+            this->getGoogleAccessToken();
+        }
+    }
+    
+    return ok;
+}
+
 void Controller::changePassword() {
     if(!this->config->getPassword().empty()) {
         QString passwdChecking = QInputDialog::getText(this, "Password", "Type your current password");
@@ -573,11 +568,26 @@ void Controller::googleAccessTokenObtained(QString token) {
 }
 
 void Controller::importCalendar() {
+    Parser* p = new ParserCELCAT("http://www.edt-sciences.univ-nantes.fr", true, "g6935", this->model, this);
+    p->getEventList();
     QMessageBox::critical(this, "Error", "This feature is currently not available.");
 }
 
 void Controller::exportCalendar() {
 
+        
+    this->model->cleanList();
+    this->config->clean();
+
+    // Todo : verif if it's needed to change API key. Idem for GCal id
+    string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
+    string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
+
+    // create Google Parser and parse
+    // Todo : ask for password
+    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
+    p->getEventList();
+    
     QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
 }
 
