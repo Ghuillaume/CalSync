@@ -6,7 +6,7 @@
 #include <QByteArray>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-#include <../../../qjson/include/QJson/Parser>
+#include <./lib/qjson/include/QJson/Parser>
 #include <QtCore>
 
 #include "Parser.hpp"

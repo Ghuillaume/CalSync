@@ -4,7 +4,7 @@
 
 QT += xml network webkit
 
-INCLUDEPATH += ../qjson/include
+INCLUDEPATH += ./lib/qjson/include
 
 linux* {
     LIBS += ./libqjson.so
