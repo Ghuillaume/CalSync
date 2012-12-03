@@ -7,19 +7,19 @@ QT += xml network webkit
 INCLUDEPATH += ../qjson/include
 
 linux* {
-    LIBS += libqjson.so
+    LIBS += ./libqjson.so
 }
 
 win32-g++ {
-    LIBS += ../qjson/build/lib/qjson0.dll
+    LIBS += ./qjson0.dll
 }
 
 win32-msvc* {
-    LIBS += ../qjson/build/lib/qjson0.lib
+    LIBS += ./qjson0.lib
 }
 
 macx* {
-LIBS += -F../qjson/build/lib -framework qjson
+LIBS += -F./ -framework qjson
 }
 
 TEMPLATE = app
