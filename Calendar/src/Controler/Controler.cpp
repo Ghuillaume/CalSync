@@ -1,4 +1,5 @@
 #include "../../headers/Controler/Controler.hpp"
+#include "SlotFrame.hpp"
 
 Controler::Controler(Model* model, View* view, Config* config)
 {
@@ -27,8 +28,8 @@ Controler::Controler(Model* model, View* view, Config* config)
     QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
     
     // Main frame
-    QObject::connect(view -> datePrevious, SIGNAL(clicked()), view, SLOT(previousWeek()));
-    QObject::connect(view -> dateNext, SIGNAL(clicked()), view, SLOT(nextWeek()));
+    QObject::connect(view -> datePrevious, SIGNAL(clicked()), this, SLOT(previousWeek()));
+    QObject::connect(view -> dateNext, SIGNAL(clicked()), this, SLOT(nextWeek()));
 
     
 }
@@ -99,6 +100,13 @@ void Controler::newModelFromGoogle() {
         this->view->display();
     }
 
+}
+
+void Controler::connectAllButtons() {
+    for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
+            SlotFrame *frame = this->view->currentButtons.at(i);
+            QObject::connect(frame, SIGNAL(clicked()), this, SLOT(clickSlot()));
+    }
 }
 
 void Controler::setStartView() {
@@ -327,12 +335,9 @@ void Controler::createSlot()
 									dialog->titleEdit->text().toStdString(),
 									dialog->descriptionEdit->text().toStdString());
 
+                        
+                        this->connectAllButtons();
 			this->view->display();
-			
-			for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
-				QPushButton *button = this->view->currentButtons.at(i);
-				QObject::connect(button, SIGNAL(clicked()), this, SLOT(clickSlot()));
-			}
 		}
     }
 }
@@ -513,6 +518,16 @@ void Controler::parseModel(QString fileName) {
     
 }
 
+void Controler::previousWeek() {
+    this->view->previousWeek();
+    this->connectAllButtons();
+}
+
+void Controler::nextWeek() {
+    this->view->nextWeek();
+    this->connectAllButtons();
+}
+
 int Controler::checkIfSaved() {
 
     if(!this->config->isSaved()) {
@@ -597,7 +612,9 @@ Time* Controler::createTime(const QString &chaine) {
 void Controler::clickSlot() {
 	SlotActionDialog *slotActionDialog = new SlotActionDialog(view);
 	slotActionDialog->setVisible(TRUE);
+        
+        
 	
-    QObject::connect(slotActionDialog->editionButton, SIGNAL(clicked()), this, SLOT(editSlot()));
+    QObject::connect(slotActionDialog->editionButton, SIGNAL(clicked()), slotActionDialog, SLOT(editSlot()));
     QObject::connect(slotActionDialog->cancelButton, SIGNAL(clicked()), slotActionDialog, SLOT(close()));
 }

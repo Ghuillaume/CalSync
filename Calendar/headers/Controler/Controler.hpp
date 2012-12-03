@@ -25,7 +25,9 @@ class Controler : public QWidget {
         ~Controler();
         int checkIfSaved();
         void parseModel(QString fileName);
-		static Time* createTime(const QString &chaine);
+        static Time* createTime(const QString &chaine);
+
+        void connectAllButtons();
 
     public slots:
         void setStartView();
@@ -48,6 +50,9 @@ class Controler : public QWidget {
         void googleAccessTokenObtained(QString token);
         void importCalendar();
         void exportCalendar();
+        
+        void previousWeek();
+        void nextWeek();
 
     private:
         Model* model;
