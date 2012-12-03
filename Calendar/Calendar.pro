@@ -49,10 +49,12 @@ HEADERS += headers/Controler/Config.hpp \
            headers/Parser/ParserGCal.hpp \
            headers/View/DateDialog.hpp \
            headers/View/SlotDialog.hpp \
+           headers/View/SlotActionDialog.hpp \
            headers/View/View.hpp \
-    headers/View/GoogleAccessDialog.hpp \
-    headers/Controler/OAuth.hpp \
-    headers/View/SettingsDialog.hpp
+		headers/View/GoogleAccessDialog.hpp \
+		headers/Controler/OAuth.hpp \
+		headers/View/SettingsDialog.hpp
+		
 SOURCES += main.cpp \
            src/Controler/Config.cpp \
            src/Controler/Controler.cpp \
@@ -66,6 +68,7 @@ SOURCES += main.cpp \
            src/Parser/ParserGCal.cpp \
            src/View/DateDialog.cpp \
            src/View/SlotDialog.cpp \
+           src/View/SlotActionDialog.cpp \
            src/View/View.cpp \
     src/View/GoogleAccessDialog.cpp \
     src/Controler/OAuth.cpp \
