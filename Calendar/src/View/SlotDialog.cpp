@@ -17,12 +17,12 @@ SlotDialog::SlotDialog(QWidget* parent):
     );
 
     this->setObjectName("Dialog");
-    this->resize(300, 200);
+    this->resize(300, 230);
     this->setWindowTitle(QString::fromUtf8("Create a new event"));
 
     frame = new QWidget(this);
     frame->setObjectName("frame");
-    frame->setGeometry(QRect(10, 10, 300, 200));
+    frame->setGeometry(QRect(10, 10, 300, 230));
 
     formLayoutWidget = new QWidget(frame);
     formLayoutWidget->setObjectName(QString::fromUtf8("formLayoutWidget"));
@@ -53,6 +53,11 @@ SlotDialog::SlotDialog(QWidget* parent):
     descriptionLabel->setText("Description :");
     formLayout->setWidget(3, QFormLayout::LabelRole, descriptionLabel);
 
+    locationLabel = new QLabel(formLayoutWidget);
+    locationLabel->setObjectName("locationLabel");
+    locationLabel->setText("Location :");
+    formLayout->setWidget(4, QFormLayout::LabelRole, locationLabel);
+
 
     // Display parameters edition
 
@@ -78,15 +83,21 @@ SlotDialog::SlotDialog(QWidget* parent):
     descriptionEdit->setObjectName(QString::fromUtf8("descriptionEdit"));
     formLayout->setWidget(3, QFormLayout::FieldRole, descriptionEdit);
 
+    locationEdit = new QLineEdit(formLayoutWidget);
+    locationEdit->setObjectName("locationEdit");
+    formLayout->setWidget(4, QFormLayout::FieldRole, locationEdit);
+
 
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    formLayout->setItem(4, QFormLayout::SpanningRole, horizontalSpacer);
+    formLayout->setItem(5, QFormLayout::SpanningRole, horizontalSpacer);
 
     buttonBox = new QDialogButtonBox(formLayoutWidget);
     buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
-    formLayout->setWidget(5, QFormLayout::FieldRole, buttonBox);
+    formLayout->setWidget(6, QFormLayout::FieldRole, buttonBox);
+
+    QObject::connect(this->buttonBox, SIGNAL(accepted()), this, SLOT(checkFields()));
 
 }
 
@@ -120,3 +131,10 @@ SlotDialog::~SlotDialog()
     delete buttonBox;
 }
 
+void SlotDialog::checkFields() {
+    qDebug() << "LOLILOL";
+    if(titleEdit->text().isEmpty())
+        QMessageBox::warning(this, "Error", "You must fill at least the title field");
+    else
+        emit acceptedAndOk();
+}

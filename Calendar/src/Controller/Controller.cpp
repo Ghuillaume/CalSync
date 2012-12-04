@@ -292,7 +292,7 @@ void Controller::close() {
 void Controller::createSlot()
 {
     SlotDialog *dialog = new SlotDialog(view);
-    QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+    QObject::connect(dialog, SIGNAL(acceptedAndOk()), dialog, SLOT(accept()));
     QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
     dialog -> exec();
 
@@ -480,7 +480,8 @@ void Controller::nextWeek() {
     this->connectAllSlots();
 }
 
-void Controller::checkConflicts(Time* start, Time* end, Slot* currentSlot) {
+bool Controller::checkConflicts(Time* start, Time* end, Slot* currentSlot) {
+    bool proceed = true;
     bool overlap = true;
     ListOfSlot list;
     while(overlap) {
@@ -500,11 +501,13 @@ void Controller::checkConflicts(Time* start, Time* end, Slot* currentSlot) {
                 }
                 else {
                     qDebug() << "discard" << endl;
-                    return;
+                    proceed = false;
                 }
             }
         }
     }
+
+    return proceed;
 }
 
 int Controller::checkIfSaved() {
