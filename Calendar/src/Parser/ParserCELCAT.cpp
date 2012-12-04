@@ -46,13 +46,13 @@ void ParserCELCAT::exportEvent(const QString & title,
 
 
 void ParserCELCAT::parseEvents(QByteArray in) {
-    qDebug() << in;
-    // /comptes/E094326D/Cours/Master 1/Semestre 1/GL/CalSync/Calendar
-    QFile file("g6935.xml.html");
-    if (file.open(QFile::ReadOnly)) {
+    //QDebug() << in;
+    QFile file("g6935.xml");
+//    if (file.open(QFile::ReadOnly)) {
+		cout << "OK" << endl;
         QDomDocument doc;
-        doc.setContent(&file,false);
-        file.close();
+        doc.setContent(in,false);
+//        file.close();
         	
         QDomElement rootElement = doc.documentElement();
         QDomElement spanElement = rootElement.firstChildElement("span");
@@ -110,16 +110,18 @@ void ParserCELCAT::parseEvents(QByteArray in) {
                 timeCursor->nextDay();
             }
 
-            Time *beginDate = new Time(atoi(beginInfos[0].c_str()),
-                                        atoi(beginInfos[1].c_str()),
+            Time *beginDate = new Time(atoi(beginInfos[1].c_str()),
+                                        atoi(beginInfos[0].c_str()),
                                         timeCursor->getDay(),
                                         timeCursor->getMonth(),
                                         timeCursor->getYear());
-            Time *endDate = new Time(atoi(endInfos[0].c_str()),
-                                        atoi(endInfos[1].c_str()),
+			cout << beginDate->getReadableDate() << endl;
+            Time *endDate = new Time(atoi(endInfos[1].c_str()),
+                                        atoi(endInfos[0].c_str()),
                                         timeCursor->getDay(),
                                         timeCursor->getMonth(),
                                         timeCursor->getYear());
+			cout << endDate->getReadableDate() << endl;
             string title = strCourseType + " " + strModuleName;
             string description = strClassroomName + " / " + strProfessorName;
             Slot *slot = this->model->createSlot(beginDate, endDate, title, description);
@@ -128,9 +130,9 @@ void ParserCELCAT::parseEvents(QByteArray in) {
             event = event.nextSiblingElement("event");
         }
         delete timeCursor;
-    }
-
-    qCritical() << "Parsing events TODO" << endl;
+//    }
+	cout << "test" << endl;
+    //qCritical() << "Parsing events TODO" << endl;
 }
 
 void ParserCELCAT::stateChanged(int state)   {
@@ -169,6 +171,7 @@ void ParserCELCAT::replyFinished(QNetworkReply * reply)
 {
     //QApplication::restoreOverrideCursor();
     QByteArray in = reply->readAll();
-    qDebug() << in;
+    //qDebug() << in;
+	cout << "LOL" << endl;
     this->parseEvents(in);
 }
