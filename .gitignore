@@ -3,6 +3,7 @@ Calendar/build
 nbproject
 
 /qjson
+Calendar/libqjson.so*
 
 Makefile
 *.o

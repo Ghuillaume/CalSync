@@ -34,6 +34,11 @@ void ParserGCal::getCalendarList() {
 }
 
 void ParserGCal::clearCalendar() {
+
+    // TODO : récupérer tous les events avec
+    // "\"extendedProperties\": \n{ \"shared\": \n{ \"fromMyCalendar\": \"true\"\n}\n},\n"
+    // pour ne supprimer que ceux là :)
+
     QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/clear").arg(this->id);
     QUrl url;
     url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
@@ -91,6 +96,7 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
             QString("\"start\": \n{ \"dateTime\": \"%1\" \n},\n").arg(strStart) +
             QString("\"summary\": \"%1\",\n").arg(title) +
             QString("\"description\": \"%1\"\n").arg(description) +
+            QString("\"extendedProperties\": \n{ \"shared\": \n{ \"fromMyCalendar\": \"true\"\n}\n},\n") +
             QString("}");
     QByteArray params = query.toUtf8();
     qDebug() << "Params to send" << params;

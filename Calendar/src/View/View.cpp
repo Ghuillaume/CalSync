@@ -6,7 +6,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     this -> model = model;
 
 	// Main window:
-    this->setWindowTitle("Emploi du temps");
+    this->setWindowTitle("MyCalendar");
     QSize sizeWindow = QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT);
     this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT));
     this->setFixedSize(sizeWindow);
@@ -268,9 +268,10 @@ void View::display()
         if((*it)->getDateDebut()->getWeek() != this->model->getCurrentDate()->getWeek()
                 || (*it)->getDateDebut()->getYear() != this->model->getCurrentDate()->getYear()) {
             newWeek = TRUE;
-		}
-		//this->slotListWidget->addItem( QString((*it)->toString().c_str()) );
-		currentSlots.push_back(*it);
+        }
+        // If slot is in limits, add it to list of slots to display
+        if( (*it)->getDateDebut()->getHour() >= 8 && (*it)->getDateFin()->getHour() <= 19)
+            currentSlots.push_back(*it);
 		
 		if (!newWeek) {
 			it++;
