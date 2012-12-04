@@ -18,6 +18,11 @@ class Parser {
         virtual ~Parser(){};
 
         virtual void getEventList() = 0;
+        virtual void clearCalendar() = 0;
+        virtual void exportEvent(const QString & title,
+                                 const QString & description,
+                                 const Time* start,
+                                 const Time* end) = 0;
 
     protected:
         virtual void parseEvents(QByteArray in) = 0;

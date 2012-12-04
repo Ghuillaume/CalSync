@@ -24,6 +24,7 @@ Controller::Controller(Model* model, View* view, Config* config)
     QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
     QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importCalendar()));
     QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
+    QObject::connect(view -> reloadItem, SIGNAL(activated()), this, SLOT(newModelFromGoogle()));
     
     // Main frame
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), this, SLOT(previousWeek()));
@@ -68,6 +69,8 @@ void Controller::newModelFromGoogle() {
         this->view->menubar->setVisible(true);
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
+
+        this->importCalendar();
         
         this->view->display();
     }
@@ -397,6 +400,7 @@ void Controller::updateGCalID(int i) {
 void Controller::updateOnlineService(QString service) {
     this->config->setOnlineService(service.toStdString());
     this->view->exportItem->setText(QString("Save my calendar on %1").arg(service));
+    this->view->reloadItem->setText(QString("Save my calendar on %1").arg(service));
 }
 
 void Controller::updateAcademicSchedule(QString schedule) {
@@ -596,8 +600,9 @@ void Controller::importCalendar() {
 }
 
 void Controller::exportCalendar() {
-    
-    QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
+    // Warning : this is going to clear your online calendar before
+    Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+    p->exportEvent("TEST", "TEST", new Time(0,16,6,12,2012), new Time(0,17,6,12,2012));
 }
 
 Time* Controller::createTime(const QString &chaine) {
