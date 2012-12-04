@@ -22,7 +22,7 @@ void ParserGCal::replyFinished(QNetworkReply * reply)
 {
     QApplication::restoreOverrideCursor();
     QByteArray in = reply->readAll();
-    qDebug() << in;
+    qDebug() << "REPLY : " << in;
     this->parseEvents(in);
 }
 
@@ -36,13 +36,7 @@ void ParserGCal::getCalendarList() {
 void ParserGCal::getEventList() {
     qDebug() << "Getting events from Google Calendar";
 
-    // Works if OAuth not required
-    /*query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
-    query->get(this->buildQuery());*/
-
-    QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events?access_token=%2")
-            .arg(this->id)
-            .arg(this->authToken);
+    QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events").arg(this->id);
     QUrl url;
     url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
 
@@ -75,8 +69,9 @@ void ParserGCal::parseEvents(QByteArray in) {
 			for(int i = 0; i < m_events.count(); ++i)
 			{
 				// Build the title from string "summary"
-				QVariantMap mapEvents = m_events[i].toMap();
-				string eventName = mapEvents["summary"].toString().toStdString();
+                QVariantMap mapEvents = m_events[i].toMap();
+                string eventName = mapEvents["summary"].toString().toStdString();
+                string eventDescription = mapEvents["description"].toString().toStdString();
 				// Build the timeBegin from start date string
 				QVariantMap nestedMap = mapEvents["start"].toMap();
 				QString dateBegin = nestedMap["dateTime"].toString();
@@ -86,7 +81,7 @@ void ParserGCal::parseEvents(QByteArray in) {
 				QString dateEnd = nestedMap["dateTime"].toString();
 				Time* timeEnd = this->buildDate(dateEnd);
 				// Create slot with previous variables
-				this->model->createSlot(timeBegin, timeEnd, eventName, "");
+                this->model->createSlot(timeBegin, timeEnd, eventName, eventDescription);
 			}
 		}
         else if(result.toMap()["kind"].toString() == "calendar#calendarList")

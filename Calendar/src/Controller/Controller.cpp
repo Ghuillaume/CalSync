@@ -583,11 +583,11 @@ void Controller::importCalendar() {
 
     // create Google Parser and parse
     // Todo : ask for password
-    /*Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
-    p->getEventList();*/
-
-    Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
+    Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
     p->getEventList();
+
+    /*Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
+    p->getEventList();*/
 
     //QMessageBox::critical(this, "Error", "This feature is currently not available.");
 
