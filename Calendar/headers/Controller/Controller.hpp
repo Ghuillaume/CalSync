@@ -24,11 +24,13 @@ class Controller : public QWidget {
     public:
         Controller(Model* modele, View* view, Config* config);
         ~Controller();
+
+        void checkConflicts(Time* start, Time* end, Slot* currentSlot);
         int checkIfSaved();
         bool checkGoogleAuth();
         void parseModel(QString fileName);
         static Time* createTime(const QString &chaine);
-        void connectAllButtons();
+        void connectAllSlots();
 
     public slots:
         void setStartView();
@@ -54,6 +56,9 @@ class Controller : public QWidget {
         
         void previousWeek();
         void nextWeek();
+
+    signals:
+        void tokenSaved();
 
     private:
         Model* model;

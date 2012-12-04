@@ -2,6 +2,8 @@ Calendar/dist
 Calendar/build
 nbproject
 
+/qjson
+
 Makefile
 *.o
 *.pro.*

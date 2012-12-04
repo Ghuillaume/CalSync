@@ -7,19 +7,25 @@
 #include "../Model/Slot.hpp"
 
 class SlotFrame : public QFrame
-{ Q_OBJECT
-public:
-    Slot *slot;
-    QLabel* titleLabel;
-    QLabel* descriptionLabel;
-    
-    SlotFrame(QString title,QString description);
-    virtual ~SlotFrame();
-    
-    void mousePressEvent(QMouseEvent *event);
-    
-signals:
-    void slotClickedSignal(SlotFrame*);
+{
+    Q_OBJECT
+    public:
+        QLabel* titleLabel;
+        QLabel* descriptionLabel;
+
+        SlotFrame(QString title,QString description);
+        virtual ~SlotFrame();
+
+        Slot* getSlot();
+        void setSlot(Slot* slot);
+
+        void mousePressEvent(QMouseEvent *event);
+
+    signals:
+        void slotClickedSignal(SlotFrame*);
+
+    private:
+        Slot *slot;
 };
 
 #endif	

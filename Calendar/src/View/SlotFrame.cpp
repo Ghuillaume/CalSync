@@ -30,6 +30,14 @@ SlotFrame::~SlotFrame() {
     delete descriptionLabel;
 }
 
+void SlotFrame::setSlot(Slot *slot) {
+    this->slot = slot;
+}
+
+Slot* SlotFrame::getSlot() {
+    return this->slot;
+}
+
 void SlotFrame::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         emit slotClickedSignal(this);

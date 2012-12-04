@@ -1,6 +1,6 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-ParserGCal::ParserGCal(string url, bool ssl, string id, string authToken, Model *model, QObject* parent) : QObject(parent) {
+ParserGCal::ParserGCal(string url, bool ssl, string id, QString authToken, Model *model, QObject* parent) : QObject(parent) {
     this->url = url;
     this->ssl = ssl;
     this->id = id;
@@ -10,7 +10,6 @@ ParserGCal::ParserGCal(string url, bool ssl, string id, string authToken, Model 
     query = new QHttp(this);
     connect(query, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
     connect(query, SIGNAL(responseHeaderReceived(QHttpResponseHeader)), this, SLOT(responseHeaderReceived(QHttpResponseHeader)));
-    connect(query, SIGNAL(requestFinished(int,bool)), this, SLOT(requestFinished(int,bool)));
 
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
@@ -27,30 +26,33 @@ void ParserGCal::replyFinished(QNetworkReply * reply)
     qDebug() << reply->readAll();
 }
 
-QString ParserGCal::buildQuery() {
+void ParserGCal::getCalendarList() {
 
-    return QString("/calendar/v3/calendars/%1/events?key=AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM")
-             .arg(this->id.c_str());
+    QString url = QString("https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=%1").arg(this->authToken);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    networkManager->get(QNetworkRequest(QUrl(url)));
 }
 
 void ParserGCal::getEventList() {
     qDebug() << "Getting events from Google Calendar";
 
     // Works if OAuth not required
-    query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
-    query->get(this->buildQuery());
+    /*query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
+    query->get(this->buildQuery());*/
 
-    /*QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events").arg(this->id.c_str());
+    QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events?access_token=%2")
+            .arg(this->id.c_str())
+            .arg(this->authToken);
     QUrl url;
     url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
 
     QNetworkRequest request;
     request.setUrl(url);
-    request.setRawHeader("Authorization", QString("OAuth %1").arg(this->authToken.c_str()).toLatin1());
-    qDebug() << "Header = " << "Authorization" << QString("OAuth %1").arg(this->authToken.c_str()).toLatin1();
+    request.setRawHeader("Authorization", QString("OAuth %1").arg(this->authToken).toLatin1());
+    request.setRawHeader("X-JavaScript-User-Agent", "Google APIs Explorer");
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    networkManager->get(request);*/
+    networkManager->get(request);
 
     // TODO : timeout, sinon quand google répond pas ben ça fait que dalle, pas de message d'erreur etc !!!!
 }
@@ -89,6 +91,14 @@ void ParserGCal::parseEvents(QByteArray in) {
 				this->model->createSlot(timeBegin, timeEnd, eventName, "");
 			}
 		}
+        else if(result.toMap()["kind"].toString() == "calendar#calendarList")
+        {
+            m_calendars = result.toMap()["items"].toList();
+            for(int i = 0; i < m_events.count(); ++i)
+            {
+                qDebug() << m_calendars[i].toString();
+            }
+        }
 	}
 }
 
@@ -131,8 +141,8 @@ void ParserGCal::requestFinished(int id, bool error)   {
     if(error)   {
         qDebug() << "Error";
     }   else    {
-        QByteArray in = query->readAll();
-        this->parseEvents(in);
+        //QByteArray in = query->readAll();
+        //this->parseEvents(in);
     }
 }
 

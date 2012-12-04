@@ -26,10 +26,10 @@ class ParserGCal : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserGCal(string url, bool ssl, string id, string authToken, Model* model, QObject* parent);
+        ParserGCal(string url, bool ssl, string id, QString authToken, Model* model, QObject* parent);
         virtual ~ParserGCal();
 
-        QString buildQuery();
+        void getCalendarList();
         virtual void getEventList();
 		Time* buildDate(QString &strDate);
 
@@ -43,7 +43,7 @@ class ParserGCal : public QObject, public Parser {
         virtual void parseEvents(QByteArray in);
 
         string id;
-        string authToken;
+        QString authToken;
 
         QHttp* query;
         QNetworkAccessManager* networkManager;

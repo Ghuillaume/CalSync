@@ -115,7 +115,6 @@ void OAuth2::replyFinished(QNetworkReply * reply)
     QString json = reply->readAll();
 
     QApplication::restoreOverrideCursor();
-    qDebug() << "PROUTPROUT" << json;
 
     QJson::Parser parser;
     bool ok;

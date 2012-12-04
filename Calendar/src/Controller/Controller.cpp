@@ -19,10 +19,9 @@ Controller::Controller(Model* model, View* view, Config* config)
     QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(close()));
     
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
-    QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
-    QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
+    //QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
+    //QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
-    //QObject::connect(view -> changeKeyItem, SIGNAL(activated()), this, SLOT(changeAPIKey()));
     QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importCalendar()));
     QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
     
@@ -66,18 +65,17 @@ void Controller::newModelFromGoogle() {
         this->view->menubar->setVisible(true);
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
-        
-        this->exportCalendar();
+        //this->config->clean();
         
         this->view->display();
     }
 
 }
 
-void Controller::connectAllButtons() {
+void Controller::connectAllSlots() {
     for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
             SlotFrame *frame = this->view->currentButtons.at(i);
-			frame->slot = this->view->currentSlots.at(i);
+            frame->setSlot(this->view->currentSlots.at(i));
             QObject::connect(frame, SIGNAL(slotClickedSignal(SlotFrame*)), this, SLOT(clickSlot(SlotFrame*)));
     }
 }
@@ -159,68 +157,68 @@ void Controller::loadModel() {
         while (!reader.atEnd()) {
             if (reader.isStartElement())
             {
-QString titre;
-QString description;
-QString dateDebut;
-QString dateFin;
+                QString titre;
+                QString description;
+                QString dateDebut;
+                QString dateFin;
 
-// Si on est à la racine, rien à faire
+                // Si on est à la racine, rien à faire
                 if(reader.name() == "Calendar") {
-reader.readNext();
+                    reader.readNext();
                 }
 
-// Import du mot de passe et de la clé API et sauvegarde dans la conf
-if(reader.name() == "password") {
-config->setPassword(reader.readElementText().toStdString());
-}
+                // Import du mot de passe et de la clé API et sauvegarde dans la conf
+                if(reader.name() == "password") {
+                    config->setPassword(reader.readElementText().toStdString());
+                }
 
-if(reader.name() == "googleToken") {
-config->setGoogleAuthCode(reader.readElementText());
-}
+                if(reader.name() == "googleToken") {
+                    config->setGoogleAuthCode(reader.readElementText());
+                }
 
-// On commence à sauvegarder les informations des slots
-if(reader.name() == "slot") {
-reader.readNext();
-while(reader.isStartElement()==false) {
-reader.readNext();
-}
-}
+                // On commence à sauvegarder les informations des slots
+                if(reader.name() == "slot") {
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
 
-if (reader.name() == "title") {
-titre = reader.readElementText();
-reader.readNext();
-while(reader.isStartElement()==false) {
-reader.readNext();
-}
-}
+                if (reader.name() == "title") {
+                    titre = reader.readElementText();
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
 
-if (reader.name() == "description") {
-description = reader.readElementText();
-reader.readNext();
-while(reader.isStartElement()==false) {
-reader.readNext();
-}
-}
+                if (reader.name() == "description") {
+                    description = reader.readElementText();
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
 
-if (reader.name() == "dateStart") {
-dateDebut = reader.readElementText();
-reader.readNext();
-while(reader.isStartElement()==false) {
-reader.readNext();
-}
-}
+                if (reader.name() == "dateStart") {
+                    dateDebut = reader.readElementText();
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
 
-if (reader.name() == "dateEnd") {
-dateFin = reader.readElementText();
-}
+                if (reader.name() == "dateEnd") {
+                    dateFin = reader.readElementText();
+                }
 
-// Une fois qu'on a parsé le slot, on crée l'objet correspondant et on l'ajoute au modèle
-if(dateDebut != NULL && dateFin != NULL) {
-model->createSlot( createTime(dateDebut),
-createTime(dateFin),
-titre.toStdString(),
-description.toStdString());
-}
+                // Une fois qu'on a parsé le slot, on crée l'objet correspondant et on l'ajoute au modèle
+                if(dateDebut != NULL && dateFin != NULL) {
+                    model->createSlot( createTime(dateDebut),
+                    createTime(dateFin),
+                    titre.toStdString(),
+                    description.toStdString());
+                }
             }
             reader.readNext(); // On va au prochain token
         }
@@ -276,31 +274,8 @@ void Controller::createSlot()
 					|| startDateTime->getYear() != endDateTime->getYear()) {
             QMessageBox::critical(this->view, "Error", "The date of the beginning of the event must be the same for the end!\n Creation aborted");
 		} else {
-			// Checking conflicts
-			bool overlap = true;
-			ListOfSlot list;
-			while(overlap) {
-				overlap = false;
-				list = this->model->getSlotList();
-				for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
-					if((*it)->areSlotsOverlapping(startDateTime, endDateTime)) {
-						// Overlapping, ask user for resolving conflict
-						QString event = (*it)->getIntitule().c_str();
-						QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
-						if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
-							qDebug() << "erase" << endl;
-							this->config->setSaved(false);
-							this->model->deleteSlot(*it);
-							overlap = true;
-							break;
-						}
-						else {
-							qDebug() << "discard" << endl;
-							return;
-						}
-					}
-				}
-			}
+
+            this->checkConflicts(startDateTime, endDateTime, NULL);
 
 			this->config->setSaved(false);
 			this->model->createSlot(startDateTime,
@@ -308,33 +283,22 @@ void Controller::createSlot()
 									dialog->titleEdit->text().toStdString(),
 									dialog->descriptionEdit->text().toStdString());
 
-                        
-                        this->connectAllButtons();
+
 			this->view->display();
+            this->connectAllSlots();
 		}
     }
 }
 
 void Controller::editSlot(SlotFrame *frame) {
-	// Récupération de l'élement à modifier
-//	ListOfSlot l = this->model->getSlotList();
-//	ListOfSlot::iterator slotToEditIterator;
-//	int cpt = 0;
-//	for(slotToEditIterator = l.begin() ;
-//		slotToEditIterator != l.end() && cpt < (this->view->getFirstEventPosition() + this->view->slotListWidget->currentRow()) ;
-//		slotToEditIterator++)
-//	{
-//		cpt++;
-//	}
 
 	SlotDialog *dialog = new SlotDialog(view);
 	QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
 	QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
 	
-	dialog->setArgs(frame->slot->getDateDebut(), frame->slot->getDateFin(),
-					frame->slot->getIntitule(), frame->slot->getDescription());
-	dialog -> exec();
-	cout << "LULZ" << endl;
+    dialog->setArgs(frame->getSlot()->getDateDebut(), frame->getSlot()->getDateFin(),
+                    frame->getSlot()->getIntitule(), frame->getSlot()->getDescription());
+    dialog -> exec();
 	if(dialog->result() == QDialog::Accepted) {
 		view -> display ();
 		QDate startDate = dialog->dateStartEdit->date();
@@ -349,45 +313,27 @@ void Controller::editSlot(SlotFrame *frame) {
 			QMessageBox::critical(this->view, "Error", "You can't create an event which ends before starting ! Edition aborted.");
 			return;
 		}
-		
-		// Checking conflicts
-		bool overlap = true;
-		ListOfSlot list;
-		while(overlap) {
-			overlap = false;
-			list = this->model->getSlotList();
-			cout << "ok" << endl;
-			ListOfSlot::iterator it;
-			for(it = list.begin(); it != list.end(); it++) {
-				cout << (*it)->toString().c_str() << endl;
-				if((*it)->areSlotsOverlapping(startDateTime, endDateTime) && (frame->slot != (*it))) {
-					cout << "overlapping" << endl;
-					qDebug() << frame->slot->toString().c_str() << " & " << (*it)->toString().c_str() << "overlaped";
-					// Overlapping, ask user for resolving conflict
-					QString event = (*it)->getIntitule().c_str();
-					QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
-					if(QMessageBox::question(this, "Conflict", message, QMessageBox::Discard, QMessageBox::Apply) == QMessageBox::Apply) {
-						qDebug() << "erase" << endl;
-						this->config->setSaved(false);
-						this->model->deleteSlot(*it);
-						overlap = true;
-						break;
-					}
-					else {
-						qDebug() << "discard" << endl;
-						return;
-					}
-				}
-			}
-		}
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                          //
+        //      TON ERREUR DE SEG VIENT DU SLOT QUI EST DANS LA FRAME                               //
+        //       REGARDE CA, J'ARRIVE MEME PAS A FAIRE TOSTRING, SI TU COMMENTE CA, ÇA MARCHE !!!   //
+        //                                                                                             //
+        //////////////////////////////////////////////////////////////////////////////////////////////
+
+        this->checkConflicts(startDateTime, endDateTime, frame->getSlot());
 
 		this->config->setSaved(false);
-		frame->slot->editSlot(
+        frame->getSlot()->toString();
+        /*frame->getSlot()->editSlot(
 					startDateTime,
 					endDateTime,
 					dialog->titleEdit->text().toStdString(),
-					dialog->descriptionEdit->text().toStdString());
-		this->view->display();
+                    dialog->descriptionEdit->text().toStdString());*/
+        this->view->display();
 	}
 }
 
@@ -494,12 +440,39 @@ void Controller::parseModel(QString fileName) {
 
 void Controller::previousWeek() {
     this->view->previousWeek();
-    this->connectAllButtons();
+    this->connectAllSlots();
 }
 
 void Controller::nextWeek() {
     this->view->nextWeek();
-    this->connectAllButtons();
+    this->connectAllSlots();
+}
+
+void Controller::checkConflicts(Time* start, Time* end, Slot* currentSlot) {
+    bool overlap = true;
+    ListOfSlot list;
+    while(overlap) {
+        overlap = false;
+        list = this->model->getSlotList();
+        for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
+            if((*it)->areSlotsOverlapping(start, end) && (currentSlot != (*it))) {
+                // Overlapping, ask user for resolving conflict
+                QString event = (*it)->getIntitule().c_str();
+                QString message = "Your new event overlaps event \"" + event + "\" and will erase it";
+                if(QMessageBox::question(this, "Conflict", message, QMessageBox::Abort, QMessageBox::Apply) == QMessageBox::Apply) {
+                    qDebug() << "erase" << endl;
+                    this->config->setSaved(false);
+                    this->model->deleteSlot(*it);
+                    overlap = true;
+                    break;
+                }
+                else {
+                    qDebug() << "discard" << endl;
+                    return;
+                }
+            }
+        }
+    }
 }
 
 int Controller::checkIfSaved() {
@@ -581,28 +554,29 @@ void Controller::googleAccessTokenObtained(QString token) {
     qDebug() << "Google token obtained : " << token;
     this->config->setGoogleOAuth(this->auth2);
     this->config->setGoogleAuthCode(token);
+    emit tokenSaved();
 }
 
 void Controller::importCalendar() {
-    Parser* p = new ParserCELCAT("http://www.edt-sciences.univ-nantes.fr", true, "g6935", this->model, this);
-    p->getEventList();
-    QMessageBox::critical(this, "Error", "This feature is currently not available.");
-}
 
-void Controller::exportCalendar() {
 
-        
     this->model->cleanList();
-    this->config->clean();
 
-    // Todo : verif if it's needed to change API key. Idem for GCal id
     string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
-    string apiKey = "AIzaSyDNTR8D9cS5lQOqVW5dX1dFpKgQqlKA9sM";
 
     // create Google Parser and parse
     // Todo : ask for password
-    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode().toStdString(), this->model, this);
+    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode(), this->model, this);
     p->getEventList();
+
+    /*Parser* p = new ParserCELCAT("http://www.edt-sciences.univ-nantes.fr", true, "g6935", this->model, this);
+    p->getEventList();
+
+    QMessageBox::critical(this, "Error", "This feature is currently not available.");
+    */
+}
+
+void Controller::exportCalendar() {
     
     QMessageBox::critical(this, "Error", "This feature is currently not available because of OAuth issues.");
 }
@@ -622,7 +596,7 @@ Time* Controller::createTime(const QString &chaine) {
 
 void Controller::clickSlot(SlotFrame *frame) {
 	SlotActionDialog *slotActionDialog = new SlotActionDialog(view, frame);
-	slotActionDialog->setVisible(TRUE);
+    slotActionDialog->setVisible(true);
         
     QObject::connect(slotActionDialog->editionButton, SIGNAL(clicked()), slotActionDialog, SLOT(editSlot()));
     QObject::connect(slotActionDialog, SIGNAL(editSlotSignal(SlotFrame*)), this, SLOT(editSlot(SlotFrame*)));

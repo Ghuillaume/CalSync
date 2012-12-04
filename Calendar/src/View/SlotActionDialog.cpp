@@ -9,6 +9,7 @@ SlotActionDialog::SlotActionDialog(QWidget *view, SlotFrame *frame) {
     this->setObjectName("ActionOnSlot");
     this->resize(300,50);
     this->setWindowTitle(QString::fromUtf8("Edit or delete slot"));
+    this->setModal(true);
 	
 	horizontalLayout = new QHBoxLayout(this);
 	
@@ -23,9 +24,7 @@ SlotActionDialog::SlotActionDialog(QWidget *view, SlotFrame *frame) {
 	
 	horizontalLayout->addWidget(editionButton);
 	horizontalLayout->addWidget(deletionButton);
-	horizontalLayout->addWidget(cancelButton);
-	
-	QObject::connect(this->editionButton, SIGNAL(clicked()), this, SLOT(editSlot()));
+    horizontalLayout->addWidget(cancelButton);
 
 	
 }
@@ -39,5 +38,6 @@ SlotActionDialog::~SlotActionDialog() {
 
 
 void SlotActionDialog::editSlot() {
-	emit editSlotSignal(this->frame);
+    emit editSlotSignal(this->frame);
+    this->accept();
 }
