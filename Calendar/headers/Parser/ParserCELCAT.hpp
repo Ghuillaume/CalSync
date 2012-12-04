@@ -13,13 +13,17 @@
 #include <QByteArray>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-#include <./lib/qjson/include/QJson/Parser>
 #include <QtCore>
 #include <QString>
 
+
+#include <./lib/qjson/include/QJson/Parser>
+#include "lib/qjson/include/QJson/Serializer" //src/serializerrunnable.h"
 #include "Parser.hpp"
-#include "../Model/common.h"
 #include "../Model/Model.hpp"
+#include "../Model/common.h"
+#include "../Model/Time.hpp"
+#include "../Controller/Controller.hpp"
 
 
 class ParserCELCAT : public QObject, public Parser {

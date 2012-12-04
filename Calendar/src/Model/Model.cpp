@@ -38,14 +38,14 @@ void Model::previousWeek() {
 	}
 }
 
-int Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {
+Slot* Model::createSlot(Time *dateDeb, Time *dateFin, string intitule, string description) {
     Slot *newSlot = new Slot(dateDeb, dateFin, intitule, description);
 
     cout << "inserting slot : " << newSlot->toString() << endl;
     
     this->slotlist.insert(newSlot);
     
-    return 1;
+    return newSlot;
 
 }
 

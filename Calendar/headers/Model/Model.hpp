@@ -32,7 +32,7 @@ class Model {
             void nextWeek();
             void previousWeek();
 
-            int createSlot(Time *dateDeb, Time *dateFin, string intitule, string description);
+            Slot* createSlot(Time *dateDeb, Time *dateFin, string intitule, string description);
             void deleteSlot(ListOfSlot::iterator it);
             void deleteSlot(Slot *slot);
             void cleanList();
