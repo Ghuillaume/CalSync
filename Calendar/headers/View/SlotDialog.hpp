@@ -24,6 +24,7 @@ class SlotDialog: public QDialog
         QLabel      *dateEndLabel;
         QLabel      *titleLabel;
         QLabel      *descriptionLabel;
+        QLabel      *locationLabel;
     
     public:
         QWidget *formLayoutWidget;
@@ -32,12 +33,19 @@ class SlotDialog: public QDialog
         QDateTimeEdit *dateEndEdit;
         QLineEdit *titleEdit;
         QLineEdit *descriptionEdit;
+        QLineEdit *locationEdit;
         QDialogButtonBox *buttonBox;
         
         SlotDialog(QWidget *parent);
        ~SlotDialog();
 
         void setArgs(Time* dateStart, Time* dateEnd, string intitule, string description);
+
+    public slots:
+        void checkFields();
+
+    signals:
+        void acceptedAndOk();
 };
 
 #endif

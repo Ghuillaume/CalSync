@@ -292,7 +292,7 @@ void Controller::close() {
 void Controller::createSlot()
 {
     SlotDialog *dialog = new SlotDialog(view);
-    QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
+    QObject::connect(dialog, SIGNAL(acceptedAndOk()), dialog, SLOT(accept()));
     QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
     dialog -> exec();
 
