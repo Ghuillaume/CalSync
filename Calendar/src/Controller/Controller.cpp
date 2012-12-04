@@ -153,8 +153,8 @@ void Controller::setStartView() {
 
 void Controller::saveModel() {
     QString fileName = this->config->getFileName();
-    qDebug() << fileName;
-    if(fileName.isEmpty()) {
+    qDebug() << "Filename : " << fileName;
+    if(!fileName.isEmpty()) {
         qDebug() << "parse with file name";
         this->parseModel(fileName);
     }
@@ -167,8 +167,10 @@ void Controller::saveModel() {
 void Controller::saveModelAs() {
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/home", tr("XML Document (*.xml)"));
-    this->parseModel(fileName);
+    if(!fileName.endsWith(".xml"))
+        fileName += ".xml";
     this->config->setFileName(fileName);
+    this->parseModel(fileName);
 }
 
 void Controller::loadModel() {
@@ -182,6 +184,7 @@ void Controller::loadModel() {
     if(load) {        
         QXmlStreamReader reader;
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
+        this->config->setFileName(fileName);
 
         QFile xml_doc(fileName);
         if(!xml_doc.open(QIODevice::ReadOnly))
@@ -210,7 +213,7 @@ void Controller::loadModel() {
                     reader.readNext();
                 }
 
-                // Import du mot de passe et de la clé API et sauvegarde dans la conf
+                // Import du mot de passe et du token d'accès dans la conf
                 if(reader.name() == "password") {
                     config->setPassword(reader.readElementText().toStdString());
                 }
@@ -619,7 +622,6 @@ void Controller::importOnlineCalendar() {
     this->model->cleanList();
 
     // create Google Parser and parse
-    // Todo : ask for password
     Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
     p->getEventList();
 

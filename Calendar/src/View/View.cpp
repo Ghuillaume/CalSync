@@ -326,6 +326,7 @@ void View::displaySlots() {
 		
 		// Creation of the button
 		frame->setGeometry( eventStartX, eventStartY, fullDuration, 93);
+        frame->setFixedSize(fullDuration, 93);
 		frame->setVisible(TRUE);
 		frame->setParent(this->tableWidget);
 		frame->show();
