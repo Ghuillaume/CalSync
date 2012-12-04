@@ -360,31 +360,15 @@ void Controller::editSlot(SlotFrame *frame) {
 	}
 }
 
-void Controller::deleteSlot() {
-//    if(this->view->slotListWidget->currentRow() == -1)
-//        QMessageBox::warning(this, "Error", "You must select an event in the list before delete it.");
-//    else {
-//
-//        // Récupération de l'élément à supprimer
-//        ListOfSlot l = this->model->getSlotList();
-//        ListOfSlot::iterator slotToDelIterator;
-//        int cpt = 0;
-//        for(slotToDelIterator = l.begin() ;
-//            slotToDelIterator != l.end() && cpt < (this->view->getFirstEventPosition() + this->view->slotListWidget->currentRow()) ;
-//            slotToDelIterator++)
-//        {
-//            cpt++;
-//        }
-//
-//        QString warning = "Are you sure you want to delete the event \"" + QString((*slotToDelIterator)->getIntitule().c_str()) + "\" ?";
-//        if(QMessageBox::warning(this, "Warning", warning, QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
-//            this->model->deleteSlot(*slotToDelIterator);
-//            this->view->display();
-//        }
-//
-//        this->config->setSaved(false);
-//
-//    }
+void Controller::deleteSlot(SlotFrame *frame) {
+	QString warning = "Are you sure you want to delete the event \"" + QString(frame->getSlot()->getIntitule().c_str()) + "\" ?";
+	if(QMessageBox::warning(this, "Warning", warning, QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+		this->model->deleteSlot(frame->getSlot());
+		this->view->display();
+		this->connectAllSlots();
+	}
+
+	this->config->setSaved(false);
 }
 
 void Controller::updateSettings() {
@@ -635,5 +619,7 @@ void Controller::clickSlot(SlotFrame *frame) {
         
     QObject::connect(slotActionDialog->editionButton, SIGNAL(clicked()), slotActionDialog, SLOT(editSlot()));
     QObject::connect(slotActionDialog, SIGNAL(editSlotSignal(SlotFrame*)), this, SLOT(editSlot(SlotFrame*)));
+    QObject::connect(slotActionDialog->deletionButton, SIGNAL(clicked()), slotActionDialog, SLOT(deleteSlot()));
+    QObject::connect(slotActionDialog, SIGNAL(deleteSlotSignal(SlotFrame*)), this, SLOT(deleteSlot(SlotFrame*)));
     QObject::connect(slotActionDialog->cancelButton, SIGNAL(clicked()), slotActionDialog, SLOT(close()));
 }

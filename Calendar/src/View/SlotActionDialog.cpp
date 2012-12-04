@@ -36,8 +36,12 @@ SlotActionDialog::~SlotActionDialog() {
 	delete horizontalLayout;
 }
 
-
 void SlotActionDialog::editSlot() {
     emit editSlotSignal(this->frame);
+    this->accept();
+}
+
+void SlotActionDialog::deleteSlot() {
+    emit deleteSlotSignal(this->frame);
     this->accept();
 }

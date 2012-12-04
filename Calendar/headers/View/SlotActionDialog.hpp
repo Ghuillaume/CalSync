@@ -29,9 +29,11 @@ class SlotActionDialog: public QDialog
 	   
 	public slots:
 		void editSlot();
+		void deleteSlot();
 	
 	signals:
 		void editSlotSignal(SlotFrame*);
+		void deleteSlotSignal(SlotFrame*);
 };
 #endif	
 

@@ -42,7 +42,7 @@ class Controller : public QWidget {
         void clickSlot(SlotFrame *frame);
         void createSlot();
         void editSlot(SlotFrame *frame);
-        void deleteSlot();
+        void deleteSlot(SlotFrame *frame);
         void saveModel();
         void saveModelAs();
         void loadModel();
