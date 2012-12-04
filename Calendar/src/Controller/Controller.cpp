@@ -17,8 +17,9 @@ Controller::Controller(Model* model, View* view, Config* config)
     QObject::connect(view -> saveAsItem, SIGNAL(activated()), this, SLOT(saveModelAs()));
     QObject::connect(view -> openItem, SIGNAL(activated()), this, SLOT(loadModel()));
     QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(close()));
-    
+
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
+    QObject::connect(view -> tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(createSlot()));
     QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
     QObject::connect(view -> reloadItem, SIGNAL(activated()), this, SLOT(newModelFromGoogle()));
     QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importAcademicCalendar()));
