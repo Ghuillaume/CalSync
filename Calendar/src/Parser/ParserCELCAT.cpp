@@ -46,93 +46,81 @@ void ParserCELCAT::exportEvent(const QString & title,
 
 
 void ParserCELCAT::parseEvents(QByteArray in) {
-    //QDebug() << in;
     QFile file("g6935.xml");
-//    if (file.open(QFile::ReadOnly)) {
-		cout << "OK" << endl;
-        QDomDocument doc;
-        doc.setContent(in,false);
-//        file.close();
-        	
-        QDomElement rootElement = doc.documentElement();
-        QDomElement spanElement = rootElement.firstChildElement("span");
-//        while(!spanElement.isNull()) {
-//        }
-        QDomElement event = rootElement.firstChildElement("event");
-        
-        Time *timeCursor = new Time(0, 8, 20, 8, 2012);
-        while(!event.isNull()) {
-            QString celcatWeek = event.firstChildElement("rawweeks").text();
-            int weekNumber = 34;
-            weekNumber += celcatWeek.indexOf(QChar('Y'), 0, Qt::CaseInsensitive);
-            if (weekNumber > 52) {
-                weekNumber = weekNumber - 52;
-            }
-            timeCursor = new Time(0, 8, 20, 8, 2012);
-            while(timeCursor->getWeek() != weekNumber) {
-                timeCursor->nextDay();
-            }
-            
-            QString weekDay = event.firstChildElement("day").text();
-            int weekDayNumber = weekDay.toInt();
-            QString startHour = event.firstChildElement("starttime").text();
-            QString endHour = event.firstChildElement("endtime").text();
-            QString typeOfCourse = event.firstChildElement("category").text();
-            QString courseType;
-            if(typeOfCourse.contains("TD")) {
-            courseType = "TD";
-            }else if(typeOfCourse.contains("CM")) {
-            courseType = "CM";
-            }else if(typeOfCourse.contains("TP")) {
-            courseType = "TP";
-            }
-            string strCourseType = courseType.toStdString();
-            QDomElement resources = event.firstChildElement("resources");
-            QString classroom = resources.firstChildElement("room").text();
-            string strClassroomName = classroom.toStdString();
-            QDomElement module = resources.firstChildElement("module");
-            QDomElement moduleItem = module.firstChildElement("item");
-            QString moduleName;
-            if(!moduleItem.firstChildElement("a").isNull()) {
-            moduleName = moduleItem.firstChildElement("a").text();
-            }
-            else {
-            moduleName = moduleItem.text();
-            }
-            string strModuleName = moduleName.toStdString();
-            QDomElement staff = resources.firstChildElement("staff");
-            QString professorName = staff.firstChildElement("item").text();
-            string strProfessorName = professorName.toStdString();
+	QDomDocument doc;
+	doc.setContent(in,false);
 
-            ListOfString beginInfos = explode(startHour.toStdString(), ':');
-            ListOfString endInfos = explode(endHour.toStdString(), ':');
-            for (int i = 0; i < weekDayNumber; i++) {
-                timeCursor->nextDay();
-            }
+	QDomElement rootElement = doc.documentElement();
+	QDomElement spanElement = rootElement.firstChildElement("span");
+	QDomElement event = rootElement.firstChildElement("event");
 
-            Time *beginDate = new Time(atoi(beginInfos[1].c_str()),
-                                        atoi(beginInfos[0].c_str()),
-                                        timeCursor->getDay(),
-                                        timeCursor->getMonth(),
-                                        timeCursor->getYear());
-			cout << beginDate->getReadableDate() << endl;
-            Time *endDate = new Time(atoi(endInfos[1].c_str()),
-                                        atoi(endInfos[0].c_str()),
-                                        timeCursor->getDay(),
-                                        timeCursor->getMonth(),
-                                        timeCursor->getYear());
-			cout << endDate->getReadableDate() << endl;
-            string title = strCourseType + " " + strModuleName;
-            string description = strClassroomName + " / " + strProfessorName;
-            Slot *slot = this->model->createSlot(beginDate, endDate, title, description);
-            cout << "SLOT : " << slot->toString() << endl;
-            
-            event = event.nextSiblingElement("event");
-        }
-        delete timeCursor;
-//    }
-	cout << "test" << endl;
-    //qCritical() << "Parsing events TODO" << endl;
+	Time *timeCursor = new Time(0, 8, 20, 8, 2012);
+	while(!event.isNull()) {
+		QString celcatWeek = event.firstChildElement("rawweeks").text();
+		int weekNumber = 34;
+		weekNumber += celcatWeek.indexOf(QChar('Y'), 0, Qt::CaseInsensitive);
+		if (weekNumber > 52) {
+			weekNumber = weekNumber - 52;
+		}
+		timeCursor = new Time(0, 8, 20, 8, 2012);
+		while(timeCursor->getWeek() != weekNumber) {
+			timeCursor->nextDay();
+		}
+
+		QString weekDay = event.firstChildElement("day").text();
+		int weekDayNumber = weekDay.toInt();
+		QString startHour = event.firstChildElement("starttime").text();
+		QString endHour = event.firstChildElement("endtime").text();
+		QString typeOfCourse = event.firstChildElement("category").text();
+		QString courseType;
+		if(typeOfCourse.contains("TD")) {
+		courseType = "TD";
+		}else if(typeOfCourse.contains("CM")) {
+		courseType = "CM";
+		}else if(typeOfCourse.contains("TP")) {
+		courseType = "TP";
+		}
+		string strCourseType = courseType.toStdString();
+		QDomElement resources = event.firstChildElement("resources");
+		QString classroom = resources.firstChildElement("room").text();
+		string strClassroomName = classroom.toStdString();
+		QDomElement module = resources.firstChildElement("module");
+		QDomElement moduleItem = module.firstChildElement("item");
+		QString moduleName;
+		if(!moduleItem.firstChildElement("a").isNull()) {
+		moduleName = moduleItem.firstChildElement("a").text();
+		}
+		else {
+		moduleName = moduleItem.text();
+		}
+		string strModuleName = moduleName.toStdString();
+		QDomElement staff = resources.firstChildElement("staff");
+		QString professorName = staff.firstChildElement("item").text();
+		string strProfessorName = professorName.toStdString();
+
+		ListOfString beginInfos = explode(startHour.toStdString(), ':');
+		ListOfString endInfos = explode(endHour.toStdString(), ':');
+		for (int i = 0; i < weekDayNumber; i++) {
+			timeCursor->nextDay();
+		}
+
+		Time *beginDate = new Time(atoi(beginInfos[1].c_str()),
+									atoi(beginInfos[0].c_str()),
+									timeCursor->getDay(),
+									timeCursor->getMonth(),
+									timeCursor->getYear());
+		Time *endDate = new Time(atoi(endInfos[1].c_str()),
+									atoi(endInfos[0].c_str()),
+									timeCursor->getDay(),
+									timeCursor->getMonth(),
+									timeCursor->getYear());
+		string title = strCourseType + " " + strModuleName;
+		string description = strClassroomName + " / " + strProfessorName;
+		Slot *slot = this->model->createSlot(beginDate, endDate, title, description);
+
+		event = event.nextSiblingElement("event");
+	}
+	delete timeCursor;
 }
 
 void ParserCELCAT::stateChanged(int state)   {
@@ -172,6 +160,5 @@ void ParserCELCAT::replyFinished(QNetworkReply * reply)
     //QApplication::restoreOverrideCursor();
     QByteArray in = reply->readAll();
     //qDebug() << in;
-	cout << "LOL" << endl;
     this->parseEvents(in);
 }
