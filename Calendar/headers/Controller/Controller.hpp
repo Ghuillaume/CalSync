@@ -25,7 +25,7 @@ class Controller : public QWidget {
         Controller(Model* modele, View* view, Config* config);
         ~Controller();
 
-        void checkConflicts(Time* start, Time* end, Slot* currentSlot);
+        bool checkConflicts(Time* start, Time* end, Slot* currentSlot);
         int checkIfSaved();
         bool checkGoogleAuth();
         void parseModel(QString fileName);
