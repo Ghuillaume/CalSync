@@ -13,7 +13,7 @@ class SlotFrame : public QFrame
         QLabel* titleLabel;
         QLabel* descriptionLabel;
 
-        SlotFrame(QString title,QString description);
+        SlotFrame(QString title,QString description, Slot *slot);
         virtual ~SlotFrame();
 
         Slot* getSlot();

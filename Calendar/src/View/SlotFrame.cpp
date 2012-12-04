@@ -1,9 +1,9 @@
 #include "SlotFrame.hpp"
 
-SlotFrame::SlotFrame(QString title, QString description): QFrame() {
+SlotFrame::SlotFrame(QString title, QString description, Slot *slot): QFrame() {
     this->titleLabel = new QLabel(title, this);
     this->descriptionLabel = new QLabel(description, this);
-	this->slot = NULL;
+	this->slot = slot;
     
     QPalette palette = this->palette();
     palette.setColor(backgroundRole(),QColor(200,0,0));
@@ -32,6 +32,8 @@ SlotFrame::~SlotFrame() {
 
 void SlotFrame::setSlot(Slot *slot) {
     this->slot = slot;
+	this->titleLabel->setText(QString(this->slot->getIntitule().c_str()));
+	this->descriptionLabel->setText(QString(this->slot->getDescription().c_str()));
 }
 
 Slot* SlotFrame::getSlot() {

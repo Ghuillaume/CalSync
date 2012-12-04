@@ -111,9 +111,8 @@ void Controller::selectCalendar(QNetworkReply* list) {
 
 void Controller::connectAllSlots() {
     for(unsigned int i = 0; i < this->view->currentButtons.size(); i++) {
-            SlotFrame *frame = this->view->currentButtons.at(i);
-            frame->setSlot(this->view->currentSlots.at(i));
-            QObject::connect(frame, SIGNAL(slotClickedSignal(SlotFrame*)), this, SLOT(clickSlot(SlotFrame*)));
+		SlotFrame *frame = this->view->currentButtons.at(i);
+		QObject::connect(frame, SIGNAL(slotClickedSignal(SlotFrame*)), this, SLOT(clickSlot(SlotFrame*)));
     }
 }
 
@@ -328,7 +327,6 @@ void Controller::createSlot()
 }
 
 void Controller::editSlot(SlotFrame *frame) {
-
 	SlotDialog *dialog = new SlotDialog(view);
 	QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
 	QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
@@ -337,7 +335,6 @@ void Controller::editSlot(SlotFrame *frame) {
                     frame->getSlot()->getIntitule(), frame->getSlot()->getDescription());
     dialog -> exec();
 	if(dialog->result() == QDialog::Accepted) {
-		view -> display ();
 		QDate startDate = dialog->dateStartEdit->date();
 		QTime startTime = dialog->dateStartEdit->time();
 		QDate endDate = dialog->dateEndEdit->date();
@@ -351,26 +348,15 @@ void Controller::editSlot(SlotFrame *frame) {
 			return;
 		}
 
-
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////
-        //                                                                                          //
-        //      TON ERREUR DE SEG VIENT DU SLOT QUI EST DANS LA FRAME                               //
-        //       REGARDE CA, J'ARRIVE MEME PAS A FAIRE TOSTRING, SI TU COMMENTE CA, ÇA MARCHE !!!   //
-        //                                                                                             //
-        //////////////////////////////////////////////////////////////////////////////////////////////
-
         this->checkConflicts(startDateTime, endDateTime, frame->getSlot());
 
 		this->config->setSaved(false);
-        frame->getSlot()->toString();
-        /*frame->getSlot()->editSlot(
-					startDateTime,
-					endDateTime,
-					dialog->titleEdit->text().toStdString(),
-                    dialog->descriptionEdit->text().toStdString());*/
+        frame->getSlot()->editSlot( startDateTime,
+									endDateTime,
+									dialog->titleEdit->text().toStdString(),
+									dialog->descriptionEdit->text().toStdString());
         this->view->display();
+		this->connectAllSlots();
 	}
 }
 

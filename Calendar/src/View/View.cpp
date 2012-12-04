@@ -314,7 +314,7 @@ void View::displaySlots() {
 		QString description((currentSlots.at(i))->getDescription().c_str());
 		
 		// Calculate coordinates of the begin of the button
-		SlotFrame *frame = new SlotFrame(title, description);
+		SlotFrame *frame = new SlotFrame(title, description, currentSlots.at(i));
 		int eventStartX = (hourStart - 8) * 100 + (minuteStart * 100 / 60) + 98;
 		int eventStartY = weekDay * 90 + 59;
 		
