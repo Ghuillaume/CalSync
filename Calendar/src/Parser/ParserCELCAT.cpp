@@ -23,8 +23,6 @@ ParserCELCAT::~ParserCELCAT() {
 }
 
 
-
-// NOT WORKING !!!!!
 void ParserCELCAT::getEventList() {
 
     QString url = QString("http://www.edt-sciences.univ-nantes.fr/%1.xml").arg(this->groupId);

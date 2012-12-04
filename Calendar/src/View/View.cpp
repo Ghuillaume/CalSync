@@ -62,6 +62,11 @@ View::View(Model *model) : QMainWindow(), time(8)
     menubar->addAction(lolMenu->menuAction());
     lolMenu->setTitle("Synchronization");
 
+        reloadItem = new QAction(this);
+        reloadItem->setObjectName("reloadItem");
+        lolMenu->addAction(reloadItem);
+        reloadItem->setText("Reset local calendar with my Google Calendar");
+
         importItem = new QAction(this);
         importItem->setObjectName("importItem");
         lolMenu->addAction(importItem);
@@ -72,7 +77,7 @@ View::View(Model *model) : QMainWindow(), time(8)
         lolMenu->addAction(exportItem);
         exportItem->setText("Save my calendar on Google Calendar");
 
-        editMenu->addSeparator();
+        lolMenu->addSeparator();
 
         settingsItem = new QAction(this);
         settingsItem->setObjectName("settingsItem");

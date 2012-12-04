@@ -33,6 +33,20 @@ void ParserGCal::getCalendarList() {
     networkManager->get(QNetworkRequest(QUrl(url)));
 }
 
+void ParserGCal::clearCalendar() {
+    QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/clear").arg(this->id);
+    QUrl url;
+    url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
+
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setRawHeader("Authorization", QString("OAuth %1").arg(this->authToken).toLatin1());
+    request.setRawHeader("X-JavaScript-User-Agent", "Google APIs Explorer");
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    networkManager->get(request);
+}
+
 void ParserGCal::getEventList() {
     qDebug() << "Getting events from Google Calendar";
 
@@ -47,6 +61,44 @@ void ParserGCal::getEventList() {
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     networkManager->get(request);
+}
+
+void ParserGCal::exportEvent(const QString & title, const QString & description, const Time* start, const Time* end)
+{
+    QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events").arg(this->id);
+    QUrl url;
+    url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
+
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setRawHeader("Authorization", QString("OAuth %1").arg(this->authToken).toLatin1());
+    request.setRawHeader("Content-Type", "application/json");
+
+    QString strStart = QString("%1-%2-%3T%4:%5:00Z")
+            .arg(start->getYear())
+            .arg(start->getMonth())
+            .arg(start->getDay())
+            .arg(start->getHour())
+            .arg(start->getMinute());
+    QString strEnd = QString("%1-%2-%3T%4:%5:00Z")
+            .arg(end->getYear())
+            .arg(end->getMonth())
+            .arg(end->getDay())
+            .arg(end->getHour())
+            .arg(end->getMinute());
+    QString query = QString("{\n") +
+            QString("\"end\": \n{ \"dateTime\": \"%1\"\n},\n").arg(strEnd) +
+            QString("\"start\": \n{ \"dateTime\": \"%1\" \n},\n").arg(strStart) +
+            QString("\"summary\": \"%1\",\n").arg(title) +
+            QString("\"description\": \"%1\"\n").arg(description) +
+            QString("}");
+    QByteArray params = query.toUtf8();
+    qDebug() << "Params to send" << params;
+
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    networkManager->post(request, params);
+
 }
 
 void ParserGCal::parseEvents(QByteArray in) {

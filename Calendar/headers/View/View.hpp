@@ -52,6 +52,7 @@ class View: public QMainWindow
             QAction *settingsItem;
             QAction* changeKeyItem;
         QMenu* lolMenu;
+            QAction* reloadItem;
             QAction* importItem;
             QAction* exportItem;
             

@@ -31,6 +31,8 @@ class ParserGCal : public QObject, public Parser {
 
         void getCalendarList();
         virtual void getEventList();
+        virtual void clearCalendar();
+        void exportEvent(const QString & title, const QString & description, const Time* start, const Time* end);
 		Time* buildDate(QString &strDate);
 
     public slots:
