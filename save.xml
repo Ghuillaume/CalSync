@@ -6,32 +6,32 @@
   <slot>
    <title>Test 3</title>
    <description>Test 3</description>
-   <dateStart>11:0:20/10/2012</dateStart>
-   <dateEnd>10:30:20/10/2012</dateEnd>
+   <dateStart>10:0:20/10/2012</dateStart>
+   <dateEnd>12:30:20/10/2012</dateEnd>
   </slot>
   <slot>
    <title>Test 6</title>
    <description>Test 6</description>
-   <dateStart>7:0:20/11/2012</dateStart>
+   <dateStart>8:0:20/11/2012</dateStart>
    <dateEnd>10:2:20/11/2012</dateEnd>
   </slot>
   <slot>
    <title>Test 4</title>
    <description>Test 4</description>
-   <dateStart>10:0:20/11/2012</dateStart>
-   <dateEnd>9:2:20/11/2012</dateEnd>
+   <dateStart>8:0:21/11/2012</dateStart>
+   <dateEnd>10:15:21/11/2012</dateEnd>
   </slot>
   <slot>
    <title>Test 2</title>
    <description>Test 2</description>
-   <dateStart>2:0:23/11/2012</dateStart>
-   <dateEnd>9:40:24/11/2012</dateEnd>
+   <dateStart>14:07:23/11/2012</dateStart>
+   <dateEnd>17:43:24/11/2012</dateEnd>
   </slot>
   <slot>
    <title>Test 1</title>
    <description>Test 1</description>
-   <dateStart>8:0:20/12/2012</dateStart>
-   <dateEnd>9:20:20/12/2012</dateEnd>
+   <dateStart>8:0:23/12/2012</dateStart>
+   <dateEnd>9:20:23/12/2012</dateEnd>
   </slot>
   <slot>
    <title>Test 5</title>

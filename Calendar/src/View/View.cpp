@@ -315,8 +315,8 @@ void View::displaySlots() {
 		
 		// Calculate coordinates of the begin of the button
 		SlotFrame *frame = new SlotFrame(title, description, currentSlots.at(i));
-		int eventStartX = (hourStart - 8) * 100 + (minuteStart * 100 / 60) + 98;
-		int eventStartY = weekDay * 90 + 59;
+		int eventStartX = (hourStart - 8) * 100 + (minuteStart * 100 / 60) + 102;
+		int eventStartY = weekDay * 93 + 26;
 		
 		// Calculate width of the button 
 		int hourDuration = hourEnd - hourStart;
@@ -330,7 +330,7 @@ void View::displaySlots() {
 		int fullDuration = hourDuration * 100 + (minuteDuration*100/60);
 		
 		// Creation of the button
-		frame->setGeometry( eventStartX, eventStartY, fullDuration, 90);
+		frame->setGeometry( eventStartX, eventStartY, fullDuration, 93);
 		frame->setVisible(TRUE);
 		frame->setParent(this->tableWidget);
 		frame->show();

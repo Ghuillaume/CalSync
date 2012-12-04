@@ -6,9 +6,11 @@ SlotFrame::SlotFrame(QString title, QString description, Slot *slot): QFrame() {
 	this->slot = slot;
     
     QPalette palette = this->palette();
-    palette.setColor(backgroundRole(),QColor(200,0,0));
+    palette.setColor(backgroundRole(),QColor(245,245,245));
     this->setPalette(palette);
-    this->setFrameStyle(QFrame::StyledPanel);
+	this->setAutoFillBackground( true );
+	this->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	this->setLineWidth(3);
 
 
     
