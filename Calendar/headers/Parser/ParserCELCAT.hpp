@@ -15,6 +15,7 @@
 #include <QNetworkAccessManager>
 #include <./lib/qjson/include/QJson/Parser>
 #include <QtCore>
+#include <QString>
 
 #include "Parser.hpp"
 #include "../Model/common.h"

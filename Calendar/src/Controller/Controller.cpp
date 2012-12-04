@@ -584,7 +584,7 @@ void Controller::importAcademicCalendar() {
     Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
     p->getEventList();
 
-    QMessageBox::critical(this, "Error", "This feature is currently not available.");
+    //QMessageBox::critical(this, "Error", "This feature is currently not available.");
 
     this->view->display();
 }

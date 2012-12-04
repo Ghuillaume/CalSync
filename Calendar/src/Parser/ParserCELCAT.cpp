@@ -47,6 +47,88 @@ void ParserCELCAT::exportEvent(const QString & title,
 
 void ParserCELCAT::parseEvents(QByteArray in) {
     qDebug() << in;
+    // /comptes/E094326D/Cours/Master 1/Semestre 1/GL/CalSync/Calendar
+    QFile file("g6935.xml.html");
+    if (file.open(QFile::ReadOnly)) {
+        QDomDocument doc;
+        doc.setContent(&file,false);
+        file.close();
+        	
+        QDomElement rootElement = doc.documentElement();
+        QDomElement spanElement = rootElement.firstChildElement("span");
+        while(!spanElement.isNull()) {
+//            QString date = spanElement.attribute("date");
+//            QDate formattedDate = QDate::fromString(date,"dd/MM/yyyy");
+//            QString celcatWeek = spanElement.firstChildElement("alleventweeks").text();
+//            if(formattedDate.isValid()) {
+//                this->celcatDateMapping[celcatWeekRepresentation] = formattedDate;
+//            }
+//            spanElement = spanElement.nextSiblingElement("span");
+        }
+        QDomElement event = rootElement.firstChildElement("event");
+        while(!event.isNull()) {
+            QString celcatWeek = event.firstChildElement("rawweeks").text();
+            int week = 34;
+            int week+= celcatWeek.indexOf(QChar('Y', 0, Qt::CaseInsensitive));
+            Time *dateBeginCelcat = new Time(8, 0, 20, 08, 2012);
+            Time *newDate = new Time(8, 0, 20, 08, 2012);
+            //while()
+            
+            QDate mappedDate = this->celcatDateMapping[celcatWeek];
+            QString weekDay = event.firstChildElement("day").text();
+            int weekDayNumber = atoi(weekDay.toStdString().c_str());
+            QDate courseDate = mappedDate.addDays(weekDayNumber);
+            QString startHour = event.firstChildElement("starttime").text();
+            Hour modelBeginHour = Hour(startHour.toStdString());
+            QString endHour = event.firstChildElement("endtime").text();
+            Hour modelEndHour = Hour(endHour.toStdString());
+            QString typeOfCourse = event.firstChildElement("category").text();
+            QString courseType;
+            if(typeOfCourse.contains("TD")) {
+            courseType = "TD";
+            }else if(typeOfCourse.contains("CM")) {
+            courseType = "CM";
+            }else if(typeOfCourse.contains("TP")) {
+            courseType = "TP";
+            }
+            string modelCourseType = courseType.toStdString();
+            QDomElement resources = event.firstChildElement("resources");
+            QString classroom = resources.firstChildElement("room").text();
+            string modelClassroomName = classroom.toStdString();
+            QDomElement module = resources.firstChildElement("module");
+            QDomElement moduleItem = module.firstChildElement("item");
+            QString moduleName;
+            if(!moduleItem.firstChildElement("a").isNull()) {
+            moduleName = moduleItem.firstChildElement("a").text();
+            }
+            else {
+            moduleName = moduleItem.text();
+            }
+            string modelModuleName = moduleName.toStdString();
+            QDomElement staff = resources.firstChildElement("staff");
+            QString professorName = staff.firstChildElement("item").text();
+            string modelProfessorName = professorName.toStdString();
+
+            try {
+            this->model->addCourse(
+            this->modelBeanFactory->createCourse(
+            modelCourseType,
+            this->modelBeanFactory->createProfessor(modelProfessorName),
+            this->modelBeanFactory->createSubject(modelModuleName),
+            this->modelBeanFactory->createClassroom(modelClassroomName),
+            courseDate,
+            modelBeginHour,
+            modelEndHour
+            )
+            );
+            }catch(exception& e) {
+                std::cout << "exception" << std::endl;
+            }
+
+            event = event.nextSiblingElement("event");
+        }
+        
+    }
 
     qCritical() << "Parsing events TODO" << endl;
 }
