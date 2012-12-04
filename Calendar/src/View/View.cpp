@@ -6,7 +6,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     this -> model = model;
 
 	// Main window:
-    this->setWindowTitle("Emploi du temps");
+    this->setWindowTitle("MyCalendar");
     QSize sizeWindow = QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT);
     this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT));
     this->setFixedSize(sizeWindow);
