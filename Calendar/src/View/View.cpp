@@ -57,17 +57,6 @@ View::View(Model *model) : QMainWindow(), time(8)
         editMenu->addAction(newSlotItem);
         newSlotItem->setText("Create an event");
 
-        editSlotItem = new QAction(this);
-        editSlotItem->setObjectName("newSlotItem");
-        editMenu->addAction(editSlotItem);
-        editSlotItem->setText("Edit an event");
-
-        deleteSlotItem = new QAction(this);
-        deleteSlotItem->setObjectName("deleteSlotItem");
-        editMenu->addAction(deleteSlotItem);
-        deleteSlotItem->setText("Delete an event");
-
-
     lolMenu = new QMenu(menubar);
     lolMenu->setObjectName("lolMenu");
     menubar->addAction(lolMenu->menuAction());

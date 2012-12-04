@@ -49,8 +49,6 @@ class View: public QMainWindow
             QAction *openItem;
         QMenu *editMenu;
             QAction *newSlotItem;
-            QAction *editSlotItem;
-            QAction *deleteSlotItem;
             QAction *settingsItem;
             QAction* changeKeyItem;
         QMenu* lolMenu;

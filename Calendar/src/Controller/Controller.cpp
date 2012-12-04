@@ -19,8 +19,6 @@ Controller::Controller(Model* model, View* view, Config* config)
     QObject::connect(view -> quitItem, SIGNAL(activated()), this, SLOT(close()));
     
     QObject::connect(view -> newSlotItem, SIGNAL(activated()), this, SLOT(createSlot()));
-    //QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
-    //QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
     QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importCalendar()));
     QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
