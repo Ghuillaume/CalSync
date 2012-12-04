@@ -12,6 +12,7 @@ class SlotFrame : public QFrame
     public:
         QLabel* titleLabel;
         QLabel* descriptionLabel;
+        QLabel* locationLabel;
 
         SlotFrame(QString title,QString description, Slot *slot);
         virtual ~SlotFrame();

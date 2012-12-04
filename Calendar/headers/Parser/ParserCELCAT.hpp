@@ -31,13 +31,14 @@ class ParserCELCAT : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserCELCAT(QString groupId, Model* model, QObject* parent);
+        ParserCELCAT(QString groupId, Model* model, Controller* parent);
         virtual ~ParserCELCAT();
 
         virtual void getEventList();
         virtual void clearCalendar();
         virtual void exportEvent(const QString & title,
                                  const QString & description,
+                                 const QString & location,
                                  const Time* start,
                                  const Time* end);
 

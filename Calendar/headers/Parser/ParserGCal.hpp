@@ -26,13 +26,13 @@ class ParserGCal : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserGCal(QString id, QString authToken, Model* model, QObject* parent);
+        ParserGCal(QString id, QString authToken, Model* model, Controller* parent);
         virtual ~ParserGCal();
 
         void getCalendarList();
         virtual void getEventList();
         virtual void clearCalendar();
-        void exportEvent(const QString & title, const QString & description, const Time* start, const Time* end);
+        void exportEvent(const QString & title, const QString & description, const QString & location, const Time* start, const Time* end);
 		Time* buildDate(QString &strDate);
 
     public slots:
@@ -48,6 +48,7 @@ class ParserGCal : public QObject, public Parser {
 
         QHttp* query;
         QNetworkAccessManager* networkManager;
+        Controller* controller;
 		
 		QVariantList m_calendars;
 		QVariantList m_events;

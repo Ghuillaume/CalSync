@@ -37,6 +37,10 @@ Controller::Controller(Model* model, View* view, Config* config)
 
 Controller::~Controller() { }
 
+View* Controller::getView() {
+    return this->view;
+}
+
 
 void Controller::newEmptyModel() {
     this->view->menubar->setVisible(true);
@@ -197,6 +201,7 @@ void Controller::loadModel() {
             {
                 QString titre;
                 QString description;
+                QString location;
                 QString dateDebut;
                 QString dateFin;
 
@@ -238,6 +243,14 @@ void Controller::loadModel() {
                     }
                 }
 
+                if (reader.name() == "location") {
+                    location = reader.readElementText();
+                    reader.readNext();
+                    while(reader.isStartElement()==false) {
+                        reader.readNext();
+                    }
+                }
+
                 if (reader.name() == "dateStart") {
                     dateDebut = reader.readElementText();
                     reader.readNext();
@@ -255,7 +268,8 @@ void Controller::loadModel() {
                     model->createSlot( createTime(dateDebut),
                     createTime(dateFin),
                     titre.toStdString(),
-                    description.toStdString());
+                    description.toStdString(),
+                    location.toStdString());
                 }
             }
             reader.readNext(); // On va au prochain token
@@ -313,17 +327,19 @@ void Controller::createSlot()
             QMessageBox::critical(this->view, "Error", "The date of the beginning of the event must be the same for the end!\n Creation aborted");
 		} else {
 
-            this->checkConflicts(startDateTime, endDateTime, NULL);
+            if(this->checkConflicts(startDateTime, endDateTime, NULL)) {
 
-			this->config->setSaved(false);
-			this->model->createSlot(startDateTime,
-									endDateTime,
-									dialog->titleEdit->text().toStdString(),
-									dialog->descriptionEdit->text().toStdString());
+                this->config->setSaved(false);
+                this->model->createSlot(startDateTime,
+                                        endDateTime,
+                                        dialog->titleEdit->text().toStdString(),
+                                        dialog->descriptionEdit->text().toStdString(),
+                                        dialog->locationEdit->text().toStdString());
 
 
-			this->view->display();
-            this->connectAllSlots();
+                this->view->display();
+                this->connectAllSlots();
+            }
 		}
     }
 }
@@ -350,15 +366,16 @@ void Controller::editSlot(SlotFrame *frame) {
 			return;
 		}
 
-        this->checkConflicts(startDateTime, endDateTime, frame->getSlot());
+        if(this->checkConflicts(startDateTime, endDateTime, frame->getSlot())) {
 
-		this->config->setSaved(false);
-        frame->getSlot()->editSlot( startDateTime,
-									endDateTime,
-									dialog->titleEdit->text().toStdString(),
-									dialog->descriptionEdit->text().toStdString());
-        this->view->display();
-		this->connectAllSlots();
+            this->config->setSaved(false);
+            frame->getSlot()->editSlot( startDateTime,
+                                        endDateTime,
+                                        dialog->titleEdit->text().toStdString(),
+                                        dialog->descriptionEdit->text().toStdString());
+            this->view->display();
+            this->connectAllSlots();
+        }
 	}
 }
 
@@ -448,6 +465,9 @@ void Controller::parseModel(QString fileName) {
             QDomElement descriptionXML = dom.createElement("description");
             descriptionXML.appendChild(dom.createTextNode((*it)->getDescription().c_str()));
             slotXML.appendChild(descriptionXML);
+            QDomElement locationXML = dom.createElement("location");
+            locationXML.appendChild(dom.createTextNode((*it)->getLocation().c_str()));
+            slotXML.appendChild(locationXML);
 
             QDomElement dateStartXML = dom.createElement("dateStart");
             dateStartXML.appendChild(dom.createTextNode((*it)->getDateDebut()->getXmlDate().c_str()));
@@ -607,13 +627,15 @@ void Controller::importOnlineCalendar() {
 }
 
 void Controller::exportCalendar() {
-    if(QMessageBox::warning(this->view, "Warning", "This action is going to clear your online Calendar before, do you want to continue ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
-        Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
-        p->clearCalendar();
+    if(checkGoogleAuth()) {
+        if(QMessageBox::warning(this->view, "Warning", "This action is going to clear your online Calendar before, do you want to continue ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+            Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+            p->clearCalendar();
 
-        ListOfSlot list = this->model->getSlotList();
-        for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
-            p->exportEvent(QString((*it)->getIntitule().c_str()), QString((*it)->getDescription().c_str()), (*it)->getDateDebut(), (*it)->getDateFin());
+            ListOfSlot list = this->model->getSlotList();
+            for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
+                p->exportEvent(QString((*it)->getIntitule().c_str()), QString((*it)->getDescription().c_str()), QString((*it)->getLocation().c_str()), (*it)->getDateDebut(), (*it)->getDateFin());
+            }
         }
     }
 }

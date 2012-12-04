@@ -305,8 +305,8 @@ void View::displaySlots() {
 		int minuteEnd = (currentSlots.at(i))->getDateFin()->getMinute();
 		
 		// Build of the event name (title + description)
-		QString title((currentSlots.at(i))->getIntitule().c_str());
-		QString description((currentSlots.at(i))->getDescription().c_str());
+        QString title((currentSlots.at(i))->getIntitule().c_str());
+        QString description((currentSlots.at(i))->getDescription().c_str());
 		
 		// Calculate coordinates of the begin of the button
 		SlotFrame *frame = new SlotFrame(title, description, currentSlots.at(i));

@@ -14,7 +14,7 @@
 class Slot {
 
 	public:
-        Slot(Time *dateDebut, Time *dateFin, string intitule, string description);
+        Slot(Time *dateDebut, Time *dateFin, string intitule, string description, string location);
         virtual ~Slot();
 
         bool  operator== ( const Slot &slot ) const;
@@ -24,11 +24,13 @@ class Slot {
         Time* getDateFin();
         string getIntitule();
         string getDescription();
+        string getLocation();
         bool areSlotsOverlapping(Time* dateDebut, Time* dateFin);
         void setDateDebut(Time *t);
         void setDateFin(Time *t);
         void setIntitule(string intitule);
         void setDescription(string description);
+        void setLocation(string location);
         void editSlot(Time *dateDebut, Time *dateFin, string intitule, string description);
 
         string toString();
@@ -39,6 +41,7 @@ class Slot {
 		Time *dateFin;
 		string intitule;
         string description;
+        string location;
 		
 	
 };

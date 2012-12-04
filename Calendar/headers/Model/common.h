@@ -27,6 +27,7 @@ typedef std::vector<std::string> ListOfString;
 class Slot;
 class Time;
 class Model;
+class Controller;
 
 std::string convertInt(int number);
 

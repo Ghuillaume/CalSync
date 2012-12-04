@@ -1,9 +1,11 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-ParserGCal::ParserGCal(QString id, QString authToken, Model *model, QObject* parent) : QObject(parent) {
+ParserGCal::ParserGCal(QString id, QString authToken, Model *model, Controller* parent) : QObject(parent) {
     this->id = id;
     this->authToken = authToken;
     this->model = model;
+
+    this->controller = controller;
 
     query = new QHttp(this);
     connect(query, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
@@ -68,7 +70,7 @@ void ParserGCal::getEventList() {
     networkManager->get(request);
 }
 
-void ParserGCal::exportEvent(const QString & title, const QString & description, const Time* start, const Time* end)
+void ParserGCal::exportEvent(const QString & title, const QString & description, const QString & location, const Time* start, const Time* end)
 {
     QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events").arg(this->id);
     QUrl url;
@@ -95,8 +97,9 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
             QString("\"end\": \n{ \"dateTime\": \"%1\"\n},\n").arg(strEnd) +
             QString("\"start\": \n{ \"dateTime\": \"%1\" \n},\n").arg(strStart) +
             QString("\"summary\": \"%1\",\n").arg(title) +
-            QString("\"description\": \"%1\"\n").arg(description) +
-            QString("\"extendedProperties\": \n{ \"shared\": \n{ \"fromMyCalendar\": \"true\"\n}\n},\n") +
+            QString("\"description\": \"%1\",\n").arg(description) +
+            QString("\"location\": \"%1\",\n").arg(location) +
+            QString("\"extendedProperties\": {\n \"shared\": {\n \"fromMyCalendar\": \"true\"\n}\n},\n") +
             QString("}");
     QByteArray params = query.toUtf8();
     qDebug() << "Params to send" << params;
@@ -130,6 +133,7 @@ void ParserGCal::parseEvents(QByteArray in) {
                 QVariantMap mapEvents = m_events[i].toMap();
                 string eventName = mapEvents["summary"].toString().toStdString();
                 string eventDescription = mapEvents["description"].toString().toStdString();
+                string eventLocation = mapEvents["location"].toString().toStdString();
 				// Build the timeBegin from start date string
 				QVariantMap nestedMap = mapEvents["start"].toMap();
 				QString dateBegin = nestedMap["dateTime"].toString();
@@ -139,8 +143,9 @@ void ParserGCal::parseEvents(QByteArray in) {
 				QString dateEnd = nestedMap["dateTime"].toString();
 				Time* timeEnd = this->buildDate(dateEnd);
 				// Create slot with previous variables
-                this->model->createSlot(timeBegin, timeEnd, eventName, eventDescription);
+                this->model->createSlot(timeBegin, timeEnd, eventName, eventDescription, eventLocation);
 			}
+            //this->controller->getView()->display();
 		}
         else if(result.toMap()["kind"].toString() == "calendar#calendarList")
         {

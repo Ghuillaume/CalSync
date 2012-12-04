@@ -21,6 +21,7 @@ class Parser {
         virtual void clearCalendar() = 0;
         virtual void exportEvent(const QString & title,
                                  const QString & description,
+                                 const QString & location,
                                  const Time* start,
                                  const Time* end) = 0;
 

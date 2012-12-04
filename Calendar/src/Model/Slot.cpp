@@ -7,11 +7,12 @@
 
 #include "../../headers/Model/Slot.hpp"
 
-Slot::Slot(Time *dateDebut, Time *dateFin, string intitule, string description) {
+Slot::Slot(Time *dateDebut, Time *dateFin, string intitule, string description, string location) {
     this->dateDebut = dateDebut;
     this->dateFin = dateFin;
     this->intitule = intitule;
     this->description = description;
+    this->location = location;
 }
 
 Slot::~Slot() {
@@ -48,6 +49,10 @@ string Slot::getDescription() {
     return this->description;
 }
 
+string Slot::getLocation() {
+    return this->location;
+}
+
 void Slot::setDateDebut(Time *t) {
 	this->dateDebut = t;
 }
@@ -61,6 +66,11 @@ void Slot::setIntitule(string intitule) {
 
 void Slot::setDescription(string description) {
     this->description = description;
+}
+
+
+void Slot::setLocation(string location) {
+    this->location = location;
 }
 
 bool Slot::areSlotsOverlapping(Time* dateDebut, Time* dateFin) {

@@ -7,7 +7,7 @@
 
 #include "../../headers/Parser/ParserCELCAT.hpp"
 
-ParserCELCAT::ParserCELCAT(QString groupId, Model* model, QObject* parent) : QObject(parent) {
+ParserCELCAT::ParserCELCAT(QString groupId, Model* model, Controller* parent) : QObject(parent) {
     this->groupId = groupId;
     this->model = model;
 
@@ -38,6 +38,7 @@ void ParserCELCAT::clearCalendar() {
 
 void ParserCELCAT::exportEvent(const QString & title,
                          const QString & description,
+                         const QString & location,
                          const Time* start,
                          const Time* end) {
     // nothing to do
@@ -114,9 +115,8 @@ void ParserCELCAT::parseEvents(QByteArray in) {
 									timeCursor->getDay(),
 									timeCursor->getMonth(),
 									timeCursor->getYear());
-		string title = strCourseType + " " + strModuleName;
-		string description = strClassroomName + " / " + strProfessorName;
-		Slot *slot = this->model->createSlot(beginDate, endDate, title, description);
+        string title = strCourseType + " " + strModuleName;
+        Slot *slot = this->model->createSlot(beginDate, endDate, title, strProfessorName, strClassroomName);
 
 		event = event.nextSiblingElement("event");
 	}
