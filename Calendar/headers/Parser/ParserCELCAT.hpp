@@ -30,6 +30,11 @@ class ParserCELCAT : public QObject, public Parser {
         virtual ~ParserCELCAT();
 
         virtual void getEventList();
+        virtual void clearCalendar();
+        virtual void exportEvent(const QString & title,
+                                 const QString & description,
+                                 const Time* start,
+                                 const Time* end);
 
     public slots:
         void stateChanged ( int state );

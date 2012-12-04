@@ -22,9 +22,9 @@ Controller::Controller(Model* model, View* view, Config* config)
     //QObject::connect(view -> editSlotItem, SIGNAL(activated()), this, SLOT(editSlot()));
     //QObject::connect(view -> deleteSlotItem, SIGNAL(activated()), this, SLOT(deleteSlot()));
     QObject::connect(view -> settingsItem, SIGNAL(activated()), this, SLOT(updateSettings()));
-    QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importCalendar()));
-    QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
     QObject::connect(view -> reloadItem, SIGNAL(activated()), this, SLOT(newModelFromGoogle()));
+    QObject::connect(view -> importItem, SIGNAL(activated()), this, SLOT(importAcademicCalendar()));
+    QObject::connect(view -> exportItem, SIGNAL(activated()), this, SLOT(exportCalendar()));
     
     // Main frame
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), this, SLOT(previousWeek()));
@@ -70,7 +70,7 @@ void Controller::newModelFromGoogle() {
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
 
-        this->importCalendar();
+        this->importOnlineCalendar();
         
         this->view->display();
     }
@@ -109,7 +109,7 @@ void Controller::selectCalendar(QNetworkReply* list) {
     QMessageBox::information(this, "No calendar selected", "Now you are authenticate, please select a calendar in the list");
     this->updateSettings();
 
-    this->importCalendar();
+    this->importOnlineCalendar();
 }
 
 void Controller::connectAllSlots() {
@@ -581,7 +581,18 @@ void Controller::googleAccessTokenObtained(QString token) {
     emit tokenSaved();
 }
 
-void Controller::importCalendar() {
+void Controller::importAcademicCalendar() {
+
+    Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
+    p->getEventList();
+
+    QMessageBox::critical(this, "Error", "This feature is currently not available.");
+
+    this->view->display();
+}
+
+
+void Controller::importOnlineCalendar() {
 
     this->model->cleanList();
 
@@ -590,19 +601,19 @@ void Controller::importCalendar() {
     Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
     p->getEventList();
 
-    /*Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
-    p->getEventList();*/
-
-    //QMessageBox::critical(this, "Error", "This feature is currently not available.");
-
-
     this->view->display();
 }
 
 void Controller::exportCalendar() {
-    // Warning : this is going to clear your online calendar before
-    Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
-    p->exportEvent("TEST", "TEST", new Time(0,16,6,12,2012), new Time(0,17,6,12,2012));
+    if(QMessageBox::warning(this->view, "Warning", "This action is going to clear your online Calendar before, do you want to continue ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+        Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+        p->clearCalendar();
+
+        ListOfSlot list = this->model->getSlotList();
+        for(ListOfSlot::iterator it = list.begin(); it != list.end() ; it++) {
+            p->exportEvent(QString((*it)->getIntitule().c_str()), QString((*it)->getDescription().c_str()), (*it)->getDateDebut(), (*it)->getDateFin());
+        }
+    }
 }
 
 Time* Controller::createTime(const QString &chaine) {

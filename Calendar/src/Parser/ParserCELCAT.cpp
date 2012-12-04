@@ -31,6 +31,19 @@ void ParserCELCAT::getEventList() {
     qDebug() << "Getting events from CELCAT";
 }
 
+void ParserCELCAT::clearCalendar() {
+    // nothing to do
+    return;
+}
+
+void ParserCELCAT::exportEvent(const QString & title,
+                         const QString & description,
+                         const Time* start,
+                         const Time* end) {
+    // nothing to do
+    return;
+}
+
 
 void ParserCELCAT::parseEvents(QByteArray in) {
     qDebug() << in;

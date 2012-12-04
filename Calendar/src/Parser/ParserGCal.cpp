@@ -78,7 +78,7 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
             .arg(start->getYear())
             .arg(start->getMonth())
             .arg(start->getDay())
-            .arg(start->getHour())
+            .arg(start->getHour()-1)
             .arg(start->getMinute());
     QString strEnd = QString("%1-%2-%3T%4:%5:00Z")
             .arg(end->getYear())

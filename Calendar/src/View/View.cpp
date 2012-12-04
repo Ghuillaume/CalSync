@@ -175,7 +175,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     for ( int i = 0; i < 11; ++i )
     {
      std::stringstream stream;
-        stream << ( i > 1 ? "" : "0" ) << i+8 << "h00";
+     stream << ( i > 1 ? "" : "0" ) << i+8 << "h - " << ( i > 1 ? "" : "0" ) << i+9 << "h";
     
         QTableWidgetItem *columnHead = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(i, columnHead);

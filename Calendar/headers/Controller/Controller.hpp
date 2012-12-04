@@ -55,7 +55,8 @@ class Controller : public QWidget {
         void getGoogleAccessToken();
         void googleCodeObtained(QString authCode);
         void googleAccessTokenObtained(QString token);
-        void importCalendar();
+        void importOnlineCalendar();
+        void importAcademicCalendar();
         void exportCalendar();
         
         void previousWeek();
