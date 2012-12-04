@@ -6,7 +6,7 @@ SettingsDialog::SettingsDialog(QWidget* parent):
     this->parent = (View*) parent;
 
     this->setObjectName("Dialog");
-    this->resize(400,350);
+    this->resize(600,350);
     this->setWindowTitle(QString::fromUtf8("Edit settings"));
 
     frame = new QWidget(this);
@@ -29,7 +29,7 @@ SettingsDialog::SettingsDialog(QWidget* parent):
 
     idCalendarLabel = new QLabel(formLayoutWidget);
     idCalendarLabel->setObjectName("idCalendarLabel");
-    idCalendarLabel->setText("Google Calendar ID");
+    idCalendarLabel->setText("Google Calendar");
     formLayout->setWidget(3, QFormLayout::LabelRole, idCalendarLabel);
 
     googleAuthLabel = new QLabel(formLayoutWidget);
@@ -68,9 +68,9 @@ SettingsDialog::SettingsDialog(QWidget* parent):
     serviceBox->addItem("Google Calendar");
     formLayout->setWidget(2, QFormLayout::FieldRole, serviceBox);
 
-    idCalendarEdit = new QLineEdit(formLayoutWidget);
-    idCalendarEdit->setObjectName(QString::fromUtf8("idCalendarEdit"));
-    formLayout->setWidget(3, QFormLayout::FieldRole, idCalendarEdit);
+    idCalendarBox = new QComboBox(formLayoutWidget);
+    idCalendarBox->setObjectName(QString::fromUtf8("idCalendarBox"));
+    formLayout->setWidget(3, QFormLayout::FieldRole, idCalendarBox);
 
     googleAuthButton = new QPushButton(formLayoutWidget);
     googleAuthButton->setObjectName(QString::fromUtf8("googleAuthButton"));
@@ -104,4 +104,12 @@ SettingsDialog::~SettingsDialog()
     delete frame;
 }
 
+void SettingsDialog::setCalendarList(QVariantList *list) {
+
+    for(int i = 0; i < list->count(); ++i)
+    {
+        QVariantMap calendar = list->at(i).toMap();
+        this->idCalendarBox->addItem(calendar["summary"].toString());
+    }
+}
 

@@ -4,9 +4,11 @@ Config::Config()
 {
     this->password = "";
     this->saved = true;
-    this->API_KEY = "";
+    this->onlineService = "Google Calendar";
+    this->academicSchedule = "UnivNantes (CELCAT)";
     this->googleAuthCode = "";
     this->savefileName = "";
+    this->calendarList = new QVariantList;
 }
 
 Config::~Config() {
@@ -29,21 +31,28 @@ void Config::setPassword(string pwd) {
     this->password = pwd;
 }
 
-string Config::getGCalId() {
+string Config::getOnlineService() {
+    return this->onlineService;
+}
+
+void Config::setOnlineService(string service)  {
+    this->onlineService = service;
+}
+
+string Config::getAcademicSchedule() {
+    return this->academicSchedule;
+}
+
+void Config::setAcademicSchedule(string schedule) {
+    this->academicSchedule = schedule;
+}
+
+QString Config::getGCalId() {
     return this->gCalId;
 }
 
-void Config::setGCalId(string key) {
-    this->gCalId = key;
-}
-
-
-string Config::getAPIKEY() {
-    return this->API_KEY;
-}
-
-void Config::setAPIKEY(string key) {
-    this->API_KEY = key;
+void Config::setGCalId(QString id) {
+    this->gCalId = id;
 }
 
 QString Config::getFileName() {
@@ -57,7 +66,6 @@ void Config::setFileName(QString& filename) {
 void Config::clean() {
     this->password = "";
     this->saved = true;
-    this->API_KEY = "";
     this->googleAuthCode = "";
     this->savefileName = "";
 }
@@ -76,4 +84,12 @@ OAuth2* Config::getGoogleOAuth() {
 
 void Config::setGoogleOAuth(OAuth2* oauth) {
     this->oauth2 = oauth;
+}
+
+QVariantList* Config::getCalendarList() {
+    return this->calendarList;
+}
+
+void Config::setCalendarList(QVariantList* list) {
+    this->calendarList = list;
 }

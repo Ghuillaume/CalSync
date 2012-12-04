@@ -37,6 +37,8 @@ class Controller : public QWidget {
         void newEmptyModel();
         void newModelFromLocal();
         void newModelFromGoogle();
+        void askCalendarList();
+        void selectCalendar(QNetworkReply* list);
         void clickSlot(SlotFrame *frame);
         void createSlot();
         void editSlot(SlotFrame *frame);
@@ -46,8 +48,10 @@ class Controller : public QWidget {
         void loadModel();
         void close();
         void updateSettings();
+        void updateGCalID(int i);
+        void updateOnlineService(QString service);
+        void updateAcademicSchedule(QString schedule);
         void changePassword();
-        void changeAPIKey();
         void getGoogleAccessToken();
         void googleCodeObtained(QString authCode);
         void googleAccessTokenObtained(QString token);

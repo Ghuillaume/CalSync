@@ -18,6 +18,8 @@ class SettingsDialog: public QDialog
         SettingsDialog(QWidget *parent);
        ~SettingsDialog();
 
+        void setCalendarList(QVariantList* list);
+
         QWidget *formLayoutWidget;
         QFormLayout *formLayout;
 
@@ -29,7 +31,7 @@ class SettingsDialog: public QDialog
 
         QPushButton* pwdButton;
         QComboBox* serviceBox;
-        QLineEdit* idCalendarEdit;
+        QComboBox* idCalendarBox;
         QPushButton* googleAuthButton;
         QComboBox* inputCalendarBox;
         QLineEdit* groupEdit;

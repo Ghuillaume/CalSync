@@ -67,18 +67,6 @@ View::View(Model *model) : QMainWindow(), time(8)
         editMenu->addAction(deleteSlotItem);
         deleteSlotItem->setText("Delete an event");
 
-        editMenu->addSeparator();
-
-        settingsItem = new QAction(this);
-        settingsItem->setObjectName("settingsItem");
-        editMenu->addAction(settingsItem);
-        settingsItem->setText("Settings..");
-
-        /*changeKeyItem = new QAction(this);
-        changeKeyItem->setObjectName("changeKeyItem");
-        editMenu->addAction(changeKeyItem);
-        changeKeyItem->setText("Change my API Key");*/
-
 
     lolMenu = new QMenu(menubar);
     lolMenu->setObjectName("lolMenu");
@@ -88,12 +76,19 @@ View::View(Model *model) : QMainWindow(), time(8)
         importItem = new QAction(this);
         importItem->setObjectName("importItem");
         lolMenu->addAction(importItem);
-        importItem->setText("Import an existing calendar");
+        importItem->setText(QString("Update local calendar from UnivNantes (CELCAT)"));
 
         exportItem = new QAction(this);
         exportItem->setObjectName("exportItem");
         lolMenu->addAction(exportItem);
-        exportItem->setText("Save my calendar online");
+        exportItem->setText("Save my calendar on Google Calendar");
+
+        editMenu->addSeparator();
+
+        settingsItem = new QAction(this);
+        settingsItem->setObjectName("settingsItem");
+        lolMenu->addAction(settingsItem);
+        settingsItem->setText("Settings..");
 
     menubar->setVisible(false);
   

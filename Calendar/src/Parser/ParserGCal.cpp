@@ -1,6 +1,6 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-ParserGCal::ParserGCal(string url, bool ssl, string id, QString authToken, Model *model, QObject* parent) : QObject(parent) {
+ParserGCal::ParserGCal(string url, bool ssl, QString id, QString authToken, Model *model, QObject* parent) : QObject(parent) {
     this->url = url;
     this->ssl = ssl;
     this->id = id;
@@ -41,7 +41,7 @@ void ParserGCal::getEventList() {
     query->get(this->buildQuery());*/
 
     QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events?access_token=%2")
-            .arg(this->id.c_str())
+            .arg(this->id)
             .arg(this->authToken);
     QUrl url;
     url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
@@ -94,7 +94,7 @@ void ParserGCal::parseEvents(QByteArray in) {
         else if(result.toMap()["kind"].toString() == "calendar#calendarList")
         {
             m_calendars = result.toMap()["items"].toList();
-            for(int i = 0; i < m_events.count(); ++i)
+            for(int i = 0; i < m_calendars.count(); ++i)
             {
                 qDebug() << m_calendars[i].toString();
             }
@@ -141,8 +141,8 @@ void ParserGCal::requestFinished(int id, bool error)   {
     if(error)   {
         qDebug() << "Error";
     }   else    {
-        //QByteArray in = query->readAll();
-        //this->parseEvents(in);
+        QByteArray in = query->readAll();
+        this->parseEvents(in);
     }
 }
 

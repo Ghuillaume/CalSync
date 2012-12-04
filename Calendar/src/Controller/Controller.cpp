@@ -29,6 +29,9 @@ Controller::Controller(Model* model, View* view, Config* config)
     QObject::connect(view -> datePrevious, SIGNAL(clicked()), this, SLOT(previousWeek()));
     QObject::connect(view -> dateNext, SIGNAL(clicked()), this, SLOT(nextWeek()));
 
+    // Network :
+    QObject::connect(this, SIGNAL(tokenSaved()), this, SLOT(askCalendarList()));
+
     
 }
 
@@ -65,11 +68,45 @@ void Controller::newModelFromGoogle() {
         this->view->menubar->setVisible(true);
         this->view->mainFrame->setVisible(true);
         this->view->horizontalLayoutWidgetNewModel->setVisible(false);
-        //this->config->clean();
         
         this->view->display();
     }
 
+}
+
+void Controller::askCalendarList() {
+
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    QObject::connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(selectCalendar(QNetworkReply*)));
+    QString url = QString("https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=%1").arg(this->config->getGoogleAuthCode());
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    networkManager->get(QNetworkRequest(QUrl(url)));
+}
+
+void Controller::selectCalendar(QNetworkReply* list) {
+    QJson::Parser parser;
+    bool ok = FALSE;
+
+    QVariant result = parser.parse(list->readAll(), &ok).toMap();
+    if (!ok) {
+      qFatal("An error occurred during parsing calendar list");
+    } else {
+        if(result.toMap().contains("error"))
+        {
+            qDebug() << "ERROR occured:\n";
+            return;
+        }
+        else if(result.toMap()["kind"].toString() == "calendar#calendarList")
+        {
+            this->config->setCalendarList(new QVariantList(result.toMap()["items"].toList()));
+        }
+    }
+    QApplication::restoreOverrideCursor();
+
+    QMessageBox::information(this, "No calendar selected", "Now you are authenticate, please select a calendar in the list");
+    this->updateSettings();
+
+    this->importCalendar();
 }
 
 void Controller::connectAllSlots() {
@@ -370,9 +407,29 @@ void Controller::updateSettings() {
     QObject::connect(dialog->buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
     QObject::connect(dialog->buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
     QObject::connect(dialog->pwdButton, SIGNAL(clicked()), this, SLOT(changePassword()));
+    QObject::connect(dialog->serviceBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateOnlineService(QString)));
+    QObject::connect(dialog->inputCalendarBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateAcademicSchedule(QString)));
+    QObject::connect(dialog->idCalendarBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGCalID(int)));
     QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), this, SLOT(getGoogleAccessToken()));
     QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), dialog, SLOT(reject()));
+    dialog->setCalendarList(this->config->getCalendarList());
     dialog -> exec();
+}
+
+void Controller::updateGCalID(int i) {
+    QVariantMap calendar = this->config->getCalendarList()->at(i).toMap();
+    this->config->setGCalId(calendar["id"].toString());
+    qDebug() << "New GCal ID is " << this->config->getGCalId();
+}
+
+void Controller::updateOnlineService(QString service) {
+    this->config->setOnlineService(service.toStdString());
+    this->view->exportItem->setText(QString("Save my calendar on %1").arg(service));
+}
+
+void Controller::updateAcademicSchedule(QString schedule) {
+    this->config->setAcademicSchedule(schedule.toStdString());
+    this->view->importItem->setText(QString("Update local calendar from %1").arg(schedule));
 }
 
 void Controller::parseModel(QString fileName) {
@@ -527,15 +584,6 @@ void Controller::changePassword() {
     this->config->setPassword(md5(passwd.toStdString()));
 }
 
-void Controller::changeAPIKey() {
-    QInputDialog askingKey(this);
-    askingKey.setLabelText("API Key");
-    askingKey.setTextValue(this->config->getAPIKEY().c_str());
-    askingKey.exec();
-
-    this->config->setAPIKEY(askingKey.textValue().toStdString());
-}
-
 void Controller::getGoogleAccessToken() {
     this->auth2 = new OAuth2(this);
     this->auth2->startLogin(false);
@@ -559,15 +607,14 @@ void Controller::googleAccessTokenObtained(QString token) {
 
 void Controller::importCalendar() {
 
-
     this->model->cleanList();
-
-    string gcalID = "k2k3gliju4hpiptoaa1cprn6f8%40group.calendar.google.com";
 
     // create Google Parser and parse
     // Todo : ask for password
-    Parser* p = new ParserGCal("www.googleapis.com", true, gcalID, this->config->getGoogleAuthCode(), this->model, this);
+    Parser* p = new ParserGCal("www.googleapis.com", true, this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
     p->getEventList();
+
+    this->view->display();
 
     /*Parser* p = new ParserCELCAT("http://www.edt-sciences.univ-nantes.fr", true, "g6935", this->model, this);
     p->getEventList();

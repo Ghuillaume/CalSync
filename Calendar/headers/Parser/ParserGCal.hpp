@@ -26,7 +26,7 @@ class ParserGCal : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserGCal(string url, bool ssl, string id, QString authToken, Model* model, QObject* parent);
+        ParserGCal(string url, bool ssl, QString id, QString authToken, Model* model, QObject* parent);
         virtual ~ParserGCal();
 
         void getCalendarList();
@@ -42,7 +42,7 @@ class ParserGCal : public QObject, public Parser {
     private:
         virtual void parseEvents(QByteArray in);
 
-        string id;
+        QString id;
         QString authToken;
 
         QHttp* query;

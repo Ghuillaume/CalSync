@@ -9,32 +9,40 @@ class Config {
         Config();
         ~Config();
 
-        bool isSaved();
         void setSaved(bool saved);
         string getPassword();
         void setPassword(string pwd);
-        string getGCalId();
-        void setGCalId(string id);
-        string getAPIKEY();
-        void setAPIKEY(string key);
+        string getOnlineService();
+        void setOnlineService(string service);
+        string getAcademicSchedule();
+        void setAcademicSchedule(string schedule);
+        QString getGCalId();
+        void setGCalId(QString id);
         QString getFileName();
         void setFileName(QString& filename);
-        void clean();
-
         QString getGoogleAuthCode();
         void setGoogleAuthCode(QString authcode);
         OAuth2* getGoogleOAuth();
         void setGoogleOAuth(OAuth2* oauth);
+        QVariantList* getCalendarList();
+        void setCalendarList(QVariantList* list);
+
+        bool isSaved();
+        void clean();
+
 
     private:
         bool saved;
         string password;
-        string gCalId;
-        string API_KEY;
+        string onlineService;
+        string academicSchedule;
+        QString gCalId;
         QString googleAuthCode;
         OAuth2* oauth2;
         
         QString savefileName;
+
+        QVariantList* calendarList;
 
 };
 
