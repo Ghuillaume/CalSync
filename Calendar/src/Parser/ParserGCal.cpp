@@ -1,8 +1,6 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-ParserGCal::ParserGCal(string url, bool ssl, QString id, QString authToken, Model *model, QObject* parent) : QObject(parent) {
-    this->url = url;
-    this->ssl = ssl;
+ParserGCal::ParserGCal(QString id, QString authToken, Model *model, QObject* parent) : QObject(parent) {
     this->id = id;
     this->authToken = authToken;
     this->model = model;
@@ -23,7 +21,9 @@ ParserGCal::~ParserGCal() {
 void ParserGCal::replyFinished(QNetworkReply * reply)
 {
     QApplication::restoreOverrideCursor();
-    qDebug() << reply->readAll();
+    QByteArray in = reply->readAll();
+    qDebug() << in;
+    this->parseEvents(in);
 }
 
 void ParserGCal::getCalendarList() {
@@ -53,8 +53,6 @@ void ParserGCal::getEventList() {
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     networkManager->get(request);
-
-    // TODO : timeout, sinon quand google répond pas ben ça fait que dalle, pas de message d'erreur etc !!!!
 }
 
 void ParserGCal::parseEvents(QByteArray in) {
@@ -63,12 +61,12 @@ void ParserGCal::parseEvents(QByteArray in) {
 
 	QVariant result = parser.parse (in, &ok).toMap();
 	if (!ok) {
-	  qFatal("An error occurred during parsing");
+      qCritical("An error occurred during parsing");
 	} else {
 		if(result.toMap().contains("error"))
 		{
 			qDebug() << "ERROR occured:\n";
-			return;
+            return;
 		} 
 		// If we parse events of a calendar
 		else if(result.toMap()["kind"].toString() == "calendar#events") {
@@ -99,7 +97,7 @@ void ParserGCal::parseEvents(QByteArray in) {
                 qDebug() << m_calendars[i].toString();
             }
         }
-	}
+    }
 }
 
 
@@ -134,16 +132,6 @@ void ParserGCal::responseHeaderReceived(const QHttpResponseHeader &resp)   {
     qDebug() << "Size : " << resp.contentLength();
     qDebug() << "Type : " << resp.contentType();
     qDebug() << "Status Code : " << resp.statusCode();
-}
-
-void ParserGCal::requestFinished(int id, bool error)   {
-    qDebug() << "Request Id : " << id;
-    if(error)   {
-        qDebug() << "Error";
-    }   else    {
-        QByteArray in = query->readAll();
-        this->parseEvents(in);
-    }
 }
 
 Time* ParserGCal::buildDate(QString &strDate) {

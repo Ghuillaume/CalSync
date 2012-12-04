@@ -26,7 +26,7 @@ class ParserGCal : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserGCal(string url, bool ssl, QString id, QString authToken, Model* model, QObject* parent);
+        ParserGCal(QString id, QString authToken, Model* model, QObject* parent);
         virtual ~ParserGCal();
 
         void getCalendarList();
@@ -36,7 +36,6 @@ class ParserGCal : public QObject, public Parser {
     public slots:
         void stateChanged ( int state );
         void responseHeaderReceived ( const QHttpResponseHeader & resp );
-        void requestFinished ( int id, bool error );
         void replyFinished(QNetworkReply*);
 
     private:

@@ -7,16 +7,16 @@
 
 #include "../../headers/Parser/ParserCELCAT.hpp"
 
-ParserCELCAT::ParserCELCAT(string url, bool ssl, string groupId, Model* model, QObject* parent) : QObject(parent) {
-    this->url = url;
-    this->ssl = ssl;
+ParserCELCAT::ParserCELCAT(QString groupId, Model* model, QObject* parent) : QObject(parent) {
     this->groupId = groupId;
     this->model = model;
 
     query = new QHttp(this);
     connect(query, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
     connect(query, SIGNAL(responseHeaderReceived(QHttpResponseHeader)), this, SLOT(responseHeaderReceived(QHttpResponseHeader)));
-    connect(query, SIGNAL(requestFinished(int,bool)), this, SLOT(requestFinished(int,bool)));
+
+    networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 }
 
 ParserCELCAT::~ParserCELCAT() {
@@ -26,14 +26,11 @@ ParserCELCAT::~ParserCELCAT() {
 
 // NOT WORKING !!!!!
 void ParserCELCAT::getEventList() {
-    qCritical() << "Getting events from CELCAT";
 
-    QString queryString = QString(this->groupId.c_str()) + ".xml";
-    qDebug() << "Query string = " << queryString;
-    query->setHost(this->url.c_str(), (this->ssl ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttps) );
-    query->get(queryString);
-
-    // TODO : timeout !!!!
+    QString url = QString("http://www.edt-sciences.univ-nantes.fr/%1.xml").arg(this->groupId);
+    //QApplication::setOverrideCursor(Qt::WaitCursor);
+    networkManager->get(QNetworkRequest(QUrl(url)));
+    qDebug() << "Getting events from CELCAT";
 }
 
 
@@ -75,12 +72,10 @@ void ParserCELCAT::responseHeaderReceived(const QHttpResponseHeader &resp)   {
     qDebug() << "Status Code : " << resp.statusCode();
 }
 
-void ParserCELCAT::requestFinished(int id, bool error)   {
-    qDebug() << "Request Id : " << id;
-    if(error)   {
-        qDebug() << "Error";
-    }   else    {
-        QByteArray in = query->readAll();
-        this->parseEvents(in);
-    }
+void ParserCELCAT::replyFinished(QNetworkReply * reply)
+{
+    //QApplication::restoreOverrideCursor();
+    QByteArray in = reply->readAll();
+    qDebug() << in;
+    this->parseEvents(in);
 }

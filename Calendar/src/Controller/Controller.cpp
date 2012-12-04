@@ -413,7 +413,9 @@ void Controller::updateSettings() {
     QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), this, SLOT(getGoogleAccessToken()));
     QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     dialog->setCalendarList(this->config->getCalendarList());
+    dialog->groupEdit->setText(this->config->getCelcatGroup());
     dialog -> exec();
+    this->config->setCelcatGroup(dialog->groupEdit->text());
 }
 
 void Controller::updateGCalID(int i) {
@@ -611,16 +613,16 @@ void Controller::importCalendar() {
 
     // create Google Parser and parse
     // Todo : ask for password
-    Parser* p = new ParserGCal("www.googleapis.com", true, this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+    /*Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+    p->getEventList();*/
+
+    Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
     p->getEventList();
+
+    //QMessageBox::critical(this, "Error", "This feature is currently not available.");
+
 
     this->view->display();
-
-    /*Parser* p = new ParserCELCAT("http://www.edt-sciences.univ-nantes.fr", true, "g6935", this->model, this);
-    p->getEventList();
-
-    QMessageBox::critical(this, "Error", "This feature is currently not available.");
-    */
 }
 
 void Controller::exportCalendar() {

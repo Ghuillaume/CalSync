@@ -11,6 +11,10 @@
 #include <QHttp>
 #include <QObject>
 #include <QByteArray>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <./lib/qjson/include/QJson/Parser>
+#include <QtCore>
 
 #include "Parser.hpp"
 #include "../Model/common.h"
@@ -22,23 +26,23 @@ class ParserCELCAT : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserCELCAT(string url, bool ssl, string groupId, Model* model, QObject* parent);
+        ParserCELCAT(QString groupId, Model* model, QObject* parent);
         virtual ~ParserCELCAT();
 
         virtual void getEventList();
 
-
     public slots:
         void stateChanged ( int state );
         void responseHeaderReceived ( const QHttpResponseHeader & resp );
-        void requestFinished ( int id, bool error );
+        void replyFinished(QNetworkReply*);
 
     private:
         virtual void parseEvents(QByteArray in);
 
-        string groupId;
+        QString groupId;
 
         QHttp* query;
+        QNetworkAccessManager* networkManager;
 };
 
 #endif	/* PARSERCELCAT_H */

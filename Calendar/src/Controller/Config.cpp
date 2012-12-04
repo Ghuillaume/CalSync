@@ -9,6 +9,7 @@ Config::Config()
     this->googleAuthCode = "";
     this->savefileName = "";
     this->calendarList = new QVariantList;
+    this->celcatGroup = "g6935";
 }
 
 Config::~Config() {
@@ -92,4 +93,12 @@ QVariantList* Config::getCalendarList() {
 
 void Config::setCalendarList(QVariantList* list) {
     this->calendarList = list;
+}
+
+QString Config::getCelcatGroup() {
+    return this->celcatGroup;
+}
+
+void Config::setCelcatGroup(QString group) {
+    this->celcatGroup = group;
 }

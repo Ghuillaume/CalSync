@@ -26,6 +26,8 @@ class Config {
         void setGoogleOAuth(OAuth2* oauth);
         QVariantList* getCalendarList();
         void setCalendarList(QVariantList* list);
+        QString getCelcatGroup();
+        void setCelcatGroup(QString group);
 
         bool isSaved();
         void clean();
@@ -39,6 +41,7 @@ class Config {
         QString gCalId;
         QString googleAuthCode;
         OAuth2* oauth2;
+        QString celcatGroup;
         
         QString savefileName;
 

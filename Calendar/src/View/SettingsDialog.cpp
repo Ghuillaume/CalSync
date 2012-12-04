@@ -84,7 +84,6 @@ SettingsDialog::SettingsDialog(QWidget* parent):
 
     groupEdit = new QLineEdit(formLayoutWidget);
     groupEdit->setObjectName(QString::fromUtf8("groupEdit"));
-    groupEdit->setText("g6935");
     formLayout->setWidget(7, QFormLayout::FieldRole, groupEdit);
 
     QSpacerItem *horizontalSpacer2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);

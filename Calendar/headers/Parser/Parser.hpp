@@ -22,9 +22,8 @@ class Parser {
     protected:
         virtual void parseEvents(QByteArray in) = 0;
 
-        string url;
-        bool ssl;
         Model* model;
+
 
 
 };
