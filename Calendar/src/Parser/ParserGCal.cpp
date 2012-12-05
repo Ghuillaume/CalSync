@@ -99,7 +99,7 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
             QString("\"summary\": \"%1\",\n").arg(title) +
             QString("\"description\": \"%1\",\n").arg(description) +
             QString("\"location\": \"%1\",\n").arg(location) +
-            QString("\"extendedProperties\": {\n \"shared\": {\n \"fromMyCalendar\": \"true\"\n}\n},\n") +
+            QString("\"extendedProperties\": {\n \"shared\": {\n \"fromMyCalendar\": \"true\"\n}\n}\n") +
             QString("}");
     QByteArray params = query.toUtf8();
     qDebug() << "Params to send" << params;

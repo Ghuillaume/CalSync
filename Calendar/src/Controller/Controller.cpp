@@ -109,10 +109,11 @@ void Controller::selectCalendar(QNetworkReply* list) {
     }
     QApplication::restoreOverrideCursor();
 
-    QMessageBox::information(this, "No calendar selected", "Now you are authenticate, please select a calendar in the list");
+    QMessageBox::information(this, "No calendar selected",
+                             "Now you are authenticate, please select a calendar in the list, then please retry your request if necessary.");
     this->updateSettings();
-
-    this->importOnlineCalendar();
+    if(this->model->getSlotList().empty())
+        this->importOnlineCalendar();
 }
 
 void Controller::connectAllSlots() {
