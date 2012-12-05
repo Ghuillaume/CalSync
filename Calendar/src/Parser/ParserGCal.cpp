@@ -42,7 +42,7 @@ void ParserGCal::clearCalendar() {
 
     emit sendMessage(QString("Clearing Google Calendar..."), 0);
 
-    // TODO : récupérer tous les events avec
+    // Amélioration possible : récupérer tous les events avec
     // "\"extendedProperties\": \n{ \"shared\": \n{ \"fromMyCalendar\": \"true\"\n}\n},\n"
     // pour ne supprimer que ceux là :)
 

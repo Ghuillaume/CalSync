@@ -181,6 +181,7 @@ void Controller::saveModelAs() {
 }
 
 void Controller::loadModel() {
+
     bool load = true;
 
     if(!this->config->isSaved()) {
@@ -188,7 +189,9 @@ void Controller::loadModel() {
             load = false;
     }
 
-    if(load) {        
+    if(load) {
+        emit sendMessage("Loading file...", 0);
+
         QXmlStreamReader reader;
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("XML Document (*.xml)"));
         this->config->setFileName(fileName);
@@ -285,9 +288,12 @@ void Controller::loadModel() {
             reader.readNext(); // On va au prochain token
         }
 
-// On ferme le flux et on rafraichit l'interface
+        // On ferme le flux et on rafraichit l'interface
         xml_doc.close();
         this->view->display();
+
+        if(this->controller->getView()->statusbar->currentMessage() == "Loading file...")
+            this->controller->getView()->statusbar->clearMessage();
     }
 
 }
@@ -436,6 +442,8 @@ void Controller::updateAcademicSchedule(QString schedule) {
 
 void Controller::parseModel(QString fileName) {
 
+    emit sendMessage(QString("Saving events locally..."), 0);
+
     bool pwdOK = false;
     if(this->config->getPassword().empty())
         pwdOK = true;
@@ -497,6 +505,8 @@ void Controller::parseModel(QString fileName) {
 
         this->config->setSaved(true);
     }
+    if(this->controller->getView()->statusbar->currentMessage() == "Saving events locally...")
+        this->controller->getView()->statusbar->clearMessage();
     
 }
 
@@ -586,7 +596,6 @@ void Controller::changePassword() {
         }
     }
 
-    // TODO vérification du passwd ?
     QString passwd = QInputDialog::getText(this, "Password", "Type new password");
 
     this->config->setPassword(md5(passwd.toStdString()));

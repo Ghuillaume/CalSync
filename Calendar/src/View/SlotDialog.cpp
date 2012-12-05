@@ -132,7 +132,6 @@ SlotDialog::~SlotDialog()
 }
 
 void SlotDialog::checkFields() {
-    qDebug() << "LOLILOL";
     if(titleEdit->text().isEmpty())
         QMessageBox::warning(this, "Error", "You must fill at least the title field");
     else
