@@ -7,7 +7,7 @@ QT += xml network webkit
 INCLUDEPATH += ./lib/qjson/include
 
 linux* {
-    LIBS += ./libqjson.so
+    LIBS += ./lib/qjson/build/lib/libqjson.so
 }
 
 win32-g++ {

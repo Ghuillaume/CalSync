@@ -1,0 +1,16 @@
+\BOOKMARK [0][-]{chapter*.2}{Introduction}{}
+\BOOKMARK [0][-]{chapter.1}{Conception g\351n\351rale}{}
+\BOOKMARK [0][-]{chapter.2}{Conception du mod\350le}{}
+\BOOKMARK [1][-]{section.2.1}{La classe Model}{chapter.2}
+\BOOKMARK [1][-]{section.2.2}{La classe Slot}{chapter.2}
+\BOOKMARK [1][-]{section.2.3}{La classe Time}{chapter.2}
+\BOOKMARK [0][-]{chapter.3}{Conception des interfaces de communication}{}
+\BOOKMARK [1][-]{section.3.1}{Sp\351cification des classes}{chapter.3}
+\BOOKMARK [2][-]{subsection.3.1.1}{Classe Parser}{section.3.1}
+\BOOKMARK [1][-]{section.3.2}{Diagrammes de s\351quence}{chapter.3}
+\BOOKMARK [2][-]{subsection.3.2.1}{R\351cup\351ration des \351v\350nements distants}{section.3.2}
+\BOOKMARK [2][-]{subsection.3.2.2}{Exportation des \351v\350nements locaux}{section.3.2}
+\BOOKMARK [0][-]{chapter.4}{Conception de l'interface utilisateur}{}
+\BOOKMARK [1][-]{section.4.1}{Menus principaux}{chapter.4}
+\BOOKMARK [0][-]{chapter.5}{Controller}{}
+\BOOKMARK [0][-]{chapter.6}{Am\351liorations possibles sur l'impl\351mentation}{}
