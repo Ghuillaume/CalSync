@@ -624,18 +624,25 @@ void Controller::googleAccessTokenObtained(QString token) {
 
 void Controller::importAcademicCalendar() {
 
-    Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this, this);
-    p->getEventList();
+    if(QMessageBox::warning(this->view, "Warning", "This action is going to clear your online Calendar before, do you want to continue ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+
+        Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this, this);
+        this->model->cleanList();
+        p->getEventList();
+    }
 }
 
 
 void Controller::importOnlineCalendar() {
 
-    this->model->cleanList();
+    if(QMessageBox::warning(this->view, "Warning", "This action is going to clear your local Calendar before, do you want to continue ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
 
-    // create Google Parser and parse
-    Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this, this);
-    p->getEventList();
+        this->model->cleanList();
+
+        // create Google Parser and parse
+        Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this, this);
+        p->getEventList();
+    }
 }
 
 void Controller::exportCalendar() {

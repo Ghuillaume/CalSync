@@ -1,6 +1,6 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-/*
+/**
  * ParserGCal(QString id, QString authToken, Model *model, QObject* parent, Controller* controller)
  * ParserGCal constructor
  * Precondition : /
@@ -131,7 +131,7 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
 
 }
 
-/*
+/**
  * void parseEvents(QByteArray in)
  * Build an event
  * Precondition : The event is well-formed

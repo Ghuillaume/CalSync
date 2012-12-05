@@ -40,7 +40,7 @@
 	Un conflit est détecté lors de l'ajout d'un nouvel évènement : le contrôleur traite ce conflit, soit en demandant à l'utilisateur que faire, soit en appliquant un comportement par défaut par exemple.\\
 	
 	Ci-dessus, un diagramme de classe généraliste présentant ce système dans sa globalité. La conception de chaque sous-système est présentée dans les prochains chapitres.
-	\begin{figure}
+	\begin{figure}[!h]
 		\centering
 		\includegraphics[scale=0.55]{DiagrammeGL.png}
 		\caption{Diagramme de classe général}
@@ -60,7 +60,7 @@
 	\end{figure}
 	\FloatBarrier
 	
-	\section{La classe Modèle}
+	\section{La classe Model}
 	La classe modèle est la classe principale de ce sous-système. Elle possède plusieurs types d'attributs :
 	\begin{itemize}
 		\item Time* currentDate : Un pointeur vers un objet de type Time qui contient la date courante.
@@ -132,7 +132,7 @@
 			\end{itemize}
 
    		\subsection*{editSlot}
-            Méthode : void editSlot(Time *beginDate, Time *endDate, string intitule, string description)
+            Méthode{ : void editSlot(Time *beginDate, Time *endDate, string intitule, string description)
 			\begin{itemize}
 				\item Objectif  : Modifier toutes les valeurs d'un créneau à la fois (date et chaines de caractère).
 				\item Pré-condition : Les valeurs d'entrée sont au bon format.
@@ -199,15 +199,62 @@
 	
 	Deuxièmement, un service de calendrier propose l'import de données en même temps que l'export de données. Cela ne sera pas vrai pour un emploi du temps universitaire, qui est sensé ne pas pouvoir être modifiable par un client quelconque, mais cela le sera normalement pour tout autre service distant.
 	
-	Partant de ces deux conclusions, nous avons décidé de partir sur la conception d'une classe abstraite \emph{Parser} déclarant toutes les méthodes permettant l'import et l'export de données. Pour implémenter un nouveau service distant, il faut ensutie étendre cette classe abstraite et de définir les méthodes qu'il faut. Enfin, pour l'utiliser, il suffira de modifier le controller (que nous avons vu précédemment) pour instancier ce parseur et utiliser les méthodes que l'ont veut.\\
+	Partant de ces deux conclusions, nous avons décidé de partir sur la conception d'une classe abstraite \emph{Parser} déclarant toutes les méthodes permettant l'import et l'export de données. Pour implémenter un nouveau service distant, il faut ensuite étendre cette classe abstraite et de définir les méthodes qu'il faut. Enfin, pour l'utiliser, il suffira de modifier le controller (que nous avons vu précédemment) pour instancier ce parseur et utiliser les méthodes que l'ont veut.\\
 	
 	Dans l'application \emph{MyCalendar}, seulement deux parseurs ont été définis.
-	\begin{figure}
+	\begin{figure}[!h]
 		\centering
 		\includegraphics[scale=0.65]{diagclasses_parser.png}
 		\caption{Diagramme de classe des interfaces de communication}
 	\end{figure}
 	\FloatBarrier
+	
+	\section{Spécification des classes}
+		\subsection{Classe Parser}
+			\subsubsection{getEventList()}
+				\begin{itemize}
+					\item Objectif  : Envoyer une requête vers le service distant pour récupérer tous les évènements
+					\item Pré-condition : Le calendrier distant (identifiant, url, etc) a été défini
+					\item Post-condition : Une requête GET ou POST a été envoyée
+				\end{itemize}
+				
+			\subsubsection{exportEvent(String title, String description, String location, Time start, Time end)}
+				\begin{itemize}
+					\item Objectif  : Envoyer une requête vers le service distant pour créer un nouvel évènement avec les données passées en argument
+					\item Pré-condition : Le calendrier distant (identifiant, url, etc) a été défini
+					\item Post-condition : Une requête GET ou POST a été envoyée
+				\end{itemize}
+				
+			\subsubsection{clearCalendar()}
+				\begin{itemize}
+					\item Objectif  : Envoyer une requête vers le service distant pour supprimer tous les évènements qui y sont liés
+					\item Pré-condition : Le calendrier distant (identifiant, url, etc) a été défini
+					\item Post-condition : Une requête GET ou POST a été envoyée
+				\end{itemize}
+				
+			\subsubsection{parseEvents()}
+				\begin{itemize}
+					\item Objectif  : Transformer les évènements du calendrier pour les inclure vers le modèle local
+					\item Pré-condition : Une requête \emph{getEventList()} a été envoyée et la réponse a été reçue
+					\item Post-condition : Des évènements ont été ajoutés au modèle local
+				\end{itemize}
+				
+	\section{Diagrammes de séquence}
+		\subsection{Récupération des évènements distants}
+			\begin{figure}[!h]
+				\centering
+				\includegraphics[scale=0.65]{diagseq_getEventList.png}
+				\caption{Récupération des évènements distants}
+			\end{figure}
+			\FloatBarrier
+			
+		\subsection{Exportation des évènements locaux}
+			\begin{figure}[!h]
+				\centering
+				\includegraphics[scale=0.65]{diagseq_exportEvent.png}
+				\caption{Exportation des évènements locaux}
+			\end{figure}
+			\FloatBarrier
 
 \chapter{Conception de l'interface utilisateur}
 	%JEROME
@@ -221,3 +268,6 @@
     \section{Menus principaux}
         Voici la liste des menus que devra proposer la fenêtre 
 
+
+\chapter{Controller}
+	juste dire qu'il utilise la classe Config qui lui permet juste de stocker les informations dont il peut avoir besoin pour certaines de ses actions

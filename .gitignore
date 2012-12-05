@@ -14,3 +14,4 @@ moc_*
 documentation/rapport/*.toc
 documentation/rapport/*.aux
 documentation/rapport/*.log
+documentation/rapport/*.pdf
