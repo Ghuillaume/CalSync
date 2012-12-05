@@ -278,3 +278,14 @@
 		\caption{Diagramme de classe du contrôleur}
 	\end{figure}
 	\FloatBarrier
+	
+	
+\chapter{Améliorations possibles sur l'implémentation}
+	Malheureusement, nous n'avons pas eu assez de temps pour produire une application qui soit parfaitement fonctionnelle, et quelques améliorations sont possibles à court terme pour rendre ce projet plus \og viable \fg.
+	
+	La plus importante de ces améliorations est la gestion de conflits. Lors de l'édition locale, les conflits sont effectivements gérés. Cependant, ils ne sont pas gérés lors de la communication avec d'autres calendriers :
+	\begin{itemize}
+		\item Import depuis le calendrier universitaire : l'utilisateur pourrait avoir besoin de mettre à jour sa sauvegarde locale ou distante avec les modifications qui ont été effectuées sur son emploi du temps universitaire sans que cela n'efface ses modifications. N'ayant pas eu le temps de développer de gestionnaire de conflit pour ce cas de figure, notre solution temporaire est de supprimer le calendrier local avant de récupérer le calendrier universitaire. Cependant, une boite de dialogue informe l'utilisateur de cet état de fait et lui demande s'il veut poursuivre ou non ;
+		\item Export vers le calendrier distant : il s'agit là du même problème que précédemment, à la différence que nous n'avons pas trouvé de solution temporaire. L'API Google Calendar propose bien une requête pour \og vider \fg un calendrier, mais celle-ci ne semble pas fonctionner. Nous avons tout de même laissé cette fonctionnalité au cas où le problème viendrait de l'API Google et viendrait à être résolu après la livraison de l'application ;
+		\item Import depuis le calendrier distant : nous n'avons pas émit l'hypothèse de départ qu'un même calendrier puisse être modifié à plusieurs endroits différents (plusieurs utilisateurs avec plusieurs terminaux). Nous avons donc considéré que l'importation du calendrier distant n'était utile que lors de l'ouverture de l'application, et donc qu'il n'y a pas besoin de gestionnaire de conflit. Cela pourrait toutefois être amélioré dans le futur.
+	\end{itemize}
