@@ -292,8 +292,8 @@ void Controller::loadModel() {
         xml_doc.close();
         this->view->display();
 
-        if(this->controller->getView()->statusbar->currentMessage() == "Loading file...")
-            this->controller->getView()->statusbar->clearMessage();
+        if(this->view->statusbar->currentMessage() == "Loading file...")
+            this->view->statusbar->clearMessage();
     }
 
 }
@@ -505,8 +505,8 @@ void Controller::parseModel(QString fileName) {
 
         this->config->setSaved(true);
     }
-    if(this->controller->getView()->statusbar->currentMessage() == "Saving events locally...")
-        this->controller->getView()->statusbar->clearMessage();
+    if(this->view->statusbar->currentMessage() == "Saving events locally...")
+        this->view->statusbar->clearMessage();
     
 }
 
