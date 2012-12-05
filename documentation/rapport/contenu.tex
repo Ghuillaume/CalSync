@@ -42,8 +42,8 @@
 	Ci-dessus, un diagramme de classe généraliste présentant ce système dans sa globalité. La conception de chaque sous-système est présentée dans les prochains chapitres.
 	\begin{figure}
 		\centering
+		\includegraphics[scale=0.55]{DiagrammeGL.png}
 		\caption{Diagramme de classe général}
-		\includegraphics[scale=0.5]{DiagrammeGL.png}
 	\end{figure}
 	\FloatBarrier
 
@@ -87,7 +87,23 @@
 
 \chapter{Conception des interfaces de communication}
 	%GUILLAUME
-	un seul service en ligne pris en compte, mais appli conçue de manière a pouvoir en ajouter facilement.
+	Ce sous-système de l'application MyCalendar constitue, derrière le modèle local, son centre névralgique. En effet, c'est toute cette partie de l'application qui va gérer les communications avec l'extérieur, que ce soit pour récupérer un calendrier distant ou pour exporter en ligne les données locales.\\
+	
+	Il existe deux types de communications : les communications entrantes (import d'un calendrier vers les données locales) et les communications sortantes (export des données locales vers un calendrier distant).
+	
+	Premièrement, l'application est sensée, à terme, pouvoir gérer plusieurs types de services en ligne. Cela signifie qu'il faut non seulement permettre aux développeur de pouvoir ajouter la prise en charge d'un nouveau service facilement, mais aussi proposer aux utilisateurs une interface lui proposant de choisir lui-même quel service il souhaite utiliser pour l'import comme pour l'export.
+	
+	Deuxièmement, un service de calendrier propose l'import de données en même temps que l'export de données. Cela ne sera pas vrai pour un emploi du temps universitaire, qui est sensé ne pas pouvoir être modifiable par un client quelconque, mais cela le sera normalement pour tout autre service distant.
+	
+	Partant de ces deux conclusions, nous avons décidé de partir sur la conception d'une classe abstraite \emph{Parser} déclarant toutes les méthodes permettant l'import et l'export de données. Pour implémenter un nouveau service distant, il faut ensutie étendre cette classe abstraite et de définir les méthodes qu'il faut. Enfin, pour l'utiliser, il suffira de modifier le controller (que nous avons vu précédemment) pour instancier ce parseur et utiliser les méthodes que l'ont veut.\\
+	
+	Dans l'application \emph{MyCalendar}, seulement deux parseurs ont été définis.
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.65]{diagclasses_parser.png}
+		\caption{Diagramme de classe des interfaces de communication}
+	\end{figure}
+	\FloatBarrier
 
 \chapter{Conception de l'interface utilisateur}
 	%JEROME
