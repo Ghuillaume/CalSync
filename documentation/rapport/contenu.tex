@@ -56,7 +56,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[scale=0.45]{diagclasses_model.png}
-		\caption{Diagramme de classe du sous-système \og Model \fg{}}
+		\caption{Diagramme de classe du sous système Model}
 	\end{figure}
 	\FloatBarrier
 	
@@ -258,15 +258,47 @@
 
 \chapter{Conception de l'interface utilisateur}
 	%JEROME
-    Dans ce chapitre, nous aborderons ce qui concerne l'interface graphique principale que l'utilisateur manipulera. Cette interface homme-machine fait partie de la vue, ce qui représente la troisième partie du patron architectural Modèle-Vue-Contrôleur. Elle représente la partie qui permettra à l'utilisateur de profiter de toutes les fonctions pour contrôler le comportement du programme avec sa souris et son clavier.S
+    Dans ce chapitre, nous aborderons ce qui concerne l'interface graphique principale que l'utilisateur manipulera. Cette interface homme-machine fait partie de la vue, ce qui représente la troisième partie du patron architectural Modèle-Vue-Contrôleur. Elle représente la partie qui permettra à l'utilisateur de profiter de toutes les fonctions pour contrôler le comportement du programme avec sa souris et son clavier.
     
     Elle comporte les menus qui permettent d'effectuer des actions sur les données et l'affichage sous la forme d'un emploi de temps des créneaux par semaine.
-    
-    
-    
 
     \section{Menus principaux}
-        Voici la liste des menus que devra proposer la fenêtre 
+        Voici la liste des menus que devra proposer la fenêtre :
+                QMenu *fileMenu;
+            QAction *newItem;
+            QAction *saveItem;
+            QAction *saveAsItem;
+            QAction *quitItem;
+            QAction *openItem;
+        QMenu *editMenu;
+            QAction *newSlotItem;
+            QAction *settingsItem;
+            QAction* changeKeyItem;
+        QMenu* lolMenu;
+            QAction* reloadItem;
+            QAction* importItem;
+            QAction* exportItem;
+        \begin{itemize}
+            \item File :
+                \begin{itemize}
+                    \item[\bullet] New
+                    \item[\bullet] Open
+                    \item[\bullet] Save
+                    \item[\bullet] Save as
+                    \item[\bullet] Quit
+                \end{itemize}
+            \item Edit :
+                \begin{itemize}
+                    \item[\bullet] Create an event
+                \end{itemize}
+            \item Synchronization :
+                \begin{itemize}
+                    \item[\bullet] Reset local calendar with my Google Calendar
+                    \item[\bullet] Update local calendar from UnivNantes (CELCAT)
+                    \item[\bullet] Save my calendar on Google Calendar
+                    \item[\bullet] Settings
+                \end{itemize}
+        \end{itemize}
 
 
 \chapter{Controller}
