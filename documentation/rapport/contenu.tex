@@ -55,16 +55,16 @@
 	Le modèle est composé des classes suivantes :
 	%Insérer ici le diagramme de classe du modèle
 	
-	\section La classe Modèle
+	\section{La classe Modèle}
 	La classe modèle est la classe principale de ce sous-système. Elle possède plusieurs types d'attributs :
 	\begin{itemize}
-		\item Time* currentDate : un pointeur vers un objet de type Time qui contient la date courante.
-        \item Set<Slot*> slotlist : un ensemble de pointeurs de slot contenu dans un Set afin de trier les objets. De cette manière, les opérations de base (ajout, suppression, lecture et mise à jour) sont disponibles facilement, en parcourant la liste via un itérateur. Pour cela, il sera convenu de définir une méthode de comparaison des créneaux qui se basera sur leur date de début pour effectuer ce tri.
+		\item Time* currentDate : Un pointeur vers un objet de type Time qui contient la date courante.
+        \item Set<Slot*> slotlist : Un ensemble de pointeurs de slot contenu dans un Set afin de trier les objets. De cette manière, les opérations de base (ajout, suppression, lecture et mise à jour) sont disponibles facilement, en parcourant la liste via un itérateur. Pour cela, il sera convenu de définir une méthode de comparaison des créneaux qui se basera sur leur date de début pour effectuer ce tri.
 	\end{itemize}
 	
 	Voici la liste des méthode de cette classe :
 		\subsection*{nextWeek}
-            Méthode :void nextWeek();
+            Méthode : void nextWeek()
 			\begin{itemize}
 				\item Objectif  : Mettre l'attribut currentDate à la date du premier jour de la semaine suivante.
 				\item Pré-condition : /
@@ -72,18 +72,75 @@
 			\end{itemize}
 			
    		\subsection*{nextWeek}
-            Méthode :void nextWeek();
+            Méthode : void nextWeek();
 			\begin{itemize}
 				\item Objectif  : Mettre l'attribut currentDate à la date du premier jour de la semaine précédente.
 				\item Pré-condition : /
 				\item Post-condition : La nouvelle date correspond à sept jours avant l'ancienne.
 			\end{itemize}
+   		\subsection*{createSlot}
+            Méthode : Slot* createSlot(Time *beginDate, Time *endDate, string title, string description, string location)
+			\begin{itemize}
+				\item Objectif  : Création de l'objet Slot correspondant aux données en entrée et ajout dans l'ensemble de créneaux.
+				\item Pré-condition : Les données entrées ont été vérifiées (dates biens formées, dates de début et de fin cohérentes et pas de conflits avec d'autres créneaux).
+				\item Post-condition : Le créneau est créé et a été ajouté dans l'ensemble slotlist.
+			\end{itemize}
+            
+   		\subsection*{deleteSlot}
+            Méthode : void (Slot deleteSlot *slot)
+			\begin{itemize}
+				\item Objectif  : Suppression dans l'ensemble du créneau concerné et destruction de l'objet.
+				\item Pré-condition : Le créneau existe et est dans la collection slotlist.
+				\item Post-condition : L'objet n'est plus référencé dans l'ensemble et a été détruit. Il n'est plus accessible via son pointeur.
+			\end{itemize}
+            
+   		\subsection*{cleanList}
+            Méthode : void cleanList()
+			\begin{itemize}
+				\item Objectif  : Destruction de tous les créneaux de l'ensemble slotlist.
+				\item Pré-condition : /
+				\item Post-condition : Aucun créneau n'est accessible via les pointeurs et l'ensemble de créneau est vide.
+			\end{itemize}
+            
+            
+	\section{La classe Slot}    
+	La classe Slot est la classe qui contient les données d'un créneau qui contenu dans le modèle. Elle contient toutes les informations qui les définissent : une plage horaire qui explicite les heures de début et de fin ainsi que le titre, la description et le lieu. 
+	\begin{itemize}
+		\item Time* beginDate : Heure de début de l'événement.
+		\item Time* endDate : Heure de fin de l'événement.
+		\item String title : Le titre du créneau sous forme de chaine de caractère (string).
+		\item String description : Une chaine de caractère qui contient une courte description du créneau.
+		\item String location : L'information sur le lieu de l'événement dans une string.
+	\end{itemize}
 	
-            Slot* createSlot(Time *dateDeb, Time *dateFin, string intitule, string description, string location);
-            void deleteSlot(ListOfSlot::iterator it);
-            void deleteSlot(Slot *slot);
-            void cleanList();
+	Pour comparer les différents créneaux, il est nécessaire que les opérateurs de comparaison \og == \fg{}  et \og != \fg{}. Dans le cas de l'égalité, tous les attributs devront être identiques pour renvoyer la valeur booléenne \og vrai \fg{} tandis que dans l'opération d'inégalité, il suffit d'une seule différence pour renvoyer \og vrai \fg{}. De cette manière, tous les traitements sur les créneaux se feront de la manière la plus claire et rapide possible pour ne pas alourdir le code.
+	
+	Les attributs étants tous modifiables par l'utilisateur, il est nécessaire de prévoir des accesseurs. Ceux-ci seront aussi bien des \textit{getters} que des \textit{setters}, qui premettent respectivement d'accéder à la valeur et de la modifier.
+	
+	Les autres méthodes de cette classe vont être décris maintenant.
+   		\subsection*{areSlotsOverlapping}
+            Méthode : bool areSlotsOverlapping(Time* beginDate, Time* endDate)
+			\begin{itemize}
+				\item Objectif  : Vérifier si deux créneaux sont en conflit pour une même plage horaire.
+				\item Pré-condition : /
+				\item Post-condition : Retourne la valeur booléenne \og vrai \fg{} si les créneaux ont au moins une minute en commun et faux sinon.
+			\end{itemize}
 
+   		\subsection*{editSlot}
+            Méthode : void editSlot(Time *beginDate, Time *endDate, string intitule, string description)
+			\begin{itemize}
+				\item Objectif  : Modifier toutes les valeurs d'un créneau à la fois (date et chaines de caractère).
+				\item Pré-condition : Les valeurs d'entrée sont au bon format.
+				\item Post-condition : Le créneau possède maintenant les nouvelles valeurs.
+			\end{itemize}
+			
+   		\subsection*{toString}
+            Méthode : string toString()
+			\begin{itemize}
+				\item Objectif  :Retourner une chaine de caractère contenant toutes les informations sur le créneau dans une forme lisible par un humain.
+				\item Pré-condition : /
+				\item Post-condition : La chaine retournée indique la date de début, de fin et l'intitulé du créneau afin de facilement le distinguer des autres.
+			\end{itemize}
 
 \chapter{Conception des interfaces de communication}
 	%GUILLAUME
