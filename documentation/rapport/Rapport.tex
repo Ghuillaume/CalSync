@@ -10,11 +10,7 @@
 \titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{} 
 \usepackage{fancyhdr}											% Pour gérer les en-tête / pied de page
 \usepackage{placeins}											% Pour utiliser \FloatBarrier qui annule les flottants
-\usepackage{pdfpages}											% Include du pdf (\includepdf[options]{doc})
-\usepackage{listings}											% Include du pdf (\includepdf[options]{doc})
-\usepackage{color}
-\usepackage{verbatim}										% Insérer du code/texte (\lstinputlisting{doc}, \lstset juste avant pour modifier le style)
-\usepackage{amsmath}
+\usepackage{listings}		
 \usepackage{hyperref}
 
 
@@ -23,16 +19,6 @@
 \makeatletter
 
 \include{garde}
-
-\lstset{
-	tabsize=4,
-	keywordstyle=\color{blue},          
-	commentstyle=\color{dkgreen},     
-	stringstyle=\color{mauve},
-	morekeywords={Entree,Sortie,Pour,Faire,Si,Sinon,Alors,Finpour,Finsi,afficher,dans,Tantque, Fintantque,retourne, allantDe},
-	breaklines=true
-}
- 
 
 \begin{document}
 

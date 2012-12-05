@@ -388,6 +388,7 @@ void Controller::editSlot(SlotFrame *frame) {
             frame->getSlot()->editSlot( startDateTime,
                                         endDateTime,
                                         dialog->titleEdit->text().toStdString(),
+                                        dialog->descriptionEdit->text().toStdString(),
                                         dialog->descriptionEdit->text().toStdString());
             this->view->display();
             this->connectAllSlots();
