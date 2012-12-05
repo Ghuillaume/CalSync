@@ -18,7 +18,7 @@
 		\item Utilisation du protocole REST pour la communication avec ce service en ligne ;
 		\item Communication non bloquante et temps de réponse de l'ordre de la seconde ;
 	\end{itemize}
-	\vspace{0.5cm}
+	\vspace{0.5cm} 
 	Une autre exigence est concernée par la conception de l'application puisque nous avons eu le temps de l'implémenter : la récupération d'un emploi du temps universitaire depuis le site de gestion d'emploi du temps de l'Université de Nantes. Cependant, aucun autre format d'emploi du temps n'a été supporté, cette exigence ayant été elle aussi reportée.
 		
 
@@ -49,6 +49,41 @@
 
 \chapter{Conception du modèle}
 	%JEROME
+	
+	Le modèle contient toutes les données de l'application, aussi bien les objets de l'emploi du temps manipulés utilisés par les différentes classes que la configuration du logiciel. Il correspond à la première partie du patron architectural MVC. 
+	
+	Le modèle est composé des classes suivantes :
+	%Insérer ici le diagramme de classe du modèle
+	
+	\section La classe Modèle
+	La classe modèle est la classe principale de ce sous-système. Elle possède plusieurs types d'attributs :
+	\begin{itemize}
+		\item Time* currentDate : un pointeur vers un objet de type Time qui contient la date courante.
+        \item Set<Slot*> slotlist : un ensemble de pointeurs de slot contenu dans un Set afin de trier les objets. De cette manière, les opérations de base (ajout, suppression, lecture et mise à jour) sont disponibles facilement, en parcourant la liste via un itérateur. Pour cela, il sera convenu de définir une méthode de comparaison des créneaux qui se basera sur leur date de début pour effectuer ce tri.
+	\end{itemize}
+	
+	Voici la liste des méthode de cette classe :
+		\subsection*{nextWeek}
+            Méthode :void nextWeek();
+			\begin{itemize}
+				\item Objectif  : Mettre l'attribut currentDate à la date du premier jour de la semaine suivante.
+				\item Pré-condition : /
+				\item Post-condition : La nouvelle date correspond à sept jours après l'ancienne.
+			\end{itemize}
+			
+   		\subsection*{nextWeek}
+            Méthode :void nextWeek();
+			\begin{itemize}
+				\item Objectif  : Mettre l'attribut currentDate à la date du premier jour de la semaine précédente.
+				\item Pré-condition : /
+				\item Post-condition : La nouvelle date correspond à sept jours avant l'ancienne.
+			\end{itemize}
+	
+            Slot* createSlot(Time *dateDeb, Time *dateFin, string intitule, string description, string location);
+            void deleteSlot(ListOfSlot::iterator it);
+            void deleteSlot(Slot *slot);
+            void cleanList();
+
 
 \chapter{Conception des interfaces de communication}
 	%GUILLAUME

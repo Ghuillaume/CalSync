@@ -1,5 +1,10 @@
 #include "SlotFrame.hpp"
 
+/*
+ * SlotFrame(QString title, QString description, Slot *slot)
+ * Precondition : The slot exists in the model and is well-formed.
+ * Postcondition : /
+ */
 SlotFrame::SlotFrame(QString title, QString description, Slot *slot): QFrame() {
     this->titleLabel = new QLabel(title, this);
     this->descriptionLabel = new QLabel(description, this);

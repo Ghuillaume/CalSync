@@ -1,18 +1,14 @@
-/* 
- * File:   Model.h
- * Author: e094326d
- *
- * Created on 18 novembre 2012, 11:44
- */
-
 #ifndef MODEL_H
 #define	MODEL_H
+
+#include <QtCore>
 
 using namespace std;
 
 #include "common.h"
 #include "Slot.hpp"
 #include "Time.hpp"
+#include "View.hpp"
 
 struct classcomp {
   bool operator() (Slot* first, Slot* second) const
@@ -42,4 +38,4 @@ class Model {
             ListOfSlot slotlist;
 };
 
-#endif	/* MODEL_H */
+#endif  

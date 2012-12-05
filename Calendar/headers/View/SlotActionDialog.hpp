@@ -8,6 +8,7 @@
 
 #include "../Model/Slot.hpp"
 #include "../View/SlotFrame.hpp"
+
 #include "View.hpp"
 
 class View;

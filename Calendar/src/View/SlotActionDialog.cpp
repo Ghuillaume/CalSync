@@ -1,7 +1,12 @@
-#include <QtGui/qpushbutton.h>
-
 #include "../../headers/View/SlotActionDialog.hpp"
 
+
+/*
+ * SlotActionDialog(QWidget *view, SlotFrame *frame)
+ * SlotActionDialog constructor
+ * Precondition : The string date is well-formed (dd-mm-yyyyThh:MM)
+ * Postcondition : /
+ */
 SlotActionDialog::SlotActionDialog(QWidget *view, SlotFrame *frame) {
 	this->view = (View*) view;
 	this->frame = frame;

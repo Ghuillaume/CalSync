@@ -1,14 +1,4 @@
-/* 
- * File:   Model.cpp
- * Author: e094326d
- * 
- * Created on 18 novembre 2012, 11:44
- */
-
-#include <qt4/QtCore/qglobal.h>
-
 #include "../../headers/Model/Model.hpp"
-#include "View.hpp"
 
 
 Model::Model() {
