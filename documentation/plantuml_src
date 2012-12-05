@@ -1,0 +1,45 @@
+diagseq_getEventList
+
+	View -> Controller : importCalendar
+	Controller -> Controller : verifierConnexion()
+	Controller -> Controller : clearLocally()
+	create Parser
+	Controller -> Parser : new()
+	Controller -> Parser : getEventList()
+	participant Calendrier_Distant
+	Parser -> Calendrier_Distant : get()
+	Calendrier_Distant --> Parser : reply
+
+	alt Success
+		Parser -> Parser : parseEvents
+		Parser --> Controller : listOfEvents
+		Controller -> Controller : addEvents
+		Controller -> View : update
+	else Failure
+		Parser --> Controller : error
+
+	end
+
+
+
+diagseq_exportEvent
+
+	View -> Controller : exportCalendar
+	Controller -> Controller : verifierConnexion()
+	create Parser
+	Controller -> Parser : new()
+
+	loop Pour chaque event dans model
+		Controller -> Parser : exportEvent(args)
+		participant Calendrier_Distant
+		Parser -> Calendrier_Distant : get()
+		Calendrier_Distant --> Parser : reply
+
+		alt Success
+			Parser --> Controller : ok
+		else Failure
+			Parser --> Controller : error
+
+		end
+
+	end
