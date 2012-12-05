@@ -31,6 +31,7 @@ Controller::Controller(Model* model, View* view, Config* config)
 
     // Network :
     QObject::connect(this, SIGNAL(tokenSaved()), this, SLOT(askCalendarList()));
+    QObject::connect(this, SIGNAL(sendMessage(QString, int)), this->view->statusbar, SLOT(showMessage(QString, int)));
 
     
 }
@@ -82,6 +83,7 @@ void Controller::newModelFromGoogle() {
 
 void Controller::askCalendarList() {
 
+    emit sendMessage(QString("Getting calendar list..."), 0);
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     QObject::connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(selectCalendar(QNetworkReply*)));
     QString url = QString("https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=%1").arg(this->config->getGoogleAuthCode());
@@ -90,6 +92,10 @@ void Controller::askCalendarList() {
 }
 
 void Controller::selectCalendar(QNetworkReply* list) {
+
+    if(this->view->statusbar->currentMessage() == "Getting calendar list...")
+        this->view->statusbar->clearMessage();
+
     QJson::Parser parser;
     bool ok = FALSE;
 
@@ -609,12 +615,8 @@ void Controller::googleAccessTokenObtained(QString token) {
 
 void Controller::importAcademicCalendar() {
 
-    Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this);
+    Parser* p = new ParserCELCAT(this->config->getCelcatGroup(), this->model, this, this);
     p->getEventList();
-
-    //QMessageBox::critical(this, "Error", "This feature is currently not available.");
-
-    this->view->display();
 }
 
 
@@ -623,16 +625,14 @@ void Controller::importOnlineCalendar() {
     this->model->cleanList();
 
     // create Google Parser and parse
-    Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+    Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this, this);
     p->getEventList();
-
-    this->view->display();
 }
 
 void Controller::exportCalendar() {
     if(checkGoogleAuth()) {
         if(QMessageBox::warning(this->view, "Warning", "This action is going to clear your online Calendar before, do you want to continue ?", QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
-            Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this);
+            Parser* p = new ParserGCal(this->config->getGCalId(), this->config->getGoogleAuthCode(), this->model, this, this);
             p->clearCalendar();
 
             ListOfSlot list = this->model->getSlotList();

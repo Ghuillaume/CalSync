@@ -7,16 +7,14 @@
 
 #include "../../headers/Parser/ParserCELCAT.hpp"
 
-ParserCELCAT::ParserCELCAT(QString groupId, Model* model, Controller* parent) : QObject(parent) {
+ParserCELCAT::ParserCELCAT(QString groupId, Model* model, QObject* parent, Controller* controller) : QObject(parent) {
     this->groupId = groupId;
     this->model = model;
-
-    query = new QHttp(this);
-    connect(query, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
-    connect(query, SIGNAL(responseHeaderReceived(QHttpResponseHeader)), this, SLOT(responseHeaderReceived(QHttpResponseHeader)));
+    this->controller = controller;
 
     networkManager = new QNetworkAccessManager(this);
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+    QObject::connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+    QObject::connect(this, SIGNAL(sendMessage(QString, int)), this->controller->getView()->statusbar, SLOT(showMessage(QString, int)));
 }
 
 ParserCELCAT::~ParserCELCAT() {
@@ -25,8 +23,10 @@ ParserCELCAT::~ParserCELCAT() {
 
 void ParserCELCAT::getEventList() {
 
+    emit sendMessage(QString("Getting event list from CELCAT..."), 0);
+
     QString url = QString("http://www.edt-sciences.univ-nantes.fr/%1.xml").arg(this->groupId);
-    //QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     networkManager->get(QNetworkRequest(QUrl(url)));
     qDebug() << "Getting events from CELCAT";
 }
@@ -47,6 +47,7 @@ void ParserCELCAT::exportEvent(const QString & title,
 
 
 void ParserCELCAT::parseEvents(QByteArray in) {
+
     QFile file("g6935.xml");
 	QDomDocument doc;
 	doc.setContent(in,false);
@@ -119,46 +120,18 @@ void ParserCELCAT::parseEvents(QByteArray in) {
         Slot *slot = this->model->createSlot(beginDate, endDate, title, strProfessorName, strClassroomName);
 
 		event = event.nextSiblingElement("event");
-	}
-	delete timeCursor;
-}
-
-void ParserCELCAT::stateChanged(int state)   {
-    switch(state)   {
-    case 0:
-        qDebug() << "Unconnected";
-        break;
-    case 1:
-        qDebug() << "Host Lookup";
-        break;
-    case 2:
-        qDebug() << "Connecting";
-        break;
-    case 3:
-        qDebug() << "Sending";
-        break;
-    case 4:
-        qDebug() << "Reading";
-        break;
-    case 5:
-        qDebug() << "Connect";
-        break;
-    case 6:
-        qDebug() << "Closing";
-        break;
     }
-}
-
-void ParserCELCAT::responseHeaderReceived(const QHttpResponseHeader &resp)   {
-    qDebug() << "Size : " << resp.contentLength();
-    qDebug() << "Type : " << resp.contentType();
-    qDebug() << "Status Code : " << resp.statusCode();
+    this->controller->getView()->display();
+	delete timeCursor;
 }
 
 void ParserCELCAT::replyFinished(QNetworkReply * reply)
 {
-    //QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
     QByteArray in = reply->readAll();
     //qDebug() << in;
     this->parseEvents(in);
+
+    if(this->controller->getView()->statusbar->currentMessage() == "Getting events from CELCAT...")
+        this->controller->getView()->statusbar->clearMessage();
 }

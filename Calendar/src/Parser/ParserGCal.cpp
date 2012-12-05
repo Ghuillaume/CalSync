@@ -1,19 +1,18 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-ParserGCal::ParserGCal(QString id, QString authToken, Model *model, Controller* parent) : QObject(parent) {
+ParserGCal::ParserGCal(QString id, QString authToken, Model *model, QObject* parent, Controller* controller) : QObject(parent) {
     this->id = id;
     this->authToken = authToken;
     this->model = model;
 
     this->controller = controller;
 
-    query = new QHttp(this);
-    connect(query, SIGNAL(stateChanged(int)), this, SLOT(stateChanged(int)));
-    connect(query, SIGNAL(responseHeaderReceived(QHttpResponseHeader)), this, SLOT(responseHeaderReceived(QHttpResponseHeader)));
-
     networkManager = new QNetworkAccessManager(this);
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+    QObject::connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
+    QObject::connect(this, SIGNAL(sendMessage(QString, int)), this->controller->getView()->statusbar, SLOT(showMessage(QString, int)));
     
+    requests = 0;
+    replies = 0;
 }
 
 ParserGCal::~ParserGCal() {
@@ -22,20 +21,26 @@ ParserGCal::~ParserGCal() {
 
 void ParserGCal::replyFinished(QNetworkReply * reply)
 {
+    replies++;
+
     QApplication::restoreOverrideCursor();
     QByteArray in = reply->readAll();
     qDebug() << "REPLY : " << in;
     this->parseEvents(in);
+
+    if( (this->controller->getView()->statusbar->currentMessage() == "Clearing Google Calendar..."
+            || this->controller->getView()->statusbar->currentMessage() == "Getting event list from Google Calendar..."
+            || this->controller->getView()->statusbar->currentMessage() == "Exporting event list to Google Calendar...")
+        && requests == replies) {
+
+        this->controller->getView()->statusbar->clearMessage();
+    }
 }
-
-void ParserGCal::getCalendarList() {
-
-    QString url = QString("https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=%1").arg(this->authToken);
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    networkManager->get(QNetworkRequest(QUrl(url)));
-}
-
 void ParserGCal::clearCalendar() {
+
+    requests++;
+
+    emit sendMessage(QString("Clearing Google Calendar..."), 0);
 
     // TODO : récupérer tous les events avec
     // "\"extendedProperties\": \n{ \"shared\": \n{ \"fromMyCalendar\": \"true\"\n}\n},\n"
@@ -55,6 +60,11 @@ void ParserGCal::clearCalendar() {
 }
 
 void ParserGCal::getEventList() {
+
+    requests++;
+
+    emit sendMessage(QString("Getting event list from Google Calendar..."), 0);
+
     qDebug() << "Getting events from Google Calendar";
 
     QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events").arg(this->id);
@@ -72,6 +82,10 @@ void ParserGCal::getEventList() {
 
 void ParserGCal::exportEvent(const QString & title, const QString & description, const QString & location, const Time* start, const Time* end)
 {
+    requests++;
+
+    emit sendMessage(QString("Exporting event list to Google Calendar..."), 0);
+
     QString s = QString("https://www.googleapis.com/calendar/v3/calendars/%1/events").arg(this->id);
     QUrl url;
     url.setEncodedUrl(QUrl::toPercentEncoding(s, "/:"));
@@ -145,7 +159,7 @@ void ParserGCal::parseEvents(QByteArray in) {
 				// Create slot with previous variables
                 this->model->createSlot(timeBegin, timeEnd, eventName, eventDescription, eventLocation);
 			}
-            //this->controller->getView()->display();
+            this->controller->getView()->display();
 		}
         else if(result.toMap()["kind"].toString() == "calendar#calendarList")
         {
@@ -158,39 +172,6 @@ void ParserGCal::parseEvents(QByteArray in) {
     }
 }
 
-
-
-void ParserGCal::stateChanged(int state)   {
-    switch(state)   {
-    case 0:
-        qDebug() << "Unconnected";
-        break;
-    case 1:
-        qDebug() << "Host Lookup";
-        break;
-    case 2:
-        qDebug() << "Connecting";
-        break;
-    case 3:
-        qDebug() << "Sending";
-        break;
-    case 4:
-        qDebug() << "Reading";
-        break;
-    case 5:
-        qDebug() << "Connect";
-        break;
-    case 6:
-        qDebug() << "Closing";
-        break;
-    }
-}
-
-void ParserGCal::responseHeaderReceived(const QHttpResponseHeader &resp)   {
-    qDebug() << "Size : " << resp.contentLength();
-    qDebug() << "Type : " << resp.contentType();
-    qDebug() << "Status Code : " << resp.statusCode();
-}
 
 Time* ParserGCal::buildDate(QString &strDate) {
 	int year = 0;

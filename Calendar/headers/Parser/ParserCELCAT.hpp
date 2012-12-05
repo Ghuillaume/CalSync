@@ -31,7 +31,7 @@ class ParserCELCAT : public QObject, public Parser {
     Q_OBJECT
 
     public:
-        ParserCELCAT(QString groupId, Model* model, Controller* parent);
+        ParserCELCAT(QString groupId, Model* model, QObject* parent, Controller* controller);
         virtual ~ParserCELCAT();
 
         virtual void getEventList();
@@ -43,17 +43,18 @@ class ParserCELCAT : public QObject, public Parser {
                                  const Time* end);
 
     public slots:
-        void stateChanged ( int state );
-        void responseHeaderReceived ( const QHttpResponseHeader & resp );
         void replyFinished(QNetworkReply*);
+
+    signals:
+        void sendMessage(QString, int);
 
     private:
         virtual void parseEvents(QByteArray in);
 
         QString groupId;
 
-        QHttp* query;
         QNetworkAccessManager* networkManager;
+        Controller* controller;
 };
 
 #endif	/* PARSERCELCAT_H */

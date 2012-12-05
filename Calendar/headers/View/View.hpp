@@ -55,6 +55,9 @@ class View: public QMainWindow
             QAction* reloadItem;
             QAction* importItem;
             QAction* exportItem;
+
+        // Status bar
+        QStatusBar* statusbar;
             
         // Start view buttons
         QWidget* horizontalLayoutWidgetNewModel;

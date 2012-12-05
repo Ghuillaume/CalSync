@@ -7,8 +7,8 @@ View::View(Model *model) : QMainWindow(), time(8)
 
 	// Main window:
     this->setWindowTitle("MyCalendar");
-    QSize sizeWindow = QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT);
-    this->resize(QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT));
+    QSize sizeWindow = QSize(TABLE_MARGIN + TABLE_WIDTH + 20, LEFT_MARGIN*2 + TABLE_HEIGHT + 30);
+    this->resize(sizeWindow);
     this->setFixedSize(sizeWindow);
     
         // Menubar:
@@ -94,7 +94,15 @@ View::View(Model *model) : QMainWindow(), time(8)
         settingsItem->setText("Settings..");
 
     menubar->setVisible(false);
-  
+
+
+    // Status bar
+    statusbar = new QStatusBar(this);
+    statusbar->setObjectName(QString::fromUtf8("statusbar"));
+    this->setStatusBar(statusbar);
+
+
+    // Main view
     horizontalLayoutWidgetNewModel = new QWidget(this);
     horizontalLayoutWidgetNewModel->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
     horizontalLayoutWidgetNewModel->setGeometry(QRect(50, 190, TABLE_MARGIN + TABLE_WIDTH + 20 - 100, 200)); 

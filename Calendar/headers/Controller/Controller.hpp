@@ -66,6 +66,7 @@ class Controller : public QWidget {
 
     signals:
         void tokenSaved();
+        void sendMessage(QString, int);
 
     private:
         Model* model;
