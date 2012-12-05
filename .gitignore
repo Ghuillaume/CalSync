@@ -10,3 +10,7 @@ Makefile
 *.pro.*
 moc_*
 *~
+
+documentation/rapport/*.toc
+documentation/rapport/*.aux
+documentation/rapport/*.log
