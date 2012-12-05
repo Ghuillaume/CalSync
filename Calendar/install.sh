@@ -1,3 +1,5 @@
+echo "Warning : installation needs cmake, qmake and make installed"
+sleep 3
 make clean
 rm -rf lib/qjson/build
 mkdir lib/qjson/build
