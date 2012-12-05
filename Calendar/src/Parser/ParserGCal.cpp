@@ -1,6 +1,6 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
-/*
+/**
  * ParserGCal(QString id, QString authToken, Model *model, QObject* parent, Controller* controller)
  * ParserGCal constructor
  * Precondition : /
@@ -60,7 +60,7 @@ void ParserGCal::clearCalendar() {
     QNetworkRequest request;
     request.setUrl(url);
     request.setRawHeader("Authorization", QString("OAuth %1").arg(this->authToken).toLatin1());
-    request.setRawHeader("X-JavaScript-User-Agent", "Google APIs Explorer");
+    //request.setRawHeader("X-JavaScript-User-Agent", "Google APIs Explorer");
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     networkManager->get(request);
@@ -131,7 +131,7 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
 
 }
 
-/*
+/**
  * void parseEvents(QByteArray in)
  * Build an event
  * Precondition : The event is well-formed
