@@ -18,7 +18,7 @@ class SettingsDialog: public QDialog
         SettingsDialog(QWidget *parent);
        ~SettingsDialog();
 
-        void setCalendarList(QVariantList* list);
+        void setCalendarList(QVariantList* list, QString currentCalendar);
 
         QWidget *formLayoutWidget;
         QFormLayout *formLayout;

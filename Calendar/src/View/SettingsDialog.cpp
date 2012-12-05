@@ -103,7 +103,7 @@ SettingsDialog::~SettingsDialog()
     delete frame;
 }
 
-void SettingsDialog::setCalendarList(QVariantList *list) {
+void SettingsDialog::setCalendarList(QVariantList *list, QString currentCalendar) {
 
     for(int i = 0; i < list->count(); ++i)
     {

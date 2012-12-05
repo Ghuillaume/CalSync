@@ -23,26 +23,31 @@ View::View(Model *model) : QMainWindow(), time(8)
     fileMenu->setTitle("File");
     
         newItem = new QAction(this);
+        newItem->setShortcut(Qt::CTRL+Qt::Key_N);
         newItem->setObjectName("newItem");
         fileMenu->addAction(newItem);
         newItem->setText("New...");
 
         openItem = new QAction(this);
+        newItem->setShortcut(Qt::CTRL+Qt::Key_O);
         openItem->setObjectName("openItem");
         fileMenu->addAction(openItem);
         openItem->setText("Open...");
 
         saveItem = new QAction(this);
+        newItem->setShortcut(Qt::CTRL+Qt::Key_S);
         saveItem->setObjectName("saveItem");
         fileMenu->addAction(saveItem);
         saveItem->setText("Save");
 
         saveAsItem = new QAction(this);
+        newItem->setShortcut(Qt::SHIFT+Qt::CTRL+Qt::Key_N);
         saveAsItem->setObjectName("saveAsItem");
         fileMenu->addAction(saveAsItem);
         saveAsItem->setText("Save as...");
 
         quitItem = new QAction(this);
+        newItem->setShortcut(Qt::CTRL+Qt::Key_Q);
         quitItem->setObjectName("quitItem");
         fileMenu->addAction(quitItem);
         quitItem->setText("Quit");
@@ -53,6 +58,7 @@ View::View(Model *model) : QMainWindow(), time(8)
     editMenu->setTitle("Edit");
 
         newSlotItem = new QAction(this);
+        newItem->setShortcut(Qt::CTRL+Qt::Key_A);
         newSlotItem->setObjectName("newSlotItem");
         editMenu->addAction(newSlotItem);
         newSlotItem->setText("Create an event");
@@ -63,16 +69,19 @@ View::View(Model *model) : QMainWindow(), time(8)
     lolMenu->setTitle("Synchronization");
 
         reloadItem = new QAction(this);
+        newItem->setShortcut(Qt::Key_F5);
         reloadItem->setObjectName("reloadItem");
         lolMenu->addAction(reloadItem);
         reloadItem->setText("Reset local calendar with my Google Calendar");
 
         importItem = new QAction(this);
+        newItem->setShortcut(Qt::Key_F6);
         importItem->setObjectName("importItem");
         lolMenu->addAction(importItem);
         importItem->setText(QString("Update local calendar from UnivNantes (CELCAT)"));
 
         exportItem = new QAction(this);
+        newItem->setShortcut(Qt::Key_F7);
         exportItem->setObjectName("exportItem");
         lolMenu->addAction(exportItem);
         exportItem->setText("Save my calendar on Google Calendar");

@@ -404,7 +404,7 @@ void Controller::updateSettings() {
     QObject::connect(dialog->idCalendarBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateGCalID(int)));
     QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), this, SLOT(getGoogleAccessToken()));
     QObject::connect(dialog->googleAuthButton, SIGNAL(clicked()), dialog, SLOT(reject()));
-    dialog->setCalendarList(this->config->getCalendarList());
+    dialog->setCalendarList(this->config->getCalendarList(), this->config->getGCalId());
     dialog->groupEdit->setText(this->config->getCelcatGroup());
     dialog -> exec();
     this->config->setCelcatGroup(dialog->groupEdit->text());
