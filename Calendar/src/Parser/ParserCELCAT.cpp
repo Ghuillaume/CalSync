@@ -41,7 +41,10 @@ void ParserCELCAT::exportEvent(const QString & title,
                          const QString & location,
                          const Time* start,
                          const Time* end) {
-    // nothing to do
+	// Affichage pour éviter les warnings
+    cout << title.toStdString() << " " << description.toStdString()
+			<< " " <<location.toStdString() << endl;
+	cout << start->getSimpleDate() << "\n" << end->getSimpleDate() << endl;
     return;
 }
 
