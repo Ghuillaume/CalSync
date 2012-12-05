@@ -1,5 +1,11 @@
 #include "../../headers/Parser/ParserGCal.hpp"
 
+/*
+ * ParserGCal(QString id, QString authToken, Model *model, QObject* parent, Controller* controller)
+ * ParserGCal constructor
+ * Precondition : /
+ * Postcondition : /
+ */
 ParserGCal::ParserGCal(QString id, QString authToken, Model *model, QObject* parent, Controller* controller) : QObject(parent) {
     this->id = id;
     this->authToken = authToken;
@@ -18,6 +24,7 @@ ParserGCal::ParserGCal(QString id, QString authToken, Model *model, QObject* par
 ParserGCal::~ParserGCal() {
 
 }
+
 
 void ParserGCal::replyFinished(QNetworkReply * reply)
 {
@@ -42,7 +49,7 @@ void ParserGCal::clearCalendar() {
 
     emit sendMessage(QString("Clearing Google Calendar..."), 0);
 
-    // Amélioration possible : récupérer tous les events avec
+    // todo : Amélioration possible : récupérer tous les events avec
     // "\"extendedProperties\": \n{ \"shared\": \n{ \"fromMyCalendar\": \"true\"\n}\n},\n"
     // pour ne supprimer que ceux là :)
 
@@ -124,6 +131,12 @@ void ParserGCal::exportEvent(const QString & title, const QString & description,
 
 }
 
+/*
+ * void parseEvents(QByteArray in)
+ * Build an event
+ * Precondition : The event is well-formed
+ * Postcondition : /
+ */
 void ParserGCal::parseEvents(QByteArray in) {
 	QJson::Parser parser;
 	bool ok = FALSE;
@@ -172,7 +185,12 @@ void ParserGCal::parseEvents(QByteArray in) {
     }
 }
 
-
+/*
+ * Time* buildDate(QString &strDate)
+ * Create a Time object from a string date
+ * Precondition : The string date is well-formed (dd-mm-yyyyThh:MM)
+ * Postcondition : /
+ */
 Time* ParserGCal::buildDate(QString &strDate) {
 	int year = 0;
 	int month = 0;

@@ -1,10 +1,3 @@
-/* 
- * File:   Parser.h
- * Author: e094326d
- *
- * Created on 18 novembre 2012, 11:55
- */
-
 #ifndef PARSER_H
 #define	PARSER_H
 
@@ -29,10 +22,7 @@ class Parser {
         virtual void parseEvents(QByteArray in) = 0;
 
         Model* model;
-
-
-
 };
 
-#endif	/* PARSER_H */
+#endif	
 
