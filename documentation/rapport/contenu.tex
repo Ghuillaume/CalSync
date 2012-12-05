@@ -1,9 +1,59 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
-	LOL
+	Ce document a pour objectif de présenter la conception de l'application MyCalendar. Cette application, écrite en C++ avec le framework Qt4, présente une interface graphique correspondant à un emploi du temps semaine par semaine modifiable localement. L'utilisateur peut s'il le souhaite créer, modifier, ou supprimer des évènements.
 
+	Autour de ces fonctionnalités basiques s'attachent deux autres fonctionnalités permettant à l'utilisateur d'intéragir avec certains services en ligne pour importer ou exporter des évènements depuis Internet vers l'application locale et vice-versa.\\
 
+	Petit rappel des spécifications des exigences logicielles à partir desquelles la présente conception est basée :
+	\begin{itemize}
+		\item Architecture modulaire permettant une maintenance facile de l'application ;
+		\item Interface graphique (GUI\footnote{Graphical User Interface}) \emph{user-friendly} par semaine ;
+		\item Respect de la charte graphique GNU/Linux ;
+		\item Édition locale de l'emploi du temps (ajout, modification, suppression) par clics intuitifs sur la GUI ;
+		\item Gestion des conflits (que faire lorsque l'utilisateur essaie d'ajouter un évènement sur un créneau non libre ?) ;
+		\item Sauvegarde locale des évènements ;
+		\item Exporter l'emploi du temps vers un service en ligne ;
+		\item Récupérer l'emploi du temps depuis ce même service en ligne ;
+		\item Protection de l'emploi du temps distant avec des identifiants de connexion ;
+		\item Utilisation du protocole REST pour la communication avec ce service en ligne ;
+		\item Communication non bloquante et temps de réponse de l'ordre de la seconde ;
+	\end{itemize}
+	\vspace{0.5cm}
+	Une autre exigence est concernée par la conception de l'application puisque nous avons eu le temps de l'implémenter : la récupération d'un emploi du temps universitaire depuis le site de gestion d'emploi du temps de l'Université de Nantes. Cependant, aucun autre format d'emploi du temps n'a été supporté, cette exigence ayant été elle aussi reportée.
+		
 
+\chapter{Conception générale}
+	%GUILLAUME
+	Afin de répondre à la première exigence, c'est-à-dire concevoir l'application à partir d'une architecture modulaire, nous avons utilisé le pattern architectural MVC (pour Model-View-Controller). Cette architecture nous permet de diviser l'application en plusieurs sous-systèmes :
+	\begin{enumerate}
+		\item L'interface graphique utilisateur ;
+		\item Le modèle, contenant tous les évènements et proposant des méthodes pour agir dessus ;
+		\item Les interfaces de communication, pour interagir avec différents services d'emploi du temps en ligne ;
+	\end{enumerate}
+	Le contrôleur joue quant à lui le rôle d'arbitre entre tous ces systèmes.\\
+	Exemples :
+	
+	La vue demande la sauvegarde des évènements dans un fichier local : le contrôleur reçoit le signal correspondant et traite la demande.
+	
+	La vue demande l'export des évènements vers un service en ligne : le contrôleur reçoit ce signal, vérifie la connexion à ce service (est-ce que l'utilisateur est authentifié ?) et appelle la bonne interface de communication.
+	
+	Un conflit est détecté lors de l'ajout d'un nouvel évènement : le contrôleur traite ce conflit, soit en demandant à l'utilisateur que faire, soit en appliquant un comportement par défaut par exemple.\\
+	
+	Ci-dessus, un diagramme de classe généraliste présentant ce système dans sa globalité. La conception de chaque sous-système est présentée dans les prochains chapitres.
+	\begin{figure}
+		\centering
+		\caption{Diagramme de classe général}
+	%	\includegraphics[scale=0.5]{DiagrammeGL.png}
+	\end{figure}
+	\FloatBarrier
 
-\chapter*{Conclusion}
-\addcontentsline{toc}{chapter}{Conclusion}
+\chapter{Conception du modèle}
+	%JEROME
+
+\chapter{Conception des interfaces de communication}
+	%GUILLAUME
+	un seul service en ligne pris en compte, mais appli conçue de manière a pouvoir en ajouter facilement.
+
+\chapter{Conception de l'interface utilisateur}
+	%JEROME
+
