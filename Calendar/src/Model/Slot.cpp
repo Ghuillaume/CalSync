@@ -79,11 +79,12 @@ bool Slot::areSlotsOverlapping(Time* dateDebut, Time* dateFin) {
 }
 
 
-void Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string description) {
+void Slot::editSlot(Time *dateDebut, Time *dateFin, string intitule, string description, string location) {
     this->dateDebut = dateDebut;
     this->dateFin = dateFin;
     this->intitule = intitule;
     this->description = description;
+	this->location = location;
 }
 
 string Slot::toString() {

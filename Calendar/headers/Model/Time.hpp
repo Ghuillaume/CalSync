@@ -8,6 +8,7 @@
 #include <cstring> // memset
 #include <ctime>
 #include <cstdlib>
+#include <iostream>
 
 // Name space:
 using namespace std;
@@ -38,7 +39,7 @@ class Time
         
         void setWeek  ( const int &week );
         void setDate  ( int minute = -1, int hour = -1,
-                        int day = -1, int month = -1, int week = -1 );
+                        int day = -1, int month = -1, int year = -1 );
         void nextDay  ();
         void previousDay  ();
         
