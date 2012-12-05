@@ -53,7 +53,12 @@
 	Le modèle contient toutes les données de l'application, aussi bien les objets de l'emploi du temps manipulés utilisés par les différentes classes que la configuration du logiciel. Il correspond à la première partie du patron architectural MVC. 
 	
 	Le modèle est composé des classes suivantes :
-	%Insérer ici le diagramme de classe du modèle
+	\begin{figure}
+		\centering
+		\includegraphics[scale=0.45]{diagclasses_model.png}
+		\caption{Diagramme de classe du sous-système \og Model \fg{}}
+	\end{figure}
+	\FloatBarrier
 	
 	\section{La classe Modèle}
 	La classe modèle est la classe principale de ce sous-système. Elle possède plusieurs types d'attributs :
@@ -141,6 +146,48 @@
 				\item Pré-condition : /
 				\item Post-condition : La chaine retournée indique la date de début, de fin et l'intitulé du créneau afin de facilement le distinguer des autres.
 			\end{itemize}
+
+	\section{La classe Time}  
+        Time est la classe qui gère les dates et les opérations temporelles qui s'appliquent dessus. Elle est notamment utilisée pour stocker l'heure et le jour des dates de début et de fin de créneau. Elle est basée sur le mécanisme d'horodatage (ou \og timestamp \fg{}) pour marquer une date en temps UNIX \footnote{Une explication est disponible à \hyperref[cette adresse]{''https://fr.wikipedia.org/wiki/Horodatage''}.} grâce à un entier non signé.
+        
+        Dans une applications telle que celle-ci, il est courant de manipuler des dates et d'effectuer des comparaisons, c'est pourquoi il est nécessaire de redéfinir un certain nombre d'opérateurs pour cette classe. Cela concerne la supériorité et l'infériorité, strictes ou non, ainsi que l'égalité et l'inégalité.
+        
+        Le constructeur doit pouvoir ajouter prendre en entrée des valeurs manipulables aisément par un être humain. Cela doit être donc des références au système de temps international : minute, heure, jour, mois et année. Le programme devra donc gérer la conversion vers le timestamp.
+        
+        Les méthodes de cette classe seront :
+   		\subsection*{editSlot}
+            Méthode : void setWeek (int week);
+			\begin{itemize}
+				\item Objectif : Mettre à jour la valeur du timestamp au premier jour d'une semaine spécifique dont le numéro est passé entre paramètre.
+				\item Pré-condition : Le numéro de la semaine doit être compris entre 1 et 52 inclus.
+				\item Post-condition : La date correspond maintenant au lundi dont le numéro de la semaine est celui-ci.
+			\end{itemize}
+			
+   		\subsection*{setDate}
+            Méthode : void setDate(int minute, int hour, int day, int month, int week)
+			\begin{itemize}
+				\item Objectif : Mettre à jour un timestamp en re-précisant toutes les valeurs temporelles internationales.
+				\item Pré-condition : /
+				\item Post-condition : Le timestamp UNIX correspond à la date indiquée en entrée sous forme classique.
+			\end{itemize}
+			
+   		\subsection*{nextDay}
+            Méthode : void nextDay()
+			\begin{itemize}
+				\item Objectif : Récupérer la date du jour suivant celle en cours.
+				\item Pré-condition : /
+				\item Post-condition : Le nouveau jour a été édité et tiens compte de ces modifications.
+			\end{itemize}
+			
+   		\subsection*{previousDay}
+            Méthode : void previousDay()
+			\begin{itemize}
+				\item Objectif : Récupérer la date du jour précédant celle en cours.
+				\item Pré-condition : /
+				\item Post-condition : Le nouveau jour a été édité et tiens compte de ces modifications.
+        \newline
+			\end{itemize}
+        En plus de ces opérations, il est nécessaire de proposer des accesseurs pour toutes les unités internationales suivantes : minute, heure, jour, semaine, mois et année. Ainsi, il sera facile d'éditer seulement une seule valeur à la fois.
 
 \chapter{Conception des interfaces de communication}
 	%GUILLAUME

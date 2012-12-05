@@ -1,8 +1,5 @@
 ///
 
-// Includes:
-#include <iostream>
-
 #include "../../headers/Model/Time.hpp"
 
 // Name space:

@@ -14,7 +14,8 @@
 class Slot {
 
 	public:
-        Slot(Time *dateDebut, Time *dateFin, string intitule, string description, string location);
+        Slot(Time *dateDebut, Time *dateFin, string intitule,
+				string description, string location);
         virtual ~Slot();
 
         bool  operator== ( const Slot &slot ) const;
@@ -31,7 +32,8 @@ class Slot {
         void setIntitule(string intitule);
         void setDescription(string description);
         void setLocation(string location);
-        void editSlot(Time *dateDebut, Time *dateFin, string intitule, string description);
+        void editSlot(Time *dateDebut, Time *dateFin, string intitule,
+						string description, string location);
 
         string toString();
 		
