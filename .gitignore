@@ -5,7 +5,6 @@ nbproject
 /qjson
 Calendar/libqjson.so*
 
-Makefile
 *.o
 *.pro.*
 moc_*
